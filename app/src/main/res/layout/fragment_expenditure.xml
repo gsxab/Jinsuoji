@@ -1,0 +1,163 @@
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list"
+    android:name="org.jinsuoji.jinsuoji.ExpenditureFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/activity_margin"
+    android:paddingEnd="@dimen/activity_margin"
+    tools:context=".ExpenditureFragment">
+
+    <TextView
+        android:id="@+id/expenditure_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_margin"
+        android:text="@string/title_expenditure_frag"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/font_size_xl"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/year_selector"
+        app:layout_constraintEnd_toStartOf="@id/month_selector"
+        app:layout_constraintBottom_toBottomOf="@id/expenditure_label"
+        android:layout_marginEnd="@dimen/activity_margin"
+        >
+
+        <ImageButton
+            android:id="@+id/prev_year"
+            android:layout_width="@dimen/font_size_xl"
+            android:layout_height="@dimen/font_size_xl"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/last_year"
+            android:src="@drawable/ic_chevron_left_black_24dp" />
+
+        <TextView
+            android:id="@+id/year_number"
+            android:layout_width="@dimen/placeholder_size"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/font_size"
+            android:textAlignment="center" />
+
+        <ImageButton
+            android:id="@+id/next_year"
+            android:layout_width="@dimen/font_size_xl"
+            android:layout_height="@dimen/font_size_xl"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/next_year"
+            android:src="@drawable/ic_chevron_right_black_24dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/month_selector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_margin"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/expenditure_label"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/prev_month"
+            android:layout_width="@dimen/font_size_xl"
+            android:layout_height="@dimen/font_size_xl"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/last_month"
+            android:src="@drawable/ic_chevron_left_black_24dp" />
+
+        <TextView
+            android:id="@+id/month_number"
+            android:layout_width="@dimen/placeholder_size"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/font_size"
+            android:textAlignment="center" />
+
+        <ImageButton
+            android:id="@+id/next_month"
+            android:layout_width="@dimen/font_size_xl"
+            android:layout_height="@dimen/font_size_xl"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="@string/next_month"
+            android:src="@drawable/ic_chevron_right_black_24dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:id="@+id/total"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/expenditure_label"
+        android:layout_marginTop="@dimen/activity_margin" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/expense" />
+
+            <TextView
+                android:id="@+id/monthly_expense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/income" />
+
+            <TextView
+                android:id="@+id/monthly_income"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/total"
+        android:layout_marginTop="@dimen/activity_margin"
+        android:orientation="vertical"
+        >
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/expenditure_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabMode="fixed" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/expenditure_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

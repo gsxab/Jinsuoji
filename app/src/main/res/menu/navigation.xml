@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_date_range"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/navigation_todo"
+        android:icon="@drawable/ic_check_box"
+        android:title="@string/title_todo" />
+
+    <item
+        android:id="@+id/navigation_expenditure"
+        android:icon="@drawable/ic_book"
+        android:title="@string/title_expenditure" />
+
+    <item
+        android:id="@+id/navigation_zhongcao"
+        android:icon="@drawable/ic_stars"
+        android:title="@string/title_zhongcao" />
+
+</menu>
