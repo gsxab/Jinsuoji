@@ -4,6 +4,10 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+/**
+ * 一个为RecyclerView元素增加装饰的尝试.
+ * 是在元素有白色背景、列表有浅灰背景的情况下加入间距，产生自然间隔的效果.
+ */
 class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     private int mSpace;
 

@@ -29,10 +29,10 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
 
         // todoList = getTodoListByDate(date, finished)
         ArrayList<Todo> list = new ArrayList<>();
-        list.add(new Todo(DateUtils.makeDate(2018, 5, 8), "跑步", 1, "2km哦", true));
-        list.add(new Todo(DateUtils.makeDate(2018, 5, 7), "编译原理", 1, "期末大作业", false));
-        list.add(new Todo(DateUtils.makeDate(2018, 5, 6), "移动平台", 1, "", false));
-        list.add(new Todo(DateUtils.makeDate(2018, 5, 6), "面向对象", 1, "考试", false));
+        list.add(new Todo(-1, DateUtils.makeDate(2018, 5, 8), "跑步", 1, "2km哦", true));
+        list.add(new Todo(-1, DateUtils.makeDate(2018, 5, 7), "编译原理", 1, "期末大作业", false));
+        list.add(new Todo(-1, DateUtils.makeDate(2018, 5, 6), "移动平台", 1, "", false));
+        list.add(new Todo(-1, DateUtils.makeDate(2018, 5, 6), "面向对象", 1, "考试", false));
         for (int i = 0; i < list.size(); i++) {
             Todo todo = list.get(i);
             if (finished == null || finished == todo.isFinished()) {

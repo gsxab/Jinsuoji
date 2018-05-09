@@ -83,6 +83,9 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.
         return nodes.get(position).getType().ordinal();
     }
 
+    /**
+     * 抽象ViewHolder，hold一个项目或分类的View.
+     */
     public abstract class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
 

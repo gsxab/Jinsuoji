@@ -26,12 +26,16 @@ import java.util.List;
 
 /**
  * 主活动类，包括了：
- * + 抽屉 DrawerLayout
- *   - 左抽屉导航界面NavigationView
- *   - 主界面ConstraintsLayout
- *     - 顶部标题栏（用户按钮等）ActionBar(ToolBar)
- *     - 底部标签页BottomNavigationView
- *     - 中间用来切换显示的部分Fragment(id/contentContainer)(要切换)
+ * <ul>
+ * <li>抽屉 DrawerLayout
+ *   <li>左抽屉导航界面NavigationView</li>
+ *   <li>主界面ConstraintsLayout
+ *      <li>顶部标题栏（用户按钮等）<!--ActionBar-->ToolBar</li>
+ *      <li>底部标签页BottomNavigationView</li>
+ *      <li>中间用来切换显示的部分ViewPager<!--Fragment(id/contentContainer)(要切换)--></li>
+ *   </li>
+ * </li>
+ * </ul>
  */
 public class MainActivity extends AppCompatActivity implements
         TodoListFragment.OnFragmentInteractionListener,
@@ -139,9 +143,10 @@ public class MainActivity extends AppCompatActivity implements
                 //        .show();
                 switch (navigation.getSelectedItemId()) {
                 case R.id.navigation_home:{
+                    // TODO 弹出选择框
                 }   break;
                 case R.id.navigation_todo:{
-
+                    // TODO 进入任务编辑Activity
                 }   break;
                 case R.id.navigation_expenditure:{
                     Intent intent = new Intent(MainActivity.this, ExpenseEditActivity.class);
@@ -152,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements
                     startActivityForResult(intent, 1);
                 }   break;
                 case R.id.navigation_zhongcao:{
+                    // TODO ?
                 }   break;
                 }
             }
@@ -160,7 +166,15 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
+                    case R.id.personal_info:
+                    case R.id.about:
+                    case R.id.feedback:
+                        // TODO 这(3+1)个菜单项
+                        Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
+                                .show();
+                        break;
                     case R.id.sync_settings:
+                        // 这只是个调试用的……
                         Toast.makeText(MainActivity.this, new ExpenseDAO(MainActivity.this).getAllExpenseNames().toString(), Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.clear_all:

@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * A fragment representing a list of Items.
+ * A {@link Fragment} representing a list of {@link org.jinsuoji.jinsuoji.model.EntryNode}.
+ * <p/>
+ * 只含有一个RecyclerView.使用的Adapter是ExpenseListAdapter.
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
@@ -93,6 +95,14 @@ public class ExpenditureListFragment extends Fragment {
         }
     }
 
+    /**
+     * 重新设置选择条件.仅有按月显示界面在调整月份时会调用这个函数.
+     *
+     * @param context 上下文
+     * @param year 年
+     * @param month 月[1-12]
+     * @param byDate 是按日期还是按类别
+     */
     public void setSelector(Context context, int year, int month, boolean byDate) {
         if (recyclerView == null && getView() != null) {
             recyclerView = getView().findViewById(R.id.expenditure_list);
@@ -101,5 +111,4 @@ public class ExpenditureListFragment extends Fragment {
             ((ExpenseListAdapter) recyclerView.getAdapter())
                     .setNewDate(context, year, month, 0, byDate);
     }
-
 }

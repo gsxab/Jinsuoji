@@ -3,6 +3,11 @@ package org.jinsuoji.jinsuoji.model;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 记账类.
+ * 保存一次记账条目的基本信息.
+ * TODO 将时间的时分去除（这个、ExpenseDAO）
+ */
 public class Expense implements Serializable {
     private int id;
     private String item;
@@ -22,6 +27,10 @@ public class Expense implements Serializable {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getItem() {
@@ -62,9 +71,5 @@ public class Expense implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }

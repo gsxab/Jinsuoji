@@ -44,5 +44,5 @@
     <string name="date_of_month">日</string>
     <string name="hour">时</string>
     <string name="minute">分</string>
-    <string name="missing_args">缺少信息</string>
+    <string name="missing_args">信息不完整</string>
 </resources>

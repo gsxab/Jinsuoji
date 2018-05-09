@@ -15,10 +15,18 @@ import android.widget.ImageButton;
 
 import java.util.Calendar;
 
+/**
+ * 日历页{@link Fragment}.
+ * 日历+当日列表.
+ */
 public class CalendarFragment extends Fragment {
     private static final String TAG = "jsj.CalendarFragment";
 
-    public static Fragment newInstance() {
+    /**
+     * 实例化方法.
+     * @return 自己
+     */
+    public static CalendarFragment newInstance() {
         return new CalendarFragment();
     }
 
@@ -73,7 +81,7 @@ public class CalendarFragment extends Fragment {
                 switch (calendar.getVisibility()) {
                     case View.VISIBLE:
                         calendar.setVisibility(View.GONE);
-                        //it.animate()
+                        // TODO it.animate() 动画可能还要看要不要换日历
                         break;
                     case View.INVISIBLE:
                     case View.GONE:

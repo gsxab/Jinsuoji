@@ -6,6 +6,7 @@ import java.text.ParseException;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 public class DateUtilsTest {
@@ -54,5 +55,38 @@ public class DateUtilsTest {
                 DateUtils.makeDateInterval(2018, 6));
         assertArrayEquals(new String[]{"2015-12-01 00:00", "2016-01-01 00:00"},
                 DateUtils.makeDateInterval(2015, 12));
+    }
+
+    @Test
+    public void getDateFormat() {
+        assertNotNull(DateUtils.getDateFormat());
+    }
+
+    @Test
+    public void fromDateTimeString() {
+    }
+
+    @Test
+    public void makeDate() {
+    }
+
+    @Test
+    public void makeDate1() {
+    }
+
+    @Test
+    public void makeDateString() {
+    }
+
+    @Test
+    public void makeDateInterval() {
+    }
+
+    @Test
+    public void toDateString() {
+    }
+
+    @Test
+    public void toDateTimeString() {
     }
 }

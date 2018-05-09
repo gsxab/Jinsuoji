@@ -1,12 +1,15 @@
 package org.jinsuoji.jinsuoji.model;
 
-import android.support.annotation.NonNull;
-
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 任务类.
+ * 保存一次任务条目的基本信息.
+ */
 public class Todo implements Serializable {
-    public Todo(@NonNull Date dateTime, @NonNull String taskName, int priority, @NonNull String memo, boolean finished) {
+    public Todo(int id, Date dateTime, String taskName, int priority, String memo, boolean finished) {
+        this.id = id;
         this.dateTime = dateTime;
         this.taskName = taskName;
         this.priority = priority;
@@ -14,26 +17,34 @@ public class Todo implements Serializable {
         this.finished = finished;
     }
 
-    private @NonNull Date dateTime;
-
-    private @NonNull String taskName;
+    private int id;
+    private Date dateTime;
+    private String taskName;
     private int priority;
-    private @NonNull String memo;
+    private String memo;
     private boolean finished;
 
-    public @NonNull Date getDateTime() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(@NonNull Date dateTime) {
+    public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }
 
-    public @NonNull String getTaskName() {
+    public String getTaskName() {
         return taskName;
     }
 
-    public void setTaskName(@NonNull String taskName) {
+    public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
 
@@ -45,11 +56,11 @@ public class Todo implements Serializable {
         this.priority = priority;
     }
 
-    public @NonNull String getMemo() {
+    public String getMemo() {
         return memo;
     }
 
-    public void setMemo(@NonNull String memo) {
+    public void setMemo(String memo) {
         this.memo = memo;
     }
 

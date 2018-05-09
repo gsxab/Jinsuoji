@@ -21,6 +21,9 @@ import org.jinsuoji.jinsuoji.model.Expense;
 import java.text.ParseException;
 import java.util.Date;
 
+/**
+ * 编辑记账的Activity.
+ */
 public class ExpenseEditActivity extends AppCompatActivity {
     public static final String KEY = "exp_expense";
     public static final String LAST_EXPENSE = "org.jinsuoji.jinsuoji.LastExpense";
@@ -56,6 +59,7 @@ public class ExpenseEditActivity extends AppCompatActivity {
                 .setWheelItemTextSelectorColor(R.color.colorAccent)
                 .setWheelItemTextSize(14)
                 .build();
+//        以下代码不能用.这个库的布局的工具栏字体大小竟然是写死的.
 //        View dialogView = dialog.getView();
 //        if (dialogView != null) {
 //            ((TextView) dialogView.findViewById(R.id.tv_cancel)).setTextSize(18);
@@ -85,7 +89,6 @@ public class ExpenseEditActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             expense = ((Expense) savedInstanceState.get(KEY));
         } else {
-            // TODO 检查编辑情况：这种情况下参数是一个Expense
             Expense expense = (Expense) getIntent().getSerializableExtra(LAST_EXPENSE);
             if (expense == null) {
                 this.expense = new Expense(-1, "", null, 0, "");
@@ -93,6 +96,7 @@ public class ExpenseEditActivity extends AppCompatActivity {
                     this.expense.setDatetime((Date) getIntent().getSerializableExtra("org.jinsuoji.jinsuoji.Time"));
                 }
             } else {
+                // TODO 检查编辑情况：这种情况下参数是一个Expense
                 this.expense = expense;
             }
         }
@@ -130,14 +134,18 @@ public class ExpenseEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                if (!composeExpense()) return;
+                if (!composeExpense()) {
+                    Toast.makeText(ExpenseEditActivity.this, R.string.missing_args,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 intent.putExtra(LAST_EXPENSE, expense);
                 setResult(RESULT_OK, intent);
                 finish();
             }
         });
 
-        // TODO Init value?
+        // TODO 初始值，在一些情况下可能不是这个.
         item.setText(expense.getItem());
         time.setText(expense.getDatetime() == null ? "" : DateUtils.toDateTimeString(expense.getDatetime()));
         money.setText(expense.getMoney() == 0 ? "" : String.valueOf(expense.getMoney()));
@@ -151,7 +159,6 @@ public class ExpenseEditActivity extends AppCompatActivity {
     private boolean composeExpense() {
         if (item.getText().length() == 0 || time.getText().length() == 0 ||
                 category.getText().length() == 0 || money.getText().length() == 0) {
-            Toast.makeText(this, R.string.missing_args, Toast.LENGTH_SHORT).show();
             return false;
         }
         expense.setItem(item.getText().toString());

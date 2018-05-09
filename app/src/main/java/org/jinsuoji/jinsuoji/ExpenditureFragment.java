@@ -18,12 +18,11 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ExpenditureFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- *
- * 是记账页总的界面.包括题头、日期选择、tab页和tab内容(列表ExpenditureListFragment或图表).
+ * 是记账页总的{@link Fragment}.包括题头、日期选择、tab页和tab内容(列表ExpenditureListFragment或图表).
+ * ExpenditureFragment
+ * - 第一行
+ *   - “记帐本”
+ *   - “”
  *
  * Use the {@link ExpenditureFragment#newInstance} factory method to
  * create an instance of this fragment.
