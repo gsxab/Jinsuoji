@@ -1,5 +1,7 @@
 package org.jinsuoji.jinsuoji.data_access;
 
+import android.support.annotation.Nullable;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,12 +20,20 @@ public class DateUtils {
         return dateFormat;
     }
 
-    public static Date fromDateString(String str) throws ParseException {
-        return dateFormat.parse(str);
+    public static @Nullable Date fromDateString(String str) {
+        try {
+            return dateFormat.parse(str);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
-    public static Date fromDateTimeString(String str) throws ParseException {
-        return dateTimeFormat.parse(str);
+    public static @Nullable Date fromDateTimeString(String str) {
+        try {
+            return dateTimeFormat.parse(str);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     public static Date makeDate(int year, int month, int date) {
@@ -38,7 +48,7 @@ public class DateUtils {
     }
 
     public static String makeDateString(int year, int month) {
-        return dateTimeFormat.format(makeDate(year, month));
+        return dateFormat.format(makeDate(year, month));
     }
 
     public static String[] makeDateInterval(int year, int month) {

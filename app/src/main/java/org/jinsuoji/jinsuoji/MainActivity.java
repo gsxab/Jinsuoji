@@ -16,7 +16,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import org.jinsuoji.jinsuoji.data_access.DBHelper;
+import org.jinsuoji.jinsuoji.data_access.DBWrapper;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.model.Expense;
 
@@ -150,10 +150,7 @@ public class MainActivity extends AppCompatActivity implements
                 }   break;
                 case R.id.navigation_expenditure:{
                     Intent intent = new Intent(MainActivity.this, ExpenseEditActivity.class);
-                    Calendar c = Calendar.getInstance();
-                    c.set(Calendar.SECOND, 0);
-                    c.set(Calendar.MILLISECOND, 0);
-                    intent.putExtra("org.jinsuoji.jinsuoji.Time", c.getTime());
+                    intent.putExtra("org.jinsuoji.jinsuoji.Time", Calendar.getInstance().getTime());
                     startActivityForResult(intent, 1);
                 }   break;
                 case R.id.navigation_zhongcao:{
@@ -166,22 +163,21 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.personal_info:
-                    case R.id.about:
-                    case R.id.feedback:
-                        // TODO 这(3+1)个菜单项
-                        Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
-                                .show();
-                        break;
-                    case R.id.sync_settings:
-                        // 这只是个调试用的……
-                        Toast.makeText(MainActivity.this, new ExpenseDAO(MainActivity.this).getAllExpenseNames().toString(), Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.clear_all:
-                        Toast.makeText(MainActivity.this, R.string.recreate_database, Toast.LENGTH_SHORT).show();
-                        DBHelper dbHelper = new DBHelper(MainActivity.this);
-                        dbHelper.recreateTables();
-                        return true;
+                case R.id.personal_info:
+                case R.id.about:
+                case R.id.feedback:
+                    // TODO 这(3+1)个菜单项
+                    Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
+                            .show();
+                    break;
+                case R.id.sync_settings:
+                    // 这只是个调试用的……
+                    Toast.makeText(MainActivity.this, new ExpenseDAO(MainActivity.this).getAllExpenseNames().toString(), Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.clear_all:
+                    Toast.makeText(MainActivity.this, R.string.recreate_database, Toast.LENGTH_SHORT).show();
+                    new DBWrapper(MainActivity.this).recreateTables();
+                    return true;
                 }
                 return false;
             }

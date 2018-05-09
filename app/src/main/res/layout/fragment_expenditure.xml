@@ -37,7 +37,7 @@
             android:layout_height="@dimen/font_size_xl"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/last_year"
-            android:src="@drawable/ic_chevron_left_black_24dp" />
+            android:src="@drawable/ic_chevron_left_black" />
 
         <TextView
             android:id="@+id/year_number"
@@ -53,7 +53,7 @@
             android:layout_height="@dimen/font_size_xl"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/next_year"
-            android:src="@drawable/ic_chevron_right_black_24dp" />
+            android:src="@drawable/ic_chevron_right_black" />
 
     </LinearLayout>
 
@@ -73,7 +73,7 @@
             android:layout_height="@dimen/font_size_xl"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/last_month"
-            android:src="@drawable/ic_chevron_left_black_24dp" />
+            android:src="@drawable/ic_chevron_left_black" />
 
         <TextView
             android:id="@+id/month_number"
@@ -89,7 +89,7 @@
             android:layout_height="@dimen/font_size_xl"
             android:background="?android:attr/selectableItemBackground"
             android:contentDescription="@string/next_month"
-            android:src="@drawable/ic_chevron_right_black_24dp" />
+            android:src="@drawable/ic_chevron_right_black" />
 
     </LinearLayout>
 

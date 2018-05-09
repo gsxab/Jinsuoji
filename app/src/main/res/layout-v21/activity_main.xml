@@ -20,7 +20,8 @@
             android:navigationIcon="@drawable/ic_account_circle"
             android:background="@color/colorPrimary"
             android:title="@string/app_name"
-            android:titleTextColor="@color/colorInActionBar">
+            android:titleTextColor="@color/colorInActionBar"
+            tools:targetApi="M">
             <ImageButton
                 android:id="@+id/toolbar_add"
                 android:src="@drawable/ic_add"

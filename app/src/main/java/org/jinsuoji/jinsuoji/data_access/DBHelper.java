@@ -5,13 +5,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * 直接与服务器交互的类.
+ * 直接与数据库交互的类，上层(DAL)应当使用Wrapper.
  * <p/>
- * 使用方法：需要的地方new一个DBHelper，要传入{@link Context}，然后：
+ * 原理参看{@link SQLiteOpenHelper}的文档.
+ * 使用方法：需要的地方应该使用{@link DBWrapper}，要传入{@link Context}。
  * <ul>
- * <li>DAO中使用{@link DBHelper#getReadableDatabase()}获得只读数据库对象.</li>
- * <li>DAO中使用{@link DBHelper#getWritableDatabase()}获得可读写数据库对象.</li>
- * <li>使用{@link DBHelper#recreateTables()}重建数据表（用于改动数据表结构后刷新）.</li>
+ * <li>{@link #getReadableDatabase()}获得只读数据库对象.</li>
+ * <li>{@link #getWritableDatabase()}获得可读写数据库对象.</li>
+ * <li>{@link #recreateTables(SQLiteDatabase)}重建数据表（用于改动数据表结构后刷新）.</li>
  * </ul>
  */
 public class DBHelper extends SQLiteOpenHelper {
@@ -25,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * @param context Context对象.
      */
-    public DBHelper(Context context) {
+    DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
@@ -44,7 +45,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + EXPENSE + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "item TEXT, " +
-                "time DATETIME, " +
+                "time DATE, " +
                 "money INTEGER," +
                 "category_id INTEGER," +
                 "FOREIGN KEY (category_id) REFERENCES " + EXPENSE_CATE + "(id)" +
@@ -68,19 +69,11 @@ public class DBHelper extends SQLiteOpenHelper {
         recreateTables(db);
     }
 
-    private void recreateTables(SQLiteDatabase db) {
+    void recreateTables(SQLiteDatabase db) {
         for (String table : TABLE_NAMES) {
             String sql = "DROP TABLE IF EXISTS " + table + ";";
             db.execSQL(sql);
         }
         onCreate(db);
-    }
-
-    /**
-     * 重建数据表.
-     * 配合getWritableDatabase使用.
-     */
-    public void recreateTables() {
-        recreateTables(getWritableDatabase());
     }
 }

@@ -18,7 +18,6 @@ import com.jzxiang.pickerview.listener.OnDateSetListener;
 import org.jinsuoji.jinsuoji.data_access.DateUtils;
 import org.jinsuoji.jinsuoji.model.Expense;
 
-import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -49,9 +48,7 @@ public class ExpenseEditActivity extends AppCompatActivity {
                 .setYearText(getString(R.string.year))
                 .setMonthText(getString(R.string.month))
                 .setDayText(getString(R.string.date_of_month))
-                .setHourText(getString(R.string.hour))
-                .setMinuteText(getString(R.string.minute))
-                .setType(Type.ALL)
+                .setType(Type.YEAR_MONTH_DAY)
                 .setCyclic(false)
                 .setCurrentMillseconds(System.currentTimeMillis())
                 .setThemeColor(getResources().getColor(R.color.colorPrimary))
@@ -147,7 +144,7 @@ public class ExpenseEditActivity extends AppCompatActivity {
 
         // TODO 初始值，在一些情况下可能不是这个.
         item.setText(expense.getItem());
-        time.setText(expense.getDatetime() == null ? "" : DateUtils.toDateTimeString(expense.getDatetime()));
+        time.setText(expense.getDatetime() == null ? "" : DateUtils.toDateString(expense.getDatetime()));
         money.setText(expense.getMoney() == 0 ? "" : String.valueOf(expense.getMoney()));
         category.setText(expense.getCategory() == null ? "" : expense.getCategory());
     }
@@ -162,11 +159,7 @@ public class ExpenseEditActivity extends AppCompatActivity {
             return false;
         }
         expense.setItem(item.getText().toString());
-        try {
-            expense.setDatetime(DateUtils.fromDateTimeString(time.getText().toString()));
-        } catch (ParseException e) {
-            expense.setDatetime(null);
-        }
+        expense.setDatetime(DateUtils.fromDateString(time.getText().toString()));
         expense.setCategory(category.getText().toString());
         expense.setMoney(Math.round(Float.valueOf(money.getText().toString()) * 100));
         return true;

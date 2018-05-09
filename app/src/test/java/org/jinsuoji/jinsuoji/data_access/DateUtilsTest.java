@@ -42,18 +42,18 @@ public class DateUtilsTest {
 
     @Test
     public void testMakeDateString() {
-        assertEquals("2018-05-01 00:00", DateUtils.makeDateString(2018, 5));
-        assertEquals("2018-06-01 00:00", DateUtils.makeDateString(2018, 6));
-        assertEquals("2015-05-01 00:00", DateUtils.makeDateString(2015, 5));
+        assertEquals("2018-05-01", DateUtils.makeDateString(2018, 5));
+        assertEquals("2018-06-01", DateUtils.makeDateString(2018, 6));
+        assertEquals("2015-05-01", DateUtils.makeDateString(2015, 5));
     }
 
     @Test
     public void testMakeDateInterval() {
-        assertArrayEquals(new String[]{"2018-05-01 00:00", "2018-06-01 00:00"},
+        assertArrayEquals(new String[]{"2018-05-01", "2018-06-01"},
                 DateUtils.makeDateInterval(2018, 5));
-        assertArrayEquals(new String[]{"2018-06-01 00:00", "2018-07-01 00:00"},
+        assertArrayEquals(new String[]{"2018-06-01", "2018-07-01"},
                 DateUtils.makeDateInterval(2018, 6));
-        assertArrayEquals(new String[]{"2015-12-01 00:00", "2016-01-01 00:00"},
+        assertArrayEquals(new String[]{"2015-12-01", "2016-01-01"},
                 DateUtils.makeDateInterval(2015, 12));
     }
 
