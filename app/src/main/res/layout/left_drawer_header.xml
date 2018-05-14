@@ -10,4 +10,6 @@
         android:src="@drawable/ic_launcher_foreground"
         android:contentDescription="@string/app_name" />
 
+    <!-- TODO 信息页 -->
+
 </LinearLayout>
