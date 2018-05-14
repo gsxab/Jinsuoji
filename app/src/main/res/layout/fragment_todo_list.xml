@@ -12,25 +12,26 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/show_unfinished_label"
-            android:labelFor="@id/show_unfinished_switch"
+            android:id="@+id/show_finished_label"
+            android:labelFor="@id/show_finished_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:text="@string/show_unfinished"/>
+            android:text="@string/show_finished"/>
         <Switch
-            android:id="@+id/show_unfinished_switch"
+            android:id="@+id/show_finished_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@id/show_unfinished_label" />
+            android:layout_toStartOf="@id/show_finished_label" />
 
     </RelativeLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/unfinished_list_title"
         android:text="@string/unfinished"/>
 
     <android.support.v7.widget.RecyclerView
@@ -41,6 +42,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/finished_list_title"
         android:text="@string/finished"/>
 
     <android.support.v7.widget.RecyclerView

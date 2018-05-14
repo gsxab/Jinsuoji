@@ -2,18 +2,17 @@ package org.jinsuoji.jinsuoji;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import org.jinsuoji.jinsuoji.data_access.DateUtils;
+import org.jinsuoji.jinsuoji.data_access.TodoDAO;
 import org.jinsuoji.jinsuoji.model.Todo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //import android.widget.CheckedTextView
@@ -22,28 +21,24 @@ import java.util.List;
  * 任务列表使用的适配器，目前可用于首页和任务页，但是两页的项布局可能不一样所以可能要改
  */
 public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHolder> {
-    private List<Todo> todoList = new ArrayList<>();
+    private List<Todo> todoList;
 
-    public TodoListAdaptor(Context context, int year, int month, int day, @Nullable Boolean finished) {
+    public TodoListAdaptor(Context context, int year, int month, int day) {
         super();
+        todoList = new TodoDAO(context).getDaily(year, month, day);
+    }
 
-        // todoList = getTodoListByDate(date, finished)
-        ArrayList<Todo> list = new ArrayList<>();
-        list.add(new Todo(-1, DateUtils.makeDate(2018, 5, 8), "跑步", 1, "2km哦", true));
-        list.add(new Todo(-1, DateUtils.makeDate(2018, 5, 7), "编译原理", 1, "期末大作业", false));
-        list.add(new Todo(-1, DateUtils.makeDate(2018, 5, 6), "移动平台", 1, "", false));
-        list.add(new Todo(-1, DateUtils.makeDate(2018, 5, 6), "面向对象", 1, "考试", false));
-        for (int i = 0; i < list.size(); i++) {
-            Todo todo = list.get(i);
-            if (finished == null || finished == todo.isFinished()) {
-                todoList.add(todo);
-            }
-        }
+    public TodoListAdaptor(Context context, boolean finished) {
+        super();
+        todoList = new TodoDAO(context).getTodoListByFinished(finished);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        View mView;
+
         ViewHolder(View view) {
             super(view);
+            mView = view;
             name = view.findViewById(R.id.todo_name);
             memo = view.findViewById(R.id.todo_memo);
             finished = view.findViewById(R.id.todo_finished);
@@ -69,12 +64,24 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
         Todo todo = todoList.get(position);
         holder.name.setText(todo.getTaskName());
         holder.finished.setChecked(todo.isFinished());
-        holder.finished.setOnClickListener(new View.OnClickListener() {
+        holder.finished.setTag(position);
+        holder.finished.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                // TODO("Update data.")
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int position = (int) buttonView.getTag();
+                Todo todo = todoList.get(position);
+                todo.setFinished(isChecked);
+                new TodoDAO(buttonView.getContext()).editTodo(todo);
+                notifyItemChanged(position);
             }
         });
         holder.memo.setText(todo.getMemo());
+        holder.mView.setTag(todo);
+    }
+
+    public void setNewDate(Context context, int year, int month, int day) {
+        notifyItemRangeRemoved(0, getItemCount());
+        todoList = new TodoDAO(context).getDaily(year, month, day);
+        notifyItemRangeInserted(0, getItemCount());
     }
 }

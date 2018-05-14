@@ -49,6 +49,10 @@ public class MainActivity extends AppCompatActivity implements
     ImageButton toolbarAdd;
     ViewPager pager;
 
+
+    List<String> stringList;
+    List<Fragment> fragments;
+
     public void onFragmentInteraction() {
     }
 
@@ -78,16 +82,24 @@ public class MainActivity extends AppCompatActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (!Preference.isGuided(this)) {
+            Intent intent = new Intent();
+            intent.setClass(this, GuideActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         pager = findViewById(R.id.content_container);
 
-        List<String> stringList = new ArrayList<>();
+        stringList = new ArrayList<>();
         stringList.add(getString(R.string.title_home));
         stringList.add(getString(R.string.title_todo));
         stringList.add(getString(R.string.title_expenditure));
         stringList.add(getString(R.string.title_zhongcao));
-        List<Fragment> fragments = new ArrayList<>();
+        fragments = new ArrayList<>();
         fragments.add(CalendarFragment.newInstance());
         fragments.add(TodoListFragment.newInstance());
         fragments.add(ExpenditureFragment.newInstance());
@@ -177,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.clear_all:
                     Toast.makeText(MainActivity.this, R.string.recreate_database, Toast.LENGTH_SHORT).show();
                     new DBWrapper(MainActivity.this).recreateTables();
+                    Preference.clear(MainActivity.this);
                     return true;
                 }
                 return false;
@@ -193,11 +206,8 @@ public class MainActivity extends AppCompatActivity implements
             expenseDAO.addExpense(expense);
             if (navigation.getSelectedItemId() == R.id.navigation_expenditure) {
                 try {
-                    ExpenditureFragment fragment = (ExpenditureFragment) getSupportFragmentManager()
-                            .findFragmentById(R.id.content_container);
-                    fragment.refreshList();
-                } catch (ClassCastException e) {
-                    return;
+                    ((ExpenditureFragment) fragments.get(pager.getCurrentItem())).refreshList();
+                } catch (ClassCastException ignored) {
                 }
             }
         }

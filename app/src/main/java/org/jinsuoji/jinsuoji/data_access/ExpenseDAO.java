@@ -37,7 +37,7 @@ public class ExpenseDAO {
         return wrapper.read(new Operation<List<String>>() {
             @Override
             public List<String> operate(SQLiteDatabase db) {
-                return query(db, "SELECT item FROM DBHelper.EXPENSE", null, new QueryAdapter<List<String>>() {
+                return query(db, "SELECT item FROM " + DBHelper.EXPENSE, null, new QueryAdapter<List<String>>() {
                             @Override
                             public List<String> beforeLoop(Cursor cursor) {
                                 return new ArrayList<>();
@@ -71,7 +71,7 @@ public class ExpenseDAO {
                     String lastDate = null;
 
                     @Override
-                    public List<EntryNode> beforeLoop(Cursor cursor) throws AbortException {
+                    public List<EntryNode> beforeLoop(Cursor cursor) {
                         if (!cursor.moveToLast()) {
                             return Collections.emptyList() ;
                         }
@@ -169,7 +169,7 @@ public class ExpenseDAO {
                         new String[]{DateUtils.toDateString(DateUtils.makeDate(year, month, dateInMonth))},
                         new QueryAdapter<List<EntryNode>>() {
                     @Override
-                    public List<EntryNode> beforeLoop(Cursor cursor) throws AbortException {
+                    public List<EntryNode> beforeLoop(Cursor cursor) {
                         if (!cursor.moveToLast()) {
                             return Collections.emptyList();
                         }
@@ -243,7 +243,7 @@ public class ExpenseDAO {
     /**
      * 向数据库插入新的记账记录.传入的记录的id字段会被忽略，执行后设置为新建的id.
      *
-     * @param expense 要插入的新的记账记录.id会被设置.
+     * @param expense 要插入的新的记账记录.这个对象的id会被设置.
      */
     public void addExpense(final Expense expense) {
         wrapper.write(new Operation<Void>() {
@@ -277,9 +277,9 @@ public class ExpenseDAO {
 
     /**
      * 统计月收入.
-     * @param year
-     * @param month
-     * @return
+     * @param year 指定的年
+     * @param month 指定的月
+     * @return 月收入
      */
     public int getMonthlyIncome(int year, int month) {
         return getMonthlyTotal(year, month,"money > 0");
@@ -287,11 +287,20 @@ public class ExpenseDAO {
 
     /**
      * 统计月支出.
-     * @param year
-     * @param month
-     * @return
+     * @param year 指定的年
+     * @param month 指定的月
+     * @return 月支出
      */
     public int getMonthlyExpense(int year, int month) {
         return getMonthlyTotal(year, month, "money < 0");
+    }
+
+    /**
+     * 编辑记账记录，传入的记录id字段为先前的id.此id将决定更新操作中被更新的记录.
+     *
+     * @param expense 修改过的记录
+     */
+    public void editExpense(Expense expense) {
+        // TODO
     }
 }

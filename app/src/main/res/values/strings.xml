@@ -6,7 +6,7 @@
     <string name="title_zhongcao">种草</string>
     <string name="collapse_calendar">收起日历</string>
     <string name="expand_calendar">展开日历</string>
-    <string name="show_unfinished">显示未完成项</string>
+    <string name="show_finished">显示已完成项</string>
     <string name="finished">已完成</string>
     <string name="unfinished">未完成</string>
     <string name="user">用户</string>
@@ -45,4 +45,5 @@
     <string name="hour">时</string>
     <string name="minute">分</string>
     <string name="missing_args">信息不完整</string>
+    <string name="skip"><![CDATA[跳过>>>]]></string>
 </resources>

@@ -10,12 +10,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.TextView;
 
 /**
  * 任务页的{@link Fragment}.
  */
-public class TodoListFragment extends Fragment {
+public class TodoListFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
     private OnFragmentInteractionListener listener = null;
+    private RecyclerView finishedListView, unfinishedListView;
+    private TextView finishedListTitle;
+
 
     public TodoListFragment() {}
 
@@ -47,16 +53,43 @@ public class TodoListFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        RecyclerView recyclerView = view.findViewById(R.id.finished_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new TodoListAdaptor(getContext(), 0, 0, 0, true));
-        recyclerView.addItemDecoration(new SpaceItemDecoration(16));
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Preference.setShowFinished(buttonView.getContext(), isChecked);
+        if (isChecked) {
+            onShowFinished();
+        } else {
+            finishedListView.setVisibility(View.GONE);
+            finishedListTitle.setVisibility(View.GONE);
+        }
+    }
 
-        recyclerView = view.findViewById(R.id.unfinished_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new TodoListAdaptor(getContext(), 0, 0, 0, false));
-        recyclerView.addItemDecoration(new SpaceItemDecoration(16));
+    private void onShowFinished() {
+        finishedListView.setVisibility(View.VISIBLE);
+        finishedListTitle.setVisibility(View.VISIBLE);
+        finishedListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        finishedListView.setAdapter(new TodoListAdaptor(getContext(), true));
+        finishedListView.addItemDecoration(new SpaceItemDecoration(16));
+    }
+
+    @Override
+    public void onViewCreated(final @NonNull View view, @Nullable Bundle savedInstanceState) {
+        unfinishedListView = view.findViewById(R.id.unfinished_list);
+        unfinishedListView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        unfinishedListView.setAdapter(new TodoListAdaptor(getContext(), false));
+        unfinishedListView.addItemDecoration(new SpaceItemDecoration(16));
+
+        finishedListView = view.findViewById(R.id.finished_list);
+        finishedListTitle = view.findViewById(R.id.finished_list_title);
+
+        if (Preference.getShowFinished(view.getContext())) {
+            onShowFinished();
+        } else {
+            view.findViewById(R.id.finished_list).setVisibility(View.GONE);
+            view.findViewById(R.id.finished_list_title).setVisibility(View.GONE);
+        }
+
+        Switch aSwitch = view.findViewById(R.id.show_finished_switch);
+        aSwitch.setOnCheckedChangeListener(this);
     }
 
     @Override
