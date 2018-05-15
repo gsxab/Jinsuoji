@@ -29,6 +29,9 @@ import java.util.Locale;
  * - 第二行
  *   - 月收入
  *   - 月支出
+ * - tab页
+ *   - 按日期
+ *   - 按分类
  * Use the {@link ExpenditureFragment#newInstance} factory method to
  * create an instance of this fragment.
  */

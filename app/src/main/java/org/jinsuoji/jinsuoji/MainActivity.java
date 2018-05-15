@@ -71,8 +71,10 @@ public class MainActivity extends AppCompatActivity implements
                 pager.setCurrentItem(2);
                 return true;
             case R.id.navigation_zhongcao:
-                pager.setCurrentItem(3);
-                return true;
+                Toast.makeText(MainActivity.this, getString(R.string.placeholder),
+                        Toast.LENGTH_SHORT).show();
+                //pager.setCurrentItem(3);
+                return false;
             }
             return false;
         }
@@ -98,12 +100,12 @@ public class MainActivity extends AppCompatActivity implements
         stringList.add(getString(R.string.title_home));
         stringList.add(getString(R.string.title_todo));
         stringList.add(getString(R.string.title_expenditure));
-        stringList.add(getString(R.string.title_zhongcao));
+        // stringList.add(getString(R.string.title_zhongcao));
         fragments = new ArrayList<>();
         fragments.add(CalendarFragment.newInstance());
         fragments.add(TodoListFragment.newInstance());
         fragments.add(ExpenditureFragment.newInstance());
-        fragments.add(CalendarFragment.newInstance());
+        // fragments.add(CalendarFragment.newInstance());
         pager.setAdapter(new PagerAdapter(getSupportFragmentManager(), stringList, fragments));
         pager.setOffscreenPageLimit(2);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -151,8 +153,6 @@ public class MainActivity extends AppCompatActivity implements
         toolbarAdd.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
-                //        .show();
                 switch (navigation.getSelectedItemId()) {
                 case R.id.navigation_home:{
                     // TODO 弹出选择框
@@ -178,13 +178,10 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.personal_info:
                 case R.id.about:
                 case R.id.feedback:
-                    // TODO 这(3+1)个菜单项
+                case R.id.sync_settings:
+                    // TODO 这些个菜单项
                     Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
                             .show();
-                    break;
-                case R.id.sync_settings:
-                    // 这只是个调试用的……
-                    Toast.makeText(MainActivity.this, new ExpenseDAO(MainActivity.this).getAllExpenseNames().toString(), Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.clear_all:
                     Toast.makeText(MainActivity.this, R.string.recreate_database, Toast.LENGTH_SHORT).show();
