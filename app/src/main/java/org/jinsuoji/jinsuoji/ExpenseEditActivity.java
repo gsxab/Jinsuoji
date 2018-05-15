@@ -78,11 +78,6 @@ public class ExpenseEditActivity extends AppCompatActivity {
         money = findViewById(R.id.money_editor);
         category = findViewById(R.id.category_editor);
 
-//        item.setSaveEnabled(false);
-//        time.setSaveEnabled(false);
-//        money.setSaveEnabled(false);
-//        category.setSaveEnabled(false);
-
         if (savedInstanceState != null) {
             expense = ((Expense) savedInstanceState.get(KEY));
         } else {
