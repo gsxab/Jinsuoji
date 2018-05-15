@@ -14,7 +14,7 @@
 
         <ImageButton
             android:id="@+id/toolbar_return"
-            android:src="@drawable/ic_add"
+            android:src="@drawable/ic_arrow_back"
             android:layout_gravity="start"
             android:layout_marginStart="@dimen/activity_margin"
             android:layout_width="wrap_content"
@@ -22,7 +22,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:tint="@color/colorInActionBar"
             style="@style/Widget.AppCompat.DrawerArrowToggle"
-            android:contentDescription="@string/create" />
+            android:contentDescription="@string/cancel" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,10 +30,11 @@
             android:layout_gravity="center"
             android:text="@string/edit_expense"
             android:textSize="@dimen/title_font_size"
-            android:textColor="@color/colorInActionBar"/>
+            android:textColor="@color/colorInActionBar"
+            tools:ignore="SpUsage" />
         <ImageButton
             android:id="@+id/toolbar_ok"
-            android:src="@drawable/ic_add"
+            android:src="@drawable/ic_check"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/activity_margin"
             android:layout_width="wrap_content"
@@ -41,7 +42,7 @@
             android:background="?android:attr/selectableItemBackground"
             android:tint="@color/colorInActionBar"
             style="@style/Widget.AppCompat.DrawerArrowToggle"
-            android:contentDescription="@string/create" />
+            android:contentDescription="@string/ok" />
 
     </android.support.v7.widget.Toolbar>
 

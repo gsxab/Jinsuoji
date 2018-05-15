@@ -43,7 +43,7 @@ public class ExpenseEditActivity extends AppCompatActivity {
                     }
                 })
                 .setCancelStringId(getString(R.string.cancel))
-                .setSureStringId(getString(R.string.sure))
+                .setSureStringId(getString(R.string.ok))
                 .setTitleStringId(getString(R.string.time))
                 .setYearText(getString(R.string.year))
                 .setMonthText(getString(R.string.month))
