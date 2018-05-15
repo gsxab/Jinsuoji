@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -16,6 +18,7 @@ import com.jzxiang.pickerview.data.Type;
 import com.jzxiang.pickerview.listener.OnDateSetListener;
 
 import org.jinsuoji.jinsuoji.data_access.DateUtils;
+import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.model.Expense;
 
 import java.util.Date;
@@ -29,7 +32,8 @@ public class ExpenseEditActivity extends AppCompatActivity {
     public static final String TAG = "o.j.j.EEAct";
     Handler handler;
     Expense expense;
-    EditText item, money, category;
+    EditText item, money;
+    AutoCompleteTextView category;
     TextView time;
     ImageButton cancel, ok;
 
@@ -123,6 +127,10 @@ public class ExpenseEditActivity extends AppCompatActivity {
         time.setText(expense.getDatetime() == null ? "" : DateUtils.toDateString(expense.getDatetime()));
         money.setText(expense.getMoney() == 0 ? "" : String.valueOf(expense.getMoney()));
         category.setText(expense.getCategory() == null ? "" : expense.getCategory());
+
+        category.setAdapter(new ArrayAdapter<String>(this,
+                android.R.layout.simple_dropdown_item_1line/*layout_id*/,
+                new ExpenseDAO(this).getAllCategories()));
     }
 
     /**

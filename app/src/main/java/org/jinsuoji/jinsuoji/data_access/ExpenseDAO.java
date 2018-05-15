@@ -318,7 +318,29 @@ public class ExpenseDAO {
      * @return 全部分类名
      */
     public List<String> getAllCategories() {
-        // TODO
-        return Collections.emptyList();
+        return wrapper.read(new Operation<List<String>>() {
+            @Override
+            public List<String> operate(SQLiteDatabase db) {
+                return query(db,
+                        "SELECT name FROM " + DBHelper.EXPENSE_CATE,
+                        null,
+                        new QueryAdapter<List<String>>() {
+                            @Override
+                            public List<String> beforeLoop(Cursor cursor) throws AbortException {
+                                if (!cursor.moveToLast()) {
+                                    return Collections.emptyList();
+                                }
+                                int size = cursor.getPosition() + 1;
+                                cursor.moveToPosition(-1);
+                                return new ArrayList<>(size);
+                            }
+
+                            @Override
+                            public void inLoop(Cursor cursor, List<String> strings) throws AbortException {
+                                strings.add(cursor.getString(0));
+                            }
+                        });
+            }
+        });
     }
 }
