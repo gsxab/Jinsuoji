@@ -71,8 +71,8 @@ public abstract class EntryNode {
                         ((ExpenseListAdapter.ExpenseItemViewHolder) holder);
                 expenseItemViewHolder.item.setText(this.expense.getItem());
                 expenseItemViewHolder.category.setText(this.expense.getCategory());
-                expenseItemViewHolder.money.setText(String.format(Locale.US, "%1$.2f",
-                        this.expense.getMoney() / 100d));
+                expenseItemViewHolder.money.setText(String.format(Locale.getDefault()/*Locale.US*/,
+                        "%1$.2f", this.expense.getMoney() / 100d));
             }
         }
     }

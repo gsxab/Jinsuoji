@@ -13,36 +13,42 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 是记账页总的{@link Fragment}.包括题头、日期选择、tab页和tab内容(列表ExpenditureListFragment或图表).
  * ExpenditureFragment
  * - 第一行
  *   - “记帐本”
- *   - “”
- *
+ *   - “年月日”
+ * - 第二行
+ *   - 月收入
+ *   - 月支出
  * Use the {@link ExpenditureFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class ExpenditureFragment extends Fragment {
     private static final String KEY_YEAR = "exp_year";
     private static final String KEY_MONTH = "exp_month";
-    private static final String KEY_STAT = "exp_stat";
 
     private static final int MIN_YEAR = 1950;
     private static final int MAX_YEAR = 2040;
 
     private int year;
     private int month;
-    private boolean showStat;
     private TabLayout tab;
     private ViewPager pager;
 
     private ImageButton prevYear, nextYear, prevMonth, nextMonth;
     private TextView yearNumber, monthNumber;
+
+    private TextView monthlyIncome, monthlyExpense;
+
     private ExpenditureListFragment listByDateFragment;
     private ExpenditureListFragment listByCategoryFragment;
     // private ExpenditureChartsFragment chartsFragment;
@@ -59,7 +65,6 @@ public class ExpenditureFragment extends Fragment {
         Calendar date = Calendar.getInstance();
         args.putInt(KEY_YEAR, date.get(Calendar.YEAR));
         args.putInt(KEY_MONTH, date.get(Calendar.MONTH) + 1);
-        args.putBoolean(KEY_STAT, false);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,11 +75,9 @@ public class ExpenditureFragment extends Fragment {
         if (getArguments() != null) {
             year = getArguments().getInt(KEY_YEAR);
             month = getArguments().getInt(KEY_MONTH);
-            showStat = getArguments().getBoolean(KEY_STAT);
         } else if (savedInstanceState != null) {
             year = savedInstanceState.getInt(KEY_YEAR);
             month = savedInstanceState.getInt(KEY_MONTH);
-            showStat = savedInstanceState.getBoolean(KEY_STAT);
         }
     }
 
@@ -117,6 +120,14 @@ public class ExpenditureFragment extends Fragment {
         }
         if (monthNumber != null) {
             monthNumber.setText(String.valueOf(month));
+        }
+        if (monthlyExpense != null) {
+            monthlyExpense.setText(String.format(Locale.getDefault(), "%1$.2f",
+                    new ExpenseDAO(getContext()).getMonthlyExpense(year, month) / 100d));
+        }
+        if (monthlyIncome != null) {
+            monthlyIncome.setText(String.format(Locale.getDefault(), "%1$.2f",
+                    new ExpenseDAO(getContext()).getMonthlyIncome(year, month) / 100d));
         }
         if (listByDateFragment != null) {
             listByDateFragment.setSelector(getActivity(), year, month, true);
@@ -171,20 +182,24 @@ public class ExpenditureFragment extends Fragment {
         tab.setupWithViewPager(pager);
         List<String> tabNames = new ArrayList<>(2);
         tabNames.add(getString(R.string.details_by_date));
-        tabNames.add(getString(R.string.statistic));
+        tabNames.add(getString(R.string.details_by_category));
+        //tabNames.add(getString(R.string.statistic));
         List<Fragment> fragments = new ArrayList<>(2);
         listByDateFragment = ExpenditureListFragment.newInstance(view.getContext(),
                 year, month, 0, true);
         fragments.add(listByDateFragment);
-        listByCategoryFragment = /*ExpenditureChartsFragment.newInstance()*/ExpenditureListFragment
+        listByCategoryFragment = ExpenditureListFragment
                 .newInstance(view.getContext(), year, month, 0, false);
         fragments.add(listByCategoryFragment);
+        // ExpenditureChartsFragment.newInstance()
         PagerAdapter adapter = new PagerAdapter(getFragmentManager(),
                 tabNames, fragments);
         pager.setAdapter(adapter);
 
         yearNumber = view.findViewById(R.id.year_number);
         monthNumber = view.findViewById(R.id.month_number);
+        monthlyIncome = view.findViewById(R.id.monthly_income);
+        monthlyExpense = view.findViewById(R.id.monthly_expense);
 
         prevYear = view.findViewById(R.id.prev_year);
         prevYear.setOnClickListener(new View.OnClickListener() {
@@ -215,6 +230,7 @@ public class ExpenditureFragment extends Fragment {
                 nextMonth();
             }
         });
+
         refreshList();
     }
 }

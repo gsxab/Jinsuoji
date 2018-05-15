@@ -31,7 +31,7 @@
     <string name="details_by_category">类别报表</string>
     <string name="statistic">统计信息</string>
 
-    <string name="recreate_database">重建数据表(debug)</string>
+    <string name="recreate_database">删除偏好设置及重建数据表(debug)</string>
     <string name="edit_expense">编辑账单</string>
     <string name="expense_title">账单名称</string>
     <string name="time">时间</string>
