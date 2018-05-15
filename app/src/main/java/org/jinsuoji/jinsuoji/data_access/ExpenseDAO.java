@@ -303,4 +303,22 @@ public class ExpenseDAO {
     public void editExpense(Expense expense) {
         // TODO
     }
+
+    /**
+     * 删除记账记录.传入的是要删除的记录的id.
+     *
+     * @param id 要删除的id
+     */
+    public void delExpense(int id) {
+        // TODO
+    }
+
+    /**
+     * 返回全部分类名.
+     * @return 全部分类名
+     */
+    public List<String> getAllCategories() {
+        // TODO
+        return Collections.emptyList();
+    }
 }

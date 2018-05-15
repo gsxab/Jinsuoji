@@ -151,4 +151,12 @@ public class TodoDAO {
     public void editTodo(final Todo todoItem) {
         // TODO
     }
+
+    /**
+     * 删除指定id的任务记录.
+     * @param id 要删除的记录id
+     */
+    public void delTodo(int id) {
+        // TODO
+    }
 }
