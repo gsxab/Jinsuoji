@@ -78,10 +78,10 @@ public class ExpenseEditActivity extends AppCompatActivity {
         money = findViewById(R.id.money_editor);
         category = findViewById(R.id.category_editor);
 
-        item.setSaveEnabled(false);
-        time.setSaveEnabled(false);
-        money.setSaveEnabled(false);
-        category.setSaveEnabled(false);
+//        item.setSaveEnabled(false);
+//        time.setSaveEnabled(false);
+//        money.setSaveEnabled(false);
+//        category.setSaveEnabled(false);
 
         if (savedInstanceState != null) {
             expense = ((Expense) savedInstanceState.get(KEY));
@@ -97,25 +97,6 @@ public class ExpenseEditActivity extends AppCompatActivity {
                 this.expense = expense;
             }
         }
-
-//        time.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    showDateTimeDialog();
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//        time.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    showDateTimeDialog();
-//                }
-//            }
-//        });
 
         cancel = findViewById(R.id.toolbar_return);
         cancel.setOnClickListener(new View.OnClickListener() {
