@@ -21,6 +21,7 @@ import org.jinsuoji.jinsuoji.data_access.DateUtils;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.model.Expense;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -85,16 +86,19 @@ public class ExpenseEditActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             expense = ((Expense) savedInstanceState.get(KEY));
         } else {
-            Expense expense = (Expense) getIntent().getSerializableExtra(LAST_EXPENSE);
-            if (expense == null) {
-                this.expense = new Expense(-1, "", null, 0, "");
-                if (getIntent() != null) {
+            Intent intent = getIntent();
+            if (intent != null) {
+                Expense expense = (Expense) getIntent().getSerializableExtra(LAST_EXPENSE);
+                if (expense == null) {
+                    this.expense = new Expense(-1, "", null, 0, null);
                     this.expense.setDatetime((Date) getIntent().getSerializableExtra("org.jinsuoji.jinsuoji.Time"));
+                } else {
+                    this.expense = expense;
                 }
-            } else {
-                // TODO 检查编辑情况：这种情况下参数是一个Expense
-                this.expense = expense;
             }
+        }
+        if (expense == null) {
+            expense = new Expense(-1, "", Calendar.getInstance().getTime(), 0, null);
         }
 
         cancel = findViewById(R.id.toolbar_return);
@@ -122,13 +126,12 @@ public class ExpenseEditActivity extends AppCompatActivity {
             }
         });
 
-        // TODO 初始值，在一些情况下可能不是这个.
         item.setText(expense.getItem());
-        time.setText(expense.getDatetime() == null ? "" : DateUtils.toDateString(expense.getDatetime()));
+        time.setText(/*expense.getDatetime() == null ? "" : */DateUtils.toDateString(expense.getDatetime()));
         money.setText(expense.getMoney() == 0 ? "" : String.valueOf(expense.getMoney()));
         category.setText(expense.getCategory() == null ? "" : expense.getCategory());
 
-        category.setAdapter(new ArrayAdapter<String>(this,
+        category.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line/*layout_id*/,
                 new ExpenseDAO(this).getAllCategories()));
     }
@@ -138,15 +141,30 @@ public class ExpenseEditActivity extends AppCompatActivity {
      * @return true=填写完毕;false=未完毕
      */
     private boolean composeExpense() {
-        if (item.getText().length() == 0 || time.getText().length() == 0 ||
-                category.getText().length() == 0 || money.getText().length() == 0) {
-            return false;
+        boolean flag = true;
+        if (item.getText().length() == 0) {
+            flag = false;
+        } else {
+            expense.setItem(item.getText().toString());
         }
-        expense.setItem(item.getText().toString());
         expense.setDatetime(DateUtils.fromDateString(time.getText().toString()));
-        expense.setCategory(category.getText().toString());
-        expense.setMoney(Math.round(Float.valueOf(money.getText().toString()) * 100));
-        return true;
+        if (category.getText().length() == 0){
+            flag = false;
+            expense.setCategory(null);
+        } else {
+            expense.setCategory(category.getText().toString());
+        }
+        if(money.getText().length() == 0) {
+            expense.setMoney(0);
+            flag = false;
+        } else {
+            int tmp = Math.round(Float.valueOf(money.getText().toString()) * 100);
+            if (tmp == 0) {
+                flag = false;
+            }
+            expense.setMoney(tmp);
+        }
+        return flag;
     }
 
     @Override
