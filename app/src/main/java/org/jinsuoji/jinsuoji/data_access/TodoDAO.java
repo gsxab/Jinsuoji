@@ -134,12 +134,26 @@ public class TodoDAO {
         });
     }
 
+    static void replaceTodo(Todo todoItem, SQLiteDatabase db) {
+        // TODO
+    }
+
     /**
      * 向数据库插入新的任务记录.传入的记录的id字段会被忽略，执行后设置为新建的id.
      *
      * @param todoItem 要插入的新的任务记录.id会被设置.
      */
-    public void addTodo(final Todo todoItem) {
+    public void replaceTodo(final Todo todoItem) {
+        wrapper.write(new Operation<Void>() {
+            @Override
+            public Void operate(SQLiteDatabase db) {
+                replaceTodo(todoItem, db);
+                return null;
+            }
+        });
+    }
+
+    static void editTodo(Todo todoItem, SQLiteDatabase db) {
         // TODO
     }
 
@@ -149,7 +163,13 @@ public class TodoDAO {
      * @param todoItem 修改过的记录
      */
     public void editTodo(final Todo todoItem) {
-        // TODO
+        wrapper.write(new Operation<Void>() {
+            @Override
+            public Void operate(SQLiteDatabase db) {
+                editTodo(todoItem, db);
+                return null;
+            }
+        });
     }
 
     /**

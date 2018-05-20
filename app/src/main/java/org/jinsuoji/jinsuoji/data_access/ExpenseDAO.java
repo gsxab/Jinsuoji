@@ -223,14 +223,14 @@ public class ExpenseDAO {
         });
     }
 
-    private void addExpense(Expense expense, int cateId, SQLiteDatabase db) {
+    private static void replaceExpense(Expense expense, int cateId, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         values.put("item", expense.getItem());
         values.put("time", DateUtils.toDateString(expense.getDatetime()));
         values.put("money", expense.getMoney());
         values.put("category_id", cateId);
         long ret = db.insert(DBHelper.EXPENSE, null, values);
-        Log.d(TAG, "addExpense: " + ret);
+        Log.d(TAG, "replaceExpense: " + ret);
         expense.setId(query(db, "SELECT last_insert_rowid()", null, new QueryOperation<Integer>() {
             @Override
             public Integer operate(Cursor cursor) {
@@ -245,12 +245,12 @@ public class ExpenseDAO {
      *
      * @param expense 要插入的新的记账记录.这个对象的id会被设置.
      */
-    public void addExpense(final Expense expense) {
+    public void replaceExpense(final Expense expense) {
         wrapper.write(new Operation<Void>() {
             @Override
             public Void operate(SQLiteDatabase db) {
                 int id = createOrGetCategory(expense.getCategory(), db);
-                addExpense(expense, id, db);
+                replaceExpense(expense, id, db);
                 return null;
             }
         });
