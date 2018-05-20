@@ -83,6 +83,37 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.
         return nodes.get(position).getType().ordinal();
     }
 
+
+    private int getPos(EntryNode.ExpenseItem data) {
+        for (int i = 0; i < nodes.size(); i++) {
+            EntryNode node = nodes.get(i);
+            if (node.getType() == EntryNode.ItemType.EXPENSE_ITEM &&
+                    ((EntryNode.ExpenseItem) node).getExpense().getId() ==
+                            data.getExpense().getId()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void change(int pos, EntryNode data) {
+        if (pos == -1) {
+            pos = getPos((EntryNode.ExpenseItem) data);
+            if (pos == -1) return;
+        }
+        notifyItemChanged(pos, data);
+        nodes.set(pos, data);
+    }
+
+    public void remove(int pos, EntryNode data) {
+        if (pos == -1) {
+            pos = getPos(((EntryNode.ExpenseItem) data));
+            if (pos == -1) return;
+        }
+        notifyItemRemoved(pos);
+        nodes.remove(pos);
+    }
+
     /**
      * 抽象ViewHolder，hold一个项目或分类的View.
      */

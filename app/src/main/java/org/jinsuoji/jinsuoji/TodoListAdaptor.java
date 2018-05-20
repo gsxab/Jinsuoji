@@ -84,4 +84,14 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
         todoList = new TodoDAO(context).getDaily(year, month, day);
         notifyItemRangeInserted(0, getItemCount());
     }
+
+    public void change(int pos, Todo data) {
+        notifyItemChanged(pos, data);
+        todoList.set(pos, data);
+    }
+
+    public void remove(int pos) {
+        notifyItemRemoved(pos);
+        todoList.remove(pos);
+    }
 }

@@ -1,6 +1,8 @@
 package org.jinsuoji.jinsuoji;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,7 +16,11 @@ import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
 
+import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
+import org.jinsuoji.jinsuoji.data_access.TodoDAO;
 import org.jinsuoji.jinsuoji.model.EntryNode;
+import org.jinsuoji.jinsuoji.model.Expense;
+import org.jinsuoji.jinsuoji.model.Todo;
 
 import java.util.Calendar;
 
@@ -24,6 +30,8 @@ import java.util.Calendar;
  */
 public class CalendarFragment extends Fragment {
     private static final String TAG = "jsj.CalendarFragment";
+    private static final int EDIT_EXPENSE = 4;
+    private static final int EDIT_TODO = 5;
 
     /**
      * 实例化方法.
@@ -107,6 +115,31 @@ public class CalendarFragment extends Fragment {
         dailyTodoList.addItemDecoration(new SpaceItemDecoration(16));
         //dailyTodoList.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
 
+        dailyTodoList.addOnItemTouchListener(new ItemTouchListener<>(
+                new ItemTouchListener.RecyclerViewOperator<Todo>() {
+                    @Override
+                    public Context getContext() {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean isTouchable(Todo data) {
+                        return false;
+                    }
+
+                    @Override
+                    public void performEdit(View view, int pos, Todo data) {
+                        // TODO 编辑
+                        ((TodoListAdaptor) dailyTodoList.getAdapter()).change(pos, data);
+                    }
+
+                    @Override
+                    public void performRemove(View view, int pos, Todo data) {
+                        new TodoDAO(getContext()).delTodo(data.getId());
+                        ((TodoListAdaptor) dailyTodoList.getAdapter()).remove(pos);
+                    }
+                }, dailyTodoList));
+
         dailyExpenseList = view.findViewById(R.id.daily_expense_list);
         dailyExpenseList.setLayoutManager(new LinearLayoutManager(getContext()));
         dailyExpenseList.setAdapter(new ExpenseListAdapter(getContext(), current.get(Calendar.YEAR),
@@ -128,11 +161,35 @@ public class CalendarFragment extends Fragment {
 
             @Override
             public void performEdit(View view, int pos, EntryNode data) {
+                Intent intent = new Intent(getActivity(), ExpenseEditActivity.class);
+                intent.putExtra(ExpenseEditActivity.LAST_EXPENSE,
+                        ((EntryNode.ExpenseItem) data).getExpense());
+                intent.putExtra(ExpenseEditActivity.INDEX, pos);
+                startActivityForResult(intent, EDIT_EXPENSE);
             }
 
             @Override
             public void performRemove(View view, int pos, EntryNode data) {
+                new ExpenseDAO(getContext()).delExpense(((EntryNode.ExpenseItem) data).getExpense().getId());
+                ((ExpenseListAdapter) dailyExpenseList.getAdapter()).remove(pos, data);
             }
         }, dailyExpenseList));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) return;
+        switch (requestCode) {
+            case EDIT_EXPENSE: {
+                int index = data.getIntExtra(ExpenseEditActivity.INDEX, -1);
+                Expense newExpense = (Expense) data.getSerializableExtra(ExpenseEditActivity.LAST_EXPENSE);
+                new ExpenseDAO(getContext()).editExpense(newExpense);
+                ((ExpenseListAdapter) dailyExpenseList.getAdapter()).change(index, new EntryNode.ExpenseItem(newExpense));
+            }
+            case EDIT_TODO: {
+                // TODO
+            }
+        }
     }
 }

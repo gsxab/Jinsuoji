@@ -23,12 +23,15 @@ import org.jinsuoji.jinsuoji.model.Expense;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * 编辑记账的Activity.
  */
 public class ExpenseEditActivity extends AppCompatActivity {
     public static final String KEY = "exp_expense";
+    public static final String TIME = "org.jinsuoji.jinsuoji.Time";
+    public static final String INDEX = "org.jinsuoji.jinsuoji.Index";
     public static final String LAST_EXPENSE = "org.jinsuoji.jinsuoji.LastExpense";
     public static final String TAG = "o.j.j.EEAct";
     Handler handler;
@@ -91,7 +94,7 @@ public class ExpenseEditActivity extends AppCompatActivity {
                 Expense expense = (Expense) getIntent().getSerializableExtra(LAST_EXPENSE);
                 if (expense == null) {
                     this.expense = new Expense(-1, "", null, 0, null);
-                    this.expense.setDatetime((Date) getIntent().getSerializableExtra("org.jinsuoji.jinsuoji.Time"));
+                    this.expense.setDatetime((Date) getIntent().getSerializableExtra(TIME));
                 } else {
                     this.expense = expense;
                 }
@@ -127,8 +130,10 @@ public class ExpenseEditActivity extends AppCompatActivity {
         });
 
         item.setText(expense.getItem());
-        time.setText(/*expense.getDatetime() == null ? "" : */DateUtils.toDateString(expense.getDatetime()));
-        money.setText(expense.getMoney() == 0 ? "" : String.valueOf(expense.getMoney()));
+        time.setText(expense.getDatetime() == null ? DateUtils.toDateString(Calendar.getInstance().getTime())
+                : DateUtils.toDateString(expense.getDatetime()));
+        money.setText(expense.getMoney() == 0 ? "" : String.format(Locale.getDefault(),
+                "%1$.2f", expense.getMoney() / 100f));
         category.setText(expense.getCategory() == null ? "" : expense.getCategory());
 
         category.setAdapter(new ArrayAdapter<>(this,

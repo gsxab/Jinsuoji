@@ -90,5 +90,9 @@ public abstract class EntryNode implements ContextualStringConvertible {
             return context.getString(R.string.expense_format, expense.getItem(),
                     DateUtils.toDateString(expense.getDatetime()), expense.getMoney() / 100f);
         }
+
+        public Expense getExpense() {
+            return expense;
+        }
     }
 }

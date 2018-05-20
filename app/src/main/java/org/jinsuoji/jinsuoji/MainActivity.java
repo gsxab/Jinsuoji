@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements
         ExpenditureFragment.OnFragmentInteractionListener,
         ExpenditureListFragment.OnFragmentInteractionListener {
 
+    private static final int CREATE_EXPENSE = 1;
+    private static final int CREATE_TODO = 2;
     BottomNavigationView navigation;
     DrawerLayout drawer;
     NavigationView leftDrawer;
@@ -162,8 +164,8 @@ public class MainActivity extends AppCompatActivity implements
                 }   break;
                 case R.id.navigation_expenditure:{
                     Intent intent = new Intent(MainActivity.this, ExpenseEditActivity.class);
-                    intent.putExtra("org.jinsuoji.jinsuoji.Time", Calendar.getInstance().getTime());
-                    startActivityForResult(intent, 1);
+                    intent.putExtra(ExpenseEditActivity.TIME, Calendar.getInstance().getTime());
+                    startActivityForResult(intent, CREATE_EXPENSE);
                 }   break;
                 case R.id.navigation_zhongcao:{
                     // TODO ?
@@ -198,14 +200,22 @@ public class MainActivity extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            Expense expense = (Expense) data.getSerializableExtra(ExpenseEditActivity.LAST_EXPENSE);
-            ExpenseDAO expenseDAO = new ExpenseDAO(this);
-            expenseDAO.addExpense(expense);
-            if (navigation.getSelectedItemId() == R.id.navigation_expenditure) {
-                try {
-                    ((ExpenditureFragment) fragments.get(pager.getCurrentItem())).refreshList();
-                } catch (ClassCastException ignored) {
+            switch (requestCode) {
+                case CREATE_EXPENSE: {
+                    Expense expense = (Expense) data.getSerializableExtra(ExpenseEditActivity.LAST_EXPENSE);
+                    ExpenseDAO expenseDAO = new ExpenseDAO(this);
+                    expenseDAO.addExpense(expense);
+                    if (navigation.getSelectedItemId() == R.id.navigation_expenditure) {
+                        try {
+                            ((ExpenditureFragment) fragments.get(pager.getCurrentItem())).refreshList();
+                        } catch (ClassCastException ignored) {
+                        }
+                    }
                 }
+                case CREATE_TODO:
+                    // TODO 创建Todo的返回
+                default:
+                    // 这是Fragment调用的Activity在返回，不作处理
             }
         }
     }
