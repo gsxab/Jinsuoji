@@ -1,5 +1,10 @@
 package org.jinsuoji.jinsuoji.model;
 
+import android.content.Context;
+
+import org.jinsuoji.jinsuoji.R;
+import org.jinsuoji.jinsuoji.data_access.DateUtils;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,7 +12,7 @@ import java.util.Date;
  * 任务类.
  * 保存一次任务条目的基本信息.
  */
-public class Todo implements Serializable {
+public class Todo implements Serializable, ContextStringConvertible {
     public Todo(int id, Date dateTime, String taskName, int priority, String memo, boolean finished) {
         this.id = id;
         this.dateTime = dateTime;
@@ -70,5 +75,10 @@ public class Todo implements Serializable {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    @Override
+    public String toContextString(Context context) {
+        return context.getString(R.string.todo_format, taskName, DateUtils.toDateTimeString(dateTime));
     }
 }

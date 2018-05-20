@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.jinsuoji.jinsuoji.model.EntryNode;
+
 /**
  * A {@link Fragment} representing a list of {@link org.jinsuoji.jinsuoji.model.EntryNode}.
  * <p/>
@@ -18,7 +20,8 @@ import android.view.ViewGroup;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class ExpenditureListFragment extends Fragment {
+public class ExpenditureListFragment extends Fragment
+        implements ItemTouchListener.RecyclerViewOperator<EntryNode> {
     private OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private ExpenseListAdapter adapter;
@@ -79,11 +82,23 @@ public class ExpenditureListFragment extends Fragment {
     }
 
     @Override
+    public boolean isTouchable(EntryNode data) {
+        return data.getType() == EntryNode.ItemType.EXPENSE_ITEM;
+    }
+
+    @Override
+    public void performEdit(View view, int pos, EntryNode data) {}
+
+    @Override
+    public void performRemove(View view, int pos, EntryNode data) {}
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.expenditure_list);
         if (adapter != null) {
             recyclerView.setAdapter(adapter);
+            recyclerView.addOnItemTouchListener(new ItemTouchListener<>(this, recyclerView));
         }
     }
 

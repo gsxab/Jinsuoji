@@ -1,5 +1,6 @@
 package org.jinsuoji.jinsuoji;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
+
+import org.jinsuoji.jinsuoji.model.EntryNode;
 
 import java.util.Calendar;
 
@@ -110,5 +113,26 @@ public class CalendarFragment extends Fragment {
                 current.get(Calendar.MONTH) + 1, current.get(Calendar.DATE), false));
         dailyExpenseList.addItemDecoration(new SpaceItemDecoration(16));
         //dailyExpenseList.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
+
+        dailyExpenseList.addOnItemTouchListener(new ItemTouchListener<>(
+                new ItemTouchListener.RecyclerViewOperator<EntryNode>() {
+            @Override
+            public Context getContext() {
+                return CalendarFragment.this.getContext();
+            }
+
+            @Override
+            public boolean isTouchable(EntryNode data) {
+                return true;
+            }
+
+            @Override
+            public void performEdit(View view, int pos, EntryNode data) {
+            }
+
+            @Override
+            public void performRemove(View view, int pos, EntryNode data) {
+            }
+        }, dailyExpenseList));
     }
 }

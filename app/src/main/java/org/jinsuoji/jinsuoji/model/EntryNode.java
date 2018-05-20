@@ -1,8 +1,11 @@
 package org.jinsuoji.jinsuoji.model;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import org.jinsuoji.jinsuoji.ExpenseListAdapter;
+import org.jinsuoji.jinsuoji.R;
+import org.jinsuoji.jinsuoji.data_access.DateUtils;
 
 import java.util.Locale;
 
@@ -11,7 +14,7 @@ import java.util.Locale;
  *
  * {@link ItemType}是区分项种类的.不同的项目使用不同的绑定ViewHolder的bind.
  */
-public abstract class EntryNode {
+public abstract class EntryNode implements ContextStringConvertible {
     public enum ItemType {
         EXPENSE_ITEM,
         CATEGORY,
@@ -23,6 +26,7 @@ public abstract class EntryNode {
 
     public abstract ItemType getType();
     public abstract void bind(@NonNull ExpenseListAdapter.ViewHolder holder, int position);
+    public abstract String toContextString(Context context);
 
     /**
      * 分类项.显示为分类标签.
@@ -46,6 +50,11 @@ public abstract class EntryNode {
                         ((ExpenseListAdapter.CategoryViewHolder) holder);
                 categoryViewHolder.categoryName.setText(this.categoryName);
             }
+        }
+
+        @Override
+        public String toContextString(Context context) {
+            return context.getString(R.string.category_format, categoryName);
         }
     }
 
@@ -74,6 +83,12 @@ public abstract class EntryNode {
                 expenseItemViewHolder.money.setText(String.format(Locale.getDefault()/*Locale.US*/,
                         "%1$.2f", this.expense.getMoney() / 100d));
             }
+        }
+
+        @Override
+        public String toContextString(Context context) {
+            return context.getString(R.string.expense_format, expense.getItem(),
+                    DateUtils.toDateString(expense.getDatetime()), expense.getMoney() / 100f);
         }
     }
 }

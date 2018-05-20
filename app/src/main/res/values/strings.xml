@@ -46,4 +46,9 @@
     <string name="minute">分</string>
     <string name="missing_args">信息不完整</string>
     <string name="skip"><![CDATA[跳过>>>]]></string>
+    <string name="delete_warning">删除警告</string>
+    <string name="delete_warning_message">确定要删除记录“%1$s”？</string>
+    <string name="category_format">分类：%1$s</string>
+    <string name="expense_format">名称：%1$s，时间：%2$s，金额：%3$.2f</string>
+    <string name="todo_format">任务：%1$s，时间：%2$s</string>
 </resources>
