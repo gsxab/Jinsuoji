@@ -14,7 +14,7 @@ import java.util.Locale;
  *
  * {@link ItemType}是区分项种类的.不同的项目使用不同的绑定ViewHolder的bind.
  */
-public abstract class EntryNode implements ContextStringConvertible {
+public abstract class EntryNode implements ContextualStringConvertible {
     public enum ItemType {
         EXPENSE_ITEM,
         CATEGORY,
@@ -26,7 +26,7 @@ public abstract class EntryNode implements ContextStringConvertible {
 
     public abstract ItemType getType();
     public abstract void bind(@NonNull ExpenseListAdapter.ViewHolder holder, int position);
-    public abstract String toContextString(Context context);
+    public abstract String toContextualString(Context context);
 
     /**
      * 分类项.显示为分类标签.
@@ -53,7 +53,7 @@ public abstract class EntryNode implements ContextStringConvertible {
         }
 
         @Override
-        public String toContextString(Context context) {
+        public String toContextualString(Context context) {
             return context.getString(R.string.category_format, categoryName);
         }
     }
@@ -86,7 +86,7 @@ public abstract class EntryNode implements ContextStringConvertible {
         }
 
         @Override
-        public String toContextString(Context context) {
+        public String toContextualString(Context context) {
             return context.getString(R.string.expense_format, expense.getItem(),
                     DateUtils.toDateString(expense.getDatetime()), expense.getMoney() / 100f);
         }

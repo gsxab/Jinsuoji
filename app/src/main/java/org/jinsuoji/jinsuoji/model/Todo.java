@@ -12,7 +12,7 @@ import java.util.Date;
  * 任务类.
  * 保存一次任务条目的基本信息.
  */
-public class Todo implements Serializable, ContextStringConvertible {
+public class Todo implements Serializable, ContextualStringConvertible {
     public Todo(int id, Date dateTime, String taskName, int priority, String memo, boolean finished) {
         this.id = id;
         this.dateTime = dateTime;
@@ -78,7 +78,7 @@ public class Todo implements Serializable, ContextStringConvertible {
     }
 
     @Override
-    public String toContextString(Context context) {
+    public String toContextualString(Context context) {
         return context.getString(R.string.todo_format, taskName, DateUtils.toDateTimeString(dateTime));
     }
 }

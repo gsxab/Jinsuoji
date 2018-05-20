@@ -8,24 +8,56 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-import org.jinsuoji.jinsuoji.model.ContextStringConvertible;
+import org.jinsuoji.jinsuoji.model.ContextualStringConvertible;
 
-public class ItemTouchListener<T extends ContextStringConvertible> implements RecyclerView.OnItemTouchListener {
-    interface RecyclerViewOperator<T extends ContextStringConvertible> {
+/**
+ * 监听一个RecyclerView的OnItemTouch事件.
+ * @param <T> 条目的类型，由于需要显示条目信息，需要实现{@link ContextualStringConvertible}
+ */
+public class ItemTouchListener<T extends ContextualStringConvertible> implements RecyclerView.OnItemTouchListener {
+    /**
+     * 对RecyclerView操作需要的4个方法.
+     * @param <T> 外部{@link ItemTouchListener}的T
+     */
+    interface RecyclerViewOperator<T extends ContextualStringConvertible> {
+        /**
+         * 从外部获取上下文对象从而获取资源等.
+         * @return 上下文对象
+         */
         Context getContext();
+
+        /**
+         * 检测一个条目是否直接响应OnItemTouch事件
+         * @param data 条目数据
+         * @return 是否响应
+         */
         boolean isTouchable(T data);
+
+        /**
+         * 编辑一个条目的操作.
+         * @param view 条目的视图
+         * @param pos 条目的位置
+         * @param data 条目的数据
+         */
         void performEdit(View view, int pos, T data);
+
+        /**
+         * 删除一个条目的操作.
+         * @param view 条目的视图
+         * @param pos 条目的位置
+         * @param data 条目的数据
+         */
         void performRemove(View view, int pos, T data);
     }
 
     private GestureDetector mGestureDetector;
-    private RecyclerViewOperator<T> mFragment;
+    private RecyclerViewOperator<T> mOperator;
     private RecyclerView mRecyclerView;
 
-    ItemTouchListener(final RecyclerViewOperator<T> fragment, RecyclerView recyclerView) {
-        mFragment = fragment;
+    ItemTouchListener(final RecyclerViewOperator<T> operator, RecyclerView recyclerView) {
+        mOperator = operator;
         mRecyclerView = recyclerView;
-        mGestureDetector = new GestureDetector(fragment.getContext(), new GestureDetector.SimpleOnGestureListener() {
+        mGestureDetector = new GestureDetector(operator.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 return true;
@@ -37,18 +69,18 @@ public class ItemTouchListener<T extends ContextStringConvertible> implements Re
                 final View childView = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
                 if (childView != null) {
                     final T data = (T) childView.getTag();
-                    if (!fragment.isTouchable(data)) {
+                    if (!operator.isTouchable(data)) {
                         return;
                     }
-                    final AlertDialog dialog = new AlertDialog.Builder(mFragment.getContext())
+                    final AlertDialog dialog = new AlertDialog.Builder(mOperator.getContext())
                             .setTitle(R.string.delete_warning)
                             .setMessage(childView.getResources()
                                     .getString(R.string.delete_warning_message,
-                                            data.toContextString(mFragment.getContext())))
+                                            data.toContextualString(mOperator.getContext())))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    mFragment.performRemove(childView,
+                                    mOperator.performRemove(childView,
                                             mRecyclerView.getChildAdapterPosition(childView), data);
                                 }
                             })
@@ -70,8 +102,8 @@ public class ItemTouchListener<T extends ContextStringConvertible> implements Re
     public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
         View childView = view.findChildViewUnder(e.getX(), e.getY());
         if (childView != null && mGestureDetector.onTouchEvent(e)
-                && mFragment.isTouchable((T) childView.getTag())) {
-            mFragment.performEdit(childView, view.getChildAdapterPosition(childView),
+                && mOperator.isTouchable((T) childView.getTag())) {
+            mOperator.performEdit(childView, view.getChildAdapterPosition(childView),
                     (T) childView.getTag());
         }
         return false;
