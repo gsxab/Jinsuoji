@@ -2,8 +2,6 @@ package org.jinsuoji.jinsuoji.data_access;
 
 import org.junit.Test;
 
-import java.text.ParseException;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -11,11 +9,7 @@ import static org.junit.Assert.assertNull;
 
 public class DateUtilsTest {
     private String testFromDateString(String str) {
-        try {
-            return DateUtils.toDateTimeString(DateUtils.fromDateTimeString(str));
-        } catch (ParseException e) {
-            return null;
-        }
+        return DateUtils.toDateTimeString(DateUtils.fromDateTimeString(str));
     }
 
     @Test

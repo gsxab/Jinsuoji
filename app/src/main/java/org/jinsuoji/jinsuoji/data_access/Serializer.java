@@ -37,11 +37,52 @@ public class Serializer {
             this.money = money;
             this.categoryId = categoryId;
         }
-        int id;
-        String item;
-        Date datetime;
-        int money;
-        int categoryId;
+
+        private int id;
+        private String item;
+        private Date datetime;
+        private int money;
+        private int categoryId;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getItem() {
+            return item;
+        }
+
+        public void setItem(String item) {
+            this.item = item;
+        }
+
+        public Date getDatetime() {
+            return datetime;
+        }
+
+        public void setDatetime(Date datetime) {
+            this.datetime = datetime;
+        }
+
+        public int getMoney() {
+            return money;
+        }
+
+        public void setMoney(int money) {
+            this.money = money;
+        }
+
+        public int getCategoryId() {
+            return categoryId;
+        }
+
+        public void setCategoryId(int categoryId) {
+            this.categoryId = categoryId;
+        }
     }
 
     /**
@@ -52,15 +93,91 @@ public class Serializer {
             this.id = id;
             this.name = name;
         }
-        int id;
-        String name;
+
+        private int id;
+        private String name;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
-    static class DBMirror {
-        DBMirror() {}
-        List<Todo> todoList;
-        List<Expense> expenseList;
-        List<ExpenseCategory> expenseCategoryList;
+    public static class DBMirror {
+        public DBMirror() {}
+
+        private List<Todo> todoList;
+        private List<Expense> expenseList;
+        private List<ExpenseCategory> expenseCategoryList;
+
+        public List<Todo> getTodoList() {
+            return todoList;
+        }
+
+        public void setTodoList(List<Todo> todoList) {
+            this.todoList = todoList;
+        }
+
+        public List<Expense> getExpenseList() {
+            return expenseList;
+        }
+
+        public void setExpenseList(List<Expense> expenseList) {
+            this.expenseList = expenseList;
+        }
+
+        public List<ExpenseCategory> getExpenseCategoryList() {
+            return expenseCategoryList;
+        }
+
+        public void setExpenseCategoryList(List<ExpenseCategory> expenseCategoryList) {
+            this.expenseCategoryList = expenseCategoryList;
+        }
+
+        static DBMirror loadExample() {
+            DBMirror mirror = new DBMirror();
+            mirror.todoList = new ArrayList<>();
+            mirror.todoList.add(new Todo(1, DateUtils.fromDateTimeString("2018-05-21 18:14"),
+                    "跑步", 1, "一千米", false));
+            mirror.todoList.add(new Todo(1, DateUtils.fromDateTimeString("2018-05-21 18:20"),
+                    "跑步", 1, "两千米", true));
+            mirror.todoList.add(new Todo(1, DateUtils.fromDateTimeString("2018-05-21 18:21"),
+                    "跑步", 1, "三千米", false));
+            mirror.todoList.add(new Todo(1, DateUtils.fromDateTimeString("2018-05-21 18:33"),
+                    "遛狗", 1, "四千米", true));
+            mirror.expenseCategoryList = new ArrayList<>();
+            mirror.expenseCategoryList.add(new ExpenseCategory(1, "食品"));
+            mirror.expenseCategoryList.add(new ExpenseCategory(2, "逛街"));
+            mirror.expenseCategoryList.add(new ExpenseCategory(3, "生活费"));
+            mirror.expenseList = new ArrayList<>();
+            mirror.expenseList.add(new Expense(1, "牛奶", DateUtils.fromDateString("2018-05-11"),
+                    -500, 1));
+            mirror.expenseList.add(new Expense(2, "牛奶", DateUtils.fromDateString("2018-05-15"),
+                    -500, 1));
+            mirror.expenseList.add(new Expense(3, "牛奶", DateUtils.fromDateString("2018-05-19"),
+                    -500, 1));
+            mirror.expenseList.add(new Expense(4, "早饭", DateUtils.fromDateString("2018-05-11"),
+                    -500, 1));
+            mirror.expenseList.add(new Expense(5, "大衣", DateUtils.fromDateString("2018-05-19"),
+                    -500, 2));
+            mirror.expenseList.add(new Expense(6, "牛奶", DateUtils.fromDateString("2018-05-20"),
+                    -500, 1));
+            mirror.expenseList.add(new Expense(1, "生活费", DateUtils.fromDateString("2018-05-18"),
+                    100000, 3));
+            return mirror;
+        }
+
         void backup(DBWrapper wrapper) {
             wrapper.read(new Operation<Void>() {
                 @Override
