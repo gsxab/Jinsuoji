@@ -51,4 +51,5 @@
     <string name="category_format">分类：%1$s</string>
     <string name="expense_format">名称：%1$s，时间：%2$s，金额：%3$.2f</string>
     <string name="todo_format">任务：%1$s，时间：%2$s</string>
+    <string name="load_example">加载样例(debug)</string>
 </resources>

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import org.jinsuoji.jinsuoji.data_access.DBWrapper;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
+import org.jinsuoji.jinsuoji.data_access.Serializer;
 import org.jinsuoji.jinsuoji.model.Expense;
 
 import java.util.ArrayList;
@@ -185,6 +186,10 @@ public class MainActivity extends AppCompatActivity implements
                     Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
                             .show();
                     break;
+                case R.id.load_example:
+                    Toast.makeText(MainActivity.this, R.string.load_example, Toast.LENGTH_SHORT).show();
+                    new Serializer(MainActivity.this).loadExample();
+                    return true;
                 case R.id.clear_all:
                     Toast.makeText(MainActivity.this, R.string.recreate_database, Toast.LENGTH_SHORT).show();
                     new DBWrapper(MainActivity.this).recreateTables();
