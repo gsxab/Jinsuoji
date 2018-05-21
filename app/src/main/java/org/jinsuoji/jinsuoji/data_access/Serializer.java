@@ -157,6 +157,8 @@ public class Serializer {
                     "跑步", 1, "三千米", false));
             mirror.todoList.add(new Todo(4, DateUtils.fromDateTimeString("2018-05-21 18:33"),
                     "遛狗", 1, "四千米", true));
+            mirror.todoList.add(new Todo(5, DateUtils.fromDateTimeString("2018-05-20 18:20"),
+                    "跑步", 1, "两千米", true));
             mirror.expenseCategoryList = new ArrayList<>();
             mirror.expenseCategoryList.add(new ExpenseCategoryBean(1, "食品"));
             mirror.expenseCategoryList.add(new ExpenseCategoryBean(2, "逛街"));
