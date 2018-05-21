@@ -135,7 +135,14 @@ public class TodoDAO {
     }
 
     static void replaceTodo(Todo todoItem, SQLiteDatabase db) {
-        // TODO
+        ContentValues values = new ContentValues();
+        values.put("id", todoItem.getId());
+        values.put("name", todoItem.getTaskName());
+        values.put("time", DateUtils.toDateTimeString(todoItem.getDateTime()));
+        values.put("memo", todoItem.getMemo());
+        values.put("priority", todoItem.getPriority());
+        values.put("finished", todoItem.isFinished());
+        db.replace(DBHelper.TODO, null, values);
     }
 
     /**
@@ -153,10 +160,6 @@ public class TodoDAO {
         });
     }
 
-    static void editTodo(Todo todoItem, SQLiteDatabase db) {
-        // TODO
-    }
-
     /**
      * 编辑任务记录，传入的记录id字段为先前的id.此id将决定更新操作中被更新的记录.
      *
@@ -166,7 +169,7 @@ public class TodoDAO {
         wrapper.write(new Operation<Void>() {
             @Override
             public Void operate(SQLiteDatabase db) {
-                editTodo(todoItem, db);
+                replaceTodo(todoItem, db);
                 return null;
             }
         });

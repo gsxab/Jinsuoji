@@ -150,11 +150,11 @@ public class Serializer {
             mirror.todoList = new ArrayList<>();
             mirror.todoList.add(new Todo(1, DateUtils.fromDateTimeString("2018-05-21 18:14"),
                     "跑步", 1, "一千米", false));
-            mirror.todoList.add(new Todo(1, DateUtils.fromDateTimeString("2018-05-21 18:20"),
+            mirror.todoList.add(new Todo(2, DateUtils.fromDateTimeString("2018-05-21 18:20"),
                     "跑步", 1, "两千米", true));
-            mirror.todoList.add(new Todo(1, DateUtils.fromDateTimeString("2018-05-21 18:21"),
+            mirror.todoList.add(new Todo(3, DateUtils.fromDateTimeString("2018-05-21 18:21"),
                     "跑步", 1, "三千米", false));
-            mirror.todoList.add(new Todo(1, DateUtils.fromDateTimeString("2018-05-21 18:33"),
+            mirror.todoList.add(new Todo(4, DateUtils.fromDateTimeString("2018-05-21 18:33"),
                     "遛狗", 1, "四千米", true));
             mirror.expenseCategoryList = new ArrayList<>();
             mirror.expenseCategoryList.add(new ExpenseCategory(1, "食品"));
