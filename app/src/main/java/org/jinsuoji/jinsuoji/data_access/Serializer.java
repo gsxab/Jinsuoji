@@ -145,7 +145,7 @@ public class Serializer {
             this.expenseCategoryList = expenseCategoryList;
         }
 
-        static DBMirror loadExample() {
+        private static DBMirror loadExample() {
             DBMirror mirror = new DBMirror();
             mirror.todoList = new ArrayList<>();
             mirror.todoList.add(new Todo(1, DateUtils.fromDateTimeString("2018-05-21 18:14"),
@@ -178,7 +178,7 @@ public class Serializer {
             return mirror;
         }
 
-        void backup(DBWrapper wrapper) {
+        private void backup(DBWrapper wrapper) {
             wrapper.read(new Operation<Void>() {
                 @Override
                 public Void operate(SQLiteDatabase db) {
@@ -248,7 +248,7 @@ public class Serializer {
                 }
             });
         }
-        void patch(DBWrapper wrapper) {
+        private void patch(DBWrapper wrapper) {
             wrapper.write(new Operation<Void>() {
                 @Override
                 public Void operate(SQLiteDatabase db) {
@@ -281,6 +281,14 @@ public class Serializer {
 
     public Serializer(Context context) {
         mWrapper = new DBWrapper(context);
+    }
+
+    /**
+     * 加载默认数据.(debug)
+     */
+    public void loadExample() {
+        mWrapper.recreateTables();
+        DBMirror.loadExample().patch(mWrapper);
     }
 
     /**

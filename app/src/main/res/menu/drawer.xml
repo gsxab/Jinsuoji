@@ -16,6 +16,11 @@
         android:title="@string/recreate_database" />
 
     <item
+        android:id="@+id/load_example"
+        android:icon="@drawable/ic_check_box"
+        android:title="@string/load_example" />
+
+    <item
         android:id="@+id/about"
         android:icon="@drawable/ic_school"
         android:title="@string/about" />
