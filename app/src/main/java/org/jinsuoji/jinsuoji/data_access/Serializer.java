@@ -25,12 +25,13 @@ import static org.jinsuoji.jinsuoji.data_access.DBWrapper.query;
 /**
  * 将数据库导出为Json写到指定输出流，或将Json输入流导入数据库.
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class Serializer {
     /**
      * 对应数据库的表.model包的Expense对应的是数据库的视图,
      */
-    static class Expense {
-        public Expense(int id, String item, Date datetime, int money, int categoryId) {
+    static class ExpenseBean {
+        public ExpenseBean(int id, String item, Date datetime, int money, int categoryId) {
             this.id = id;
             this.item = item;
             this.datetime = datetime;
@@ -88,8 +89,8 @@ public class Serializer {
     /**
      * 数据库的分类表.
      */
-    static class ExpenseCategory {
-        ExpenseCategory(int id, String name) {
+    static class ExpenseCategoryBean {
+        ExpenseCategoryBean(int id, String name) {
             this.id = id;
             this.name = name;
         }
@@ -118,8 +119,8 @@ public class Serializer {
         public DBMirror() {}
 
         private List<Todo> todoList;
-        private List<Expense> expenseList;
-        private List<ExpenseCategory> expenseCategoryList;
+        private List<ExpenseBean> expenseList;
+        private List<ExpenseCategoryBean> expenseCategoryList;
 
         public List<Todo> getTodoList() {
             return todoList;
@@ -129,19 +130,19 @@ public class Serializer {
             this.todoList = todoList;
         }
 
-        public List<Expense> getExpenseList() {
+        public List<ExpenseBean> getExpenseList() {
             return expenseList;
         }
 
-        public void setExpenseList(List<Expense> expenseList) {
+        public void setExpenseList(List<ExpenseBean> expenseList) {
             this.expenseList = expenseList;
         }
 
-        public List<ExpenseCategory> getExpenseCategoryList() {
+        public List<ExpenseCategoryBean> getExpenseCategoryList() {
             return expenseCategoryList;
         }
 
-        public void setExpenseCategoryList(List<ExpenseCategory> expenseCategoryList) {
+        public void setExpenseCategoryList(List<ExpenseCategoryBean> expenseCategoryList) {
             this.expenseCategoryList = expenseCategoryList;
         }
 
@@ -157,24 +158,24 @@ public class Serializer {
             mirror.todoList.add(new Todo(4, DateUtils.fromDateTimeString("2018-05-21 18:33"),
                     "遛狗", 1, "四千米", true));
             mirror.expenseCategoryList = new ArrayList<>();
-            mirror.expenseCategoryList.add(new ExpenseCategory(1, "食品"));
-            mirror.expenseCategoryList.add(new ExpenseCategory(2, "逛街"));
-            mirror.expenseCategoryList.add(new ExpenseCategory(3, "生活费"));
+            mirror.expenseCategoryList.add(new ExpenseCategoryBean(1, "食品"));
+            mirror.expenseCategoryList.add(new ExpenseCategoryBean(2, "逛街"));
+            mirror.expenseCategoryList.add(new ExpenseCategoryBean(3, "生活费"));
             mirror.expenseList = new ArrayList<>();
-            mirror.expenseList.add(new Expense(1, "牛奶", DateUtils.fromDateString("2018-05-11"),
-                    -500, 1));
-            mirror.expenseList.add(new Expense(2, "牛奶", DateUtils.fromDateString("2018-05-15"),
-                    -500, 1));
-            mirror.expenseList.add(new Expense(3, "牛奶", DateUtils.fromDateString("2018-05-19"),
-                    -500, 1));
-            mirror.expenseList.add(new Expense(4, "早饭", DateUtils.fromDateString("2018-05-11"),
-                    -500, 1));
-            mirror.expenseList.add(new Expense(5, "大衣", DateUtils.fromDateString("2018-05-19"),
-                    -500, 2));
-            mirror.expenseList.add(new Expense(6, "牛奶", DateUtils.fromDateString("2018-05-20"),
-                    -500, 1));
-            mirror.expenseList.add(new Expense(1, "生活费", DateUtils.fromDateString("2018-05-18"),
-                    100000, 3));
+            mirror.expenseList.add(new ExpenseBean(1, "牛奶",
+                    DateUtils.fromDateString("2018-05-11"), -500, 1));
+            mirror.expenseList.add(new ExpenseBean(2, "牛奶",
+                    DateUtils.fromDateString("2018-05-15"), -500, 1));
+            mirror.expenseList.add(new ExpenseBean(3, "牛奶",
+                    DateUtils.fromDateString("2018-05-19"), -500, 1));
+            mirror.expenseList.add(new ExpenseBean(4, "早饭",
+                    DateUtils.fromDateString("2018-05-11"), -500, 1));
+            mirror.expenseList.add(new ExpenseBean(5, "大衣",
+                    DateUtils.fromDateString("2018-05-19"), -500, 2));
+            mirror.expenseList.add(new ExpenseBean(6, "牛奶",
+                    DateUtils.fromDateString("2018-05-20"), -500, 1));
+            mirror.expenseList.add(new ExpenseBean(1, "生活费",
+                    DateUtils.fromDateString("2018-05-18"), 100000, 3));
             return mirror;
         }
 
@@ -216,7 +217,7 @@ public class Serializer {
 
                         @Override
                         public void inLoop(Cursor cursor, Void aVoid) {
-                            expenseList.add(new Expense(
+                            expenseList.add(new ExpenseBean(
                                     cursor.getInt(0),
                                     cursor.getString(1),
                                     DateUtils.fromDateTimeString(cursor.getString(2)),
@@ -237,7 +238,7 @@ public class Serializer {
 
                         @Override
                         public void inLoop(Cursor cursor, Void aVoid) {
-                            expenseCategoryList.add(new ExpenseCategory(
+                            expenseCategoryList.add(new ExpenseCategoryBean(
                                     cursor.getInt(0),
                                     cursor.getString(1)
                             ));
@@ -255,13 +256,13 @@ public class Serializer {
                     for (Todo todo : todoList) {
                         TodoDAO.replaceTodo(todo, db);
                     }
-                    for (ExpenseCategory category : expenseCategoryList) {
+                    for (ExpenseCategoryBean category : expenseCategoryList) {
                         ContentValues values = new ContentValues();
                         values.put("id", category.id);
                         values.put("name", category.name);
                         db.replace(DBHelper.EXPENSE_CATE, null, values);
                     }
-                    for (Expense expense : expenseList) {
+                    for (ExpenseBean expense : expenseList) {
                         ContentValues values = new ContentValues();
                         values.put("id", expense.id);
                         values.put("item", expense.item);
