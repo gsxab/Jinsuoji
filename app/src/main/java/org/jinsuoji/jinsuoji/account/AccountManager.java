@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.jinsuoji.jinsuoji.net.AuthTask;
+import org.jinsuoji.jinsuoji.net.RestfulAsyncTask;
+
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -13,52 +16,71 @@ public class AccountManager {
     private static final String TAG = "o.j.j.a.AM";
     private static final Charset ASCII = Charset.forName("US-ASCII");
 
-    private void retrieveAccount() {
+    private static AccountManager manager;
+    public static AccountManager getInstance() {
+        if (manager == null) manager = new AccountManager();
+        manager.retrieveAccount();
+        return manager;
+    }
+
+    void retrieveAccount() {
         // TODO 从本地存储获取account
     }
 
-    private void saveAccount() {
+    void saveAccount() {
         // TODO 向本地存储写入account
     }
 
-    public AccountManager() {
-        retrieveAccount();
+    private AccountManager() {
+        // retrieveAccount();
     }
 
-    public boolean hasLogin() {
+    public boolean hasLoginInfo() {
         return account != null;
     }
 
     private @Nullable Account account;
 
-    private @NonNull MessageDigest getDigest() {
+    private @NonNull String digest(String asciiString) {
+        MessageDigest digest;
         try {
-            return MessageDigest.getInstance("MD5");
+            digest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
             // MD5被java标准要求存在，这个情况不会发生的
             Log.e(TAG, "digest: MD5 is not supported", e);
             //noinspection ConstantConditions
             return null;
         }
+        byte[] raw =digest.digest(asciiString.getBytes(ASCII));
+        return new BigInteger(1, raw).toString(16);
     }
 
-    interface LoginCallback {
-        void onInfo(String string);
-        void onLoginSuccess(Account account);
+    public String getUsername() {
+        if (account != null) {
+            return account.getUsername();
+        } else {
+            return null;
+        }
+    }
+
+    public String addSalt(String salt) {
+        if (account == null) {
+            return null;
+        }
+        return digest(salt + account.getStoredPassword());
     }
 
     /**
-     * UI线程或子线程中使用.
+     * UI线程使用.进行一次登录的验证，异步操作，传入回调.
+     * @param onSuccess 验证成功
+     * @param onMessage 验证失败及信息
      */
-    public void login() {
+    public void login(RestfulAsyncTask.SuccessOperation<Void> onSuccess,
+                      RestfulAsyncTask.MessageOperation onMessage) {
         if (account == null) {
-            // 未使用登录
+            // 无信息不能登录
         } else {
-            // 向服务器请求salt(ASCII字符)
-            byte[] message = ("" + account.getStoredPassword()).getBytes(ASCII);
-            // MD5(salt + storedPassword)
-            MessageDigest digest = getDigest();
-            digest.digest(message);
+            new AuthTask(this, onSuccess, onMessage);
         }
     }
 
@@ -74,11 +96,9 @@ public class AccountManager {
      */
     public void register(String username, String password, RegisterCallback callback) {
         // MD5
-        MessageDigest digest = getDigest();
-        byte[] rawStoredPassword = digest.digest(password.getBytes(ASCII));
+        String storedPassword = digest(password);
         // set account
-        BigInteger decimal = new BigInteger(1, rawStoredPassword);
-        String storedPassword = decimal.toString(16);
+        account = new Account(username, storedPassword);
         // 发送username和hexStoredPassword
 
         // 服务器回调成功/失败

@@ -5,16 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.jinsuoji.jinsuoji.model.Todo;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -278,7 +270,6 @@ public class Serializer {
     }
 
     DBWrapper mWrapper;
-    static JsonFactory factory = new JsonFactory();
 
     public Serializer(Context context) {
         mWrapper = new DBWrapper(context);
@@ -294,38 +285,29 @@ public class Serializer {
 
     /**
      * 将数据库导出到输出流.
-     * @param stream 输出流
-     * @throws IOException 输出出现异常
+     * @return 数据库镜像
      */
-    public void export(OutputStream stream) throws IOException {
-        JsonGenerator generator = factory.createGenerator(stream);
-        ObjectMapper mapper = new ObjectMapper();
+    public DBMirror export() {
         DBMirror mirror = new DBMirror();
         mirror.backup(mWrapper);
-        mapper.writeValue(generator, mirror);
-        stream.flush();
+        return mirror;
     }
 
     /**
      * 将输入流内容作为数据库补丁导入.
      * 注意如果不是同一个数据库的应该会冲突.不建议使用.
-     * @param stream 输入流
-     * @throws IOException 输入出现异常
+     * @param mirror 镜像
      */
-    public void patchImport(InputStream stream) throws IOException {
-        JsonParser parser = factory.createParser(stream);
-        ObjectMapper mapper = new ObjectMapper();
-        DBMirror mirror = mapper.readValue(parser, DBMirror.class);
+    public void patchImport(DBMirror mirror) {
         mirror.patch(mWrapper);
     }
 
     /**
      * 将输入流内容作为数据库新内容导入.
-     * @param stream 输入流
-     * @throws IOException 输入出现异常
+     * @param mirror 输入流
      */
-    public void replaceImport(InputStream stream) throws IOException {
+    public void replaceImport(DBMirror mirror) {
         mWrapper.recreateTables();
-        patchImport(stream);
+        patchImport(mirror);
     }
 }
