@@ -23,12 +23,12 @@ import java.util.List;
 public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHolder> {
     private List<Todo> todoList;
 
-    public TodoListAdaptor(Context context, int year, int month, int day) {
+    TodoListAdaptor(Context context, int year, int month, int day) {
         super();
         todoList = new TodoDAO(context).getDaily(year, month, day);
     }
 
-    public TodoListAdaptor(Context context, boolean finished) {
+    TodoListAdaptor(Context context, boolean finished) {
         super();
         todoList = new TodoDAO(context).getTodoListByFinished(finished);
     }
@@ -72,7 +72,6 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
                 Todo todo = todoList.get(position);
                 todo.setFinished(isChecked);
                 new TodoDAO(buttonView.getContext()).editTodo(todo);
-                notifyItemChanged(position);
             }
         });
         holder.memo.setText(todo.getMemo());
@@ -83,5 +82,15 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
         notifyItemRangeRemoved(0, getItemCount());
         todoList = new TodoDAO(context).getDaily(year, month, day);
         notifyItemRangeInserted(0, getItemCount());
+    }
+
+    public void change(int pos, Todo data) {
+        notifyItemChanged(pos, data);
+        todoList.set(pos, data);
+    }
+
+    public void remove(int pos) {
+        notifyItemRemoved(pos);
+        todoList.remove(pos);
     }
 }

@@ -21,7 +21,7 @@ public class TodoListFragment extends Fragment implements CompoundButton.OnCheck
     private OnFragmentInteractionListener listener = null;
     private RecyclerView finishedListView, unfinishedListView;
     private TextView finishedListTitle;
-
+    private RecyclerView.ItemDecoration decoration = new SpaceItemDecoration(16);
 
     public TodoListFragment() {}
 
@@ -58,8 +58,7 @@ public class TodoListFragment extends Fragment implements CompoundButton.OnCheck
         if (isChecked) {
             onShowFinished();
         } else {
-            finishedListView.setVisibility(View.GONE);
-            finishedListTitle.setVisibility(View.GONE);
+            onHideFinished();
         }
     }
 
@@ -68,7 +67,13 @@ public class TodoListFragment extends Fragment implements CompoundButton.OnCheck
         finishedListTitle.setVisibility(View.VISIBLE);
         finishedListView.setLayoutManager(new LinearLayoutManager(getContext()));
         finishedListView.setAdapter(new TodoListAdaptor(getContext(), true));
-        finishedListView.addItemDecoration(new SpaceItemDecoration(16));
+        finishedListView.addItemDecoration(decoration);
+    }
+
+    private void onHideFinished() {
+        finishedListView.removeItemDecoration(decoration);
+        finishedListView.setVisibility(View.GONE);
+        finishedListTitle.setVisibility(View.GONE);
     }
 
     @Override
@@ -76,7 +81,7 @@ public class TodoListFragment extends Fragment implements CompoundButton.OnCheck
         unfinishedListView = view.findViewById(R.id.unfinished_list);
         unfinishedListView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         unfinishedListView.setAdapter(new TodoListAdaptor(getContext(), false));
-        unfinishedListView.addItemDecoration(new SpaceItemDecoration(16));
+        unfinishedListView.addItemDecoration(decoration);
 
         finishedListView = view.findViewById(R.id.finished_list);
         finishedListTitle = view.findViewById(R.id.finished_list_title);
@@ -84,8 +89,7 @@ public class TodoListFragment extends Fragment implements CompoundButton.OnCheck
         if (Preference.getShowFinished(view.getContext())) {
             onShowFinished();
         } else {
-            view.findViewById(R.id.finished_list).setVisibility(View.GONE);
-            view.findViewById(R.id.finished_list_title).setVisibility(View.GONE);
+            onHideFinished();
         }
 
         Switch aSwitch = view.findViewById(R.id.show_finished_switch);

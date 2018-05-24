@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/money_editor"
                 style="@style/editPageTextBox"
-                android:inputType="numberDecimal" />
+                android:inputType="numberSigned|numberDecimal" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -103,12 +103,17 @@
                 android:text="@string/category"
                 style="@style/editPageLabel"
                 android:labelFor="@id/category_editor"/>
-            <EditText
+            <org.jinsuoji.jinsuoji.MyAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:completionThreshold="0"
+                android:dropDownAnchor="@id/category_editor"
+                android:dropDownWidth="wrap_content"
+                android:dropDownHeight="wrap_content"
+                android:singleLine="true"
                 android:id="@+id/category_editor"
                 style="@style/editPageTextBox"
-                android:inputType="textAutoComplete" />
+                android:inputType="text" />
         </LinearLayout>
     </ScrollView>
 

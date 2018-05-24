@@ -6,22 +6,29 @@ import java.util.Date;
 /**
  * 记账类.
  * 保存一次记账条目的基本信息.
- * TODO 将时间的时分去除（这个、ExpenseDAO）
+ * <p/>
+ * 注意：各条目取值。
+ * <table>
+ *     <tr><th>字段名</th><th>类型</th><th>有效取值</th><th>代表未填写的取值</th><th>被存为未填写的取值</th></tr>
+ *     <tr><td>id</td><td>int</td><td>正整数</td><td>-1</td><td>不存在</td></tr>
+ *     <tr><td>item</td><td>String</td><td>非空字符串</td><td>null</td><td>""</td></tr>
+ *     <tr><td>datetime</td><td>Date</td><td>有效时间</td><td>不存在</td><td>不存在</td></tr>
+ *     <tr><td>money</td><td>int*100</td><td>整数</td><td>0</td><td>0</td></tr>
+ *     <tr><td>category</td><td>String</td><td>非空字符串</td><td>null</td><td>""</td></tr>
+ * </table>
  */
 public class Expense implements Serializable {
     private int id;
     private String item;
     private Date datetime;
     private int money;
-    //private int categoryID;
     private String category;
 
-    public Expense(int id, String title, Date datetime, int money, String category) {
+    public Expense(int id, String item, Date datetime, int money, String category) {
         this.id = id;
-        this.item = title;
+        this.item = item;
         this.datetime = datetime;
         this.money = money;
-    //    this.categoryID = categoryID;
         this.category = category;
     }
 
@@ -56,14 +63,6 @@ public class Expense implements Serializable {
     public void setMoney(int money) {
         this.money = money;
     }
-
-    //public int getCategoryID() {
-    //    return categoryID;
-    //}
-
-    //public void setCategoryID(int categoryID) {
-    //    this.categoryID = categoryID;
-    //}
 
     public String getCategory() {
         return category;

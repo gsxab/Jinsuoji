@@ -231,7 +231,7 @@ public class ExpenseDAO {
         values.put("category_id", cateId);
         long ret = db.insert(DBHelper.EXPENSE, null, values);
         Log.d(TAG, "addExpense: " + ret);
-        expense.setId(query(db, "select last_insert_rowid()", null, new QueryOperation<Integer>() {
+        expense.setId(query(db, "SELECT last_insert_rowid()", null, new QueryOperation<Integer>() {
             @Override
             public Integer operate(Cursor cursor) {
                 cursor.moveToFirst();
@@ -300,8 +300,21 @@ public class ExpenseDAO {
      *
      * @param expense 修改过的记录
      */
-    public void editExpense(Expense expense) {
-        // TODO
+    public void editExpense(final Expense expense) {
+        wrapper.write(new Operation<Void>() {
+            @Override
+            public Void operate(SQLiteDatabase db) {
+                int cateId = createOrGetCategory(expense.getCategory(), db);
+                ContentValues values = new ContentValues();
+                values.put("item", expense.getItem());
+                values.put("time", DateUtils.toDateString(expense.getDatetime()));
+                values.put("money", expense.getMoney());
+                values.put("category_id", cateId);
+                db.update(DBHelper.EXPENSE, values, "id = ?",
+                        new String[]{String.valueOf(expense.getId())});
+                return null;
+            }
+        });
     }
 
     /**
@@ -309,8 +322,14 @@ public class ExpenseDAO {
      *
      * @param id 要删除的id
      */
-    public void delExpense(int id) {
-        // TODO
+    public void delExpense(final int id) {
+        wrapper.write(new Operation<Void>() {
+            @Override
+            public Void operate(SQLiteDatabase db) {
+                db.delete(DBHelper.EXPENSE, "id = ?", new String[]{String.valueOf(id)});
+                return null;
+            }
+        });
     }
 
     /**
@@ -318,7 +337,29 @@ public class ExpenseDAO {
      * @return 全部分类名
      */
     public List<String> getAllCategories() {
-        // TODO
-        return Collections.emptyList();
+        return wrapper.read(new Operation<List<String>>() {
+            @Override
+            public List<String> operate(SQLiteDatabase db) {
+                return query(db,
+                        "SELECT name FROM " + DBHelper.EXPENSE_CATE,
+                        null,
+                        new QueryAdapter<List<String>>() {
+                            @Override
+                            public List<String> beforeLoop(Cursor cursor) {
+                                if (!cursor.moveToLast()) {
+                                    return Collections.emptyList();
+                                }
+                                int size = cursor.getPosition() + 1;
+                                cursor.moveToPosition(-1);
+                                return new ArrayList<>(size);
+                            }
+
+                            @Override
+                            public void inLoop(Cursor cursor, List<String> strings) {
+                                strings.add(cursor.getString(0));
+                            }
+                        });
+            }
+        });
     }
 }

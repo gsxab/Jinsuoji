@@ -1,7 +1,10 @@
 package org.jinsuoji.jinsuoji;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
+import org.jinsuoji.jinsuoji.model.EntryNode;
+import org.jinsuoji.jinsuoji.model.Expense;
 
 /**
  * A {@link Fragment} representing a list of {@link org.jinsuoji.jinsuoji.model.EntryNode}.
@@ -18,7 +25,9 @@ import android.view.ViewGroup;
  * Activities containing this fragment MUST implement the {@link OnFragmentInteractionListener}
  * interface.
  */
-public class ExpenditureListFragment extends Fragment {
+public class ExpenditureListFragment extends Fragment
+        implements ItemTouchListener.RecyclerViewOperator<EntryNode> {
+    private static final int EDIT_EXPENSE = 3;
     private OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private ExpenseListAdapter adapter;
@@ -79,11 +88,59 @@ public class ExpenditureListFragment extends Fragment {
     }
 
     @Override
+    public boolean isTouchable(EntryNode data) {
+        return data.getType() == EntryNode.ItemType.EXPENSE_ITEM;
+    }
+
+    @Override
+    public void performEdit(View view, int pos, EntryNode data) {
+        Intent intent = new Intent(getActivity(), ExpenseEditActivity.class);
+        intent.putExtra(ExpenseEditActivity.LAST_EXPENSE,
+                ((EntryNode.ExpenseItem) data).getExpense());
+        intent.putExtra(ExpenseEditActivity.INDEX, pos);
+        startActivityForResult(intent, EDIT_EXPENSE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK || requestCode != EDIT_EXPENSE) return;
+        int index = data.getIntExtra(ExpenseEditActivity.INDEX, -1);
+        Expense expense = (Expense) data.getSerializableExtra(ExpenseEditActivity.LAST_EXPENSE);
+        new ExpenseDAO(getContext()).editExpense(expense);
+        adapter.change(index, new EntryNode.ExpenseItem(expense));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // TODO 没法刷新另一个，这个函数无效，引起仍有旧有条目，点开这个实际不存在的条目会引发数据不一致
+                    ((ExpenditureFragment) getParentFragment()).refreshList();
+                } catch (NullPointerException | ClassCastException ignored) {}
+            }
+        }, 1000);
+    }
+
+    @Override
+    public void performRemove(View view, int pos, EntryNode data) {
+        new ExpenseDAO(getContext()).delExpense(((EntryNode.ExpenseItem) data).getExpense().getId());
+        adapter.remove(pos, data);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ((ExpenditureFragment) getParentFragment()).refreshList(); // 因为没法刷新另一个……
+                } catch (NullPointerException | ClassCastException ignored) {}
+            }
+        }, 1000);
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.expenditure_list);
         if (adapter != null) {
             recyclerView.setAdapter(adapter);
+            recyclerView.addOnItemTouchListener(new ItemTouchListener<>(this, recyclerView));
         }
     }
 

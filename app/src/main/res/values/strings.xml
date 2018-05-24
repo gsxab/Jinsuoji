@@ -4,7 +4,7 @@
     <string name="title_todo">任务</string>
     <string name="title_expenditure">记账</string>
     <string name="title_zhongcao">种草</string>
-    <string name="collapse_calendar" translatable="false">收起日历</string>
+    <string name="collapse_calendar">收起日历</string>
     <string name="expand_calendar">展开日历</string>
     <string name="show_finished">显示已完成项</string>
     <string name="finished">已完成</string>
@@ -52,4 +52,10 @@
     <string name="remind">提醒</string>
     <string name="show_on_calender">显示于日历</string>
     <string name="description">描述</string>
+    <string name="delete_warning">删除警告</string>
+    <string name="delete_warning_message">确定要删除记录“%1$s”？</string>
+    <string name="category_format">分类：%1$s</string>
+    <string name="expense_format">名称：%1$s，时间：%2$s，金额：%3$.2f</string>
+    <string name="todo_format">任务：%1$s，时间：%2$s</string>
+    <string name="load_example">加载样例(debug)</string>
 </resources>

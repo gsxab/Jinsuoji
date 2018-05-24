@@ -7,8 +7,7 @@
     android:name="org.jinsuoji.jinsuoji.ExpenditureFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:scrollbars="vertical"
     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
     tools:context=".ExpenditureListFragment"
     tools:listitem="@layout/fragment_expenditure" />
