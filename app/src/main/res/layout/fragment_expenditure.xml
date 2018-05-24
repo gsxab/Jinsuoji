@@ -131,11 +131,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/total"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_marginTop="@dimen/activity_margin"
         android:orientation="vertical"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/total"
+        tools:layout_editor_absoluteX="16dp">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/expenditure_tab"
@@ -146,7 +150,7 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/expenditure_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
