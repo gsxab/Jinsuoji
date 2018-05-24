@@ -19,7 +19,9 @@ import android.widget.Toast;
 import org.jinsuoji.jinsuoji.data_access.DBWrapper;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.data_access.Serializer;
+import org.jinsuoji.jinsuoji.data_access.TodoDAO;
 import org.jinsuoji.jinsuoji.model.Expense;
+import org.jinsuoji.jinsuoji.model.Todo;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -161,10 +163,9 @@ public class MainActivity extends AppCompatActivity implements
                     // TODO 弹出选择框
                 }   break;
                 case R.id.navigation_todo:{
-                    // TODO 进入任务编辑Activity
                     Intent intent = new Intent(MainActivity.this, TodoEditActivity.class);
                     intent.putExtra(TodoEditActivity.TIME, Calendar.getInstance().getTime());
-                    startActivityForResult(intent, 1);
+                    startActivityForResult(intent, CREATE_TODO);
                 }   break;
                 case R.id.navigation_expenditure:{
                     Intent intent = new Intent(MainActivity.this, ExpenseEditActivity.class);
@@ -219,9 +220,18 @@ public class MainActivity extends AppCompatActivity implements
                         } catch (ClassCastException ignored) {
                         }
                     }
-                }
-                case CREATE_TODO:
-                    // TODO 创建Todo的返回
+                } break;
+                case CREATE_TODO: {
+                    Todo todo = (Todo) data.getSerializableExtra(TodoEditActivity.LAST_TODO);
+                    TodoDAO todoDAO = new TodoDAO(this);
+                    todoDAO.replaceTodo(todo);
+                    if (navigation.getSelectedItemId() == R.id.navigation_todo) {
+                        try {
+                            // TODO 试图刷新 ((TodoListFragment) fragments.get(pager.getCurrentItem())).refreshList();
+                        } catch (ClassCastException ignored) {
+                        }
+                    }
+                } break;
                 default:
                     // 这是Fragment调用的Activity在返回，不作处理
             }

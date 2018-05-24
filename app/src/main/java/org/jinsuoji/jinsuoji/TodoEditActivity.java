@@ -84,9 +84,8 @@ public class TodoEditActivity extends AppCompatActivity {
                 finish();
             }
         });
-        //加上下面的这段代码会闪退，可能是因为跟Todo的数据库操作文件有关系，所以我先注释掉了
         name.setText(todo.getTaskName());
-        priority.setText(todo.getPriority());
+        priority.setText(String.valueOf(todo.getPriority()));
         memo.setText(todo.getMemo());
         time.setText(todo.getDateTime() == null ? "" : DateUtils.toDateString(todo.getDateTime()));
 
@@ -109,50 +108,38 @@ public class TodoEditActivity extends AppCompatActivity {
         switch (id){
             case 1:
             {
-                Calendar cale1 = Calendar.getInstance();
+                Calendar current = Calendar.getInstance();
                 new DatePickerDialog(TodoEditActivity.this,new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear,
                                           int dayOfMonth) {
-                        StringBuffer stringBuilder = new StringBuffer("");
-                        //这里获取到的月份需要加上1哦~
-                        stringBuilder.append(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
-                        time.setText(stringBuilder.toString());
+                        Date date = DateUtils.makeDate(year, (monthOfYear + 1), dayOfMonth);
+                        time.setText(DateUtils.toDateString(date));
                     }
-                }
-                        ,cale1.get(Calendar.YEAR)
-                        ,cale1.get(Calendar.MONTH)
-                        ,cale1.get(Calendar.DAY_OF_MONTH))
+                }, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH))
                         .show();
-            }break;
+            } break;
             case 2:
             {
-                Calendar cale1 = Calendar.getInstance();
+                final Calendar current = Calendar.getInstance();
                 new DatePickerDialog(TodoEditActivity.this,new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                          int dayOfMonth) {
-                       final StringBuffer stringBuilder=new StringBuffer("");
-                        //这里获取到的月份需要加上1哦~
-                        stringBuilder.append(year + "-" + (monthOfYear+1) +"-"+dayOfMonth);
-                        Calendar time=Calendar.getInstance();
+                    public void onDateSet(DatePicker view, final int year, final int monthOfYear,
+                                          final int dayOfMonth) {
                         TimePickerDialog timeDialog=new TimePickerDialog(TodoEditActivity.this, new TimePickerDialog.OnTimeSetListener() {
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                // TODO Auto-generated method stub
-                                stringBuilder.append(hourOfDay+":"+minute);
-                                reminder.setText(" "+ stringBuilder);
+                                Date date = DateUtils.makeDate(year, monthOfYear, dayOfMonth, hourOfDay, minute);
+                                reminder.setText(DateUtils.toDateTimeString(date));
                             }
-                        }, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), true);
+                        }, current.get(Calendar.HOUR_OF_DAY), current.get(Calendar.MINUTE), true);
                         timeDialog.setTitle("请选择时间");
                         timeDialog.show();
                     }
-                }
-                        ,cale1.get(Calendar.YEAR)
-                        ,cale1.get(Calendar.MONTH)
-                        ,cale1.get(Calendar.DAY_OF_MONTH)).show();
-            }break;
+                }, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH))
+                        .show();
+            } break;
         }
     }
 
