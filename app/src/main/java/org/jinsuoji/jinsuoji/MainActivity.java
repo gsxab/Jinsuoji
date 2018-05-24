@@ -159,6 +159,9 @@ public class MainActivity extends AppCompatActivity implements
                 }   break;
                 case R.id.navigation_todo:{
                     // TODO 进入任务编辑Activity
+                    Intent intent = new Intent(MainActivity.this, TodoEditActivity.class);
+                    intent.putExtra("org.jinsuoji.jinsuoji.Time", Calendar.getInstance().getTime());
+                    startActivityForResult(intent, 1);
                 }   break;
                 case R.id.navigation_expenditure:{
                     Intent intent = new Intent(MainActivity.this, ExpenseEditActivity.class);
