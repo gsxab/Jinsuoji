@@ -51,5 +51,5 @@
     <string name="priority">优先级</string>
     <string name="remind">提醒</string>
     <string name="show_on_calender">显示于日历</string>
-    <string name="desciption">描述</string>
+    <string name="description">描述</string>
 </resources>
