@@ -89,7 +89,7 @@ public class TodoEditActivity extends AppCompatActivity {
         name.setText(todo.getTaskName());
         priority.setText(String.valueOf(todo.getPriority()));
         memo.setText(todo.getMemo());
-        time.setText(todo.getDateTime() == null ? "" : DateUtils.toDateString(todo.getDateTime()));
+        time.setText(todo.getDateTime() == null ? "" : DateUtils.toDateTimeString(todo.getDateTime()));
 
 
         time.setOnClickListener(new View.OnClickListener() {
@@ -110,13 +110,21 @@ public class TodoEditActivity extends AppCompatActivity {
         switch (id){
             case 1:
             {
-                Calendar current = Calendar.getInstance();
+                final Calendar current = Calendar.getInstance();
                 new DatePickerDialog(TodoEditActivity.this,new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                          int dayOfMonth) {
-                        Date date = DateUtils.makeDate(year, (monthOfYear + 1), dayOfMonth);
-                        time.setText(DateUtils.toDateString(date));
+                    public void onDateSet(DatePicker view, final int year, final int monthOfYear,
+                                          final int dayOfMonth) {
+                        TimePickerDialog timeDialog=new TimePickerDialog(TodoEditActivity.this, new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                Date date = DateUtils.makeDate(year, monthOfYear, dayOfMonth, hourOfDay, minute);
+                                time.setText(DateUtils.toDateTimeString(date));
+                            }
+                        }, current.get(Calendar.HOUR_OF_DAY), current.get(Calendar.MINUTE), true);
+                        timeDialog.setTitle("请选择时间");
+                        timeDialog.show();
                     }
                 }, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH))
                         .show();
@@ -124,6 +132,10 @@ public class TodoEditActivity extends AppCompatActivity {
             case 2:
             {
                 final Calendar current = Calendar.getInstance();
+                Date timeSelected = DateUtils.fromDateTimeString(time.getText().toString());
+                if (timeSelected != null) {
+                    current.setTimeInMillis(timeSelected.getTime());
+                }
                 new DatePickerDialog(TodoEditActivity.this,new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, final int year, final int monthOfYear,
@@ -163,17 +175,17 @@ public class TodoEditActivity extends AppCompatActivity {
         }
         if (priority.getText().length() == 0) {
             todo.setPriority(Integer.valueOf(priority.getText().toString()));
-            return false;
+            flag = false;
         }
         if (reminder.getText().length() == 0) {
             // TODO 加进任务里
-            return false;
+            flag = false;
         }
         if (memo.getText().length() == 0) {
             todo.setMemo(memo.getText().toString());
-            return false;
+            flag = false;
         }
-        return true;
+        return flag;
     }
 
     @Override
