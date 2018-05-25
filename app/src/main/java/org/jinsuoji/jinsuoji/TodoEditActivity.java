@@ -27,6 +27,7 @@ public class TodoEditActivity extends AppCompatActivity {
     public static final String KEY = "exp_ToDo";
     public static final String LAST_TODO = "org.jinsuoji.jinsuoji.LastToDo";
     public static final String TIME = "org.jinsuoji.jinsuoji.Time";
+    public static final String INDEX = "org.jinsuoji.jinsuoji.Index";
     public static final String TAG = "o.j.j.TEAct";
 
     Handler handler;
