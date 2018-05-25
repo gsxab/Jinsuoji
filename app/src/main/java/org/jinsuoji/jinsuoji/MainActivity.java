@@ -183,8 +183,8 @@ public class MainActivity extends AppCompatActivity implements
                             .show();
                     break;
                 case R.id.sync_settings:
-                    // 这只是个调试用的……
-                    Toast.makeText(MainActivity.this, new ExpenseDAO(MainActivity.this).getAllExpenseNames().toString(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
                     break;
                 case R.id.clear_all:
                     Toast.makeText(MainActivity.this, R.string.recreate_database, Toast.LENGTH_SHORT).show();

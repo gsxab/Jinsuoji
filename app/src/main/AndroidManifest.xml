@@ -18,6 +18,7 @@
         </activity>
         <activity android:name=".ExpenseEditActivity" />
         <activity android:name=".GuideActivity"></activity>
+        <activity android:name=".SettingsActivity" />
     </application>
 
 </manifest>

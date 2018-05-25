@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--这是同步设置的设置页面-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key = "@string/pref_key_sync_settings"
+        android:title="@string/pref_title_sync_settings">
+        <!--是否同步勾选框-->
+        <SwitchPreference
+            android:key="pref_key_sync_switch"
+            android:title="@string/pref_title_sync_switch"
+            android:summaryOff="@string/pref_title_sync_switch_no"
+            android:summaryOn="@string/pref_title_sync_switch_yes">
+        </SwitchPreference>
+
+        <!--同步频率选择-->
+        <ListPreference
+            android:dialogTitle="请选择一项"
+            android:entries="@array/pref_entries_sync_frequence"
+            android:entryValues="@array/pref_entryValues_sync_frequence"
+            android:key="@string/pref_key_sync_frequence"
+            android:title="@string/pref_title_sync_frequence">
+
+        </ListPreference>
+
+        <!--是否只在wifi下同步-->
+        <SwitchPreference
+            android:key="@string/pref_key_sync_wifi"
+            android:title="@string/pref_title_sync_wifi">
+        </SwitchPreference>
+    </PreferenceCategory>
+
+    <!--检查当前的登录状态，显示用户信息  好像不应该放在这儿
+    <Preference android:key="@string/pref_key_personal_info" /> -->
+
+
+
+
+
+
+</PreferenceScreen>
