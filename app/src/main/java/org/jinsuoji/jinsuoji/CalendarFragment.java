@@ -119,17 +119,20 @@ public class CalendarFragment extends Fragment {
                 new ItemTouchListener.RecyclerViewOperator<Todo>() {
                     @Override
                     public Context getContext() {
-                        return null;
+                        return CalendarFragment.this.getContext();
                     }
 
                     @Override
                     public boolean isTouchable(Todo data) {
-                        return false;
+                        return true;
                     }
 
                     @Override
                     public void performEdit(View view, int pos, Todo data) {
-                        // TODO 编辑
+                        Intent intent = new Intent(getActivity(), TodoEditActivity.class);
+                        intent.putExtra(TodoEditActivity.LAST_TODO, data);
+                        intent.putExtra(TodoEditActivity.INDEX, pos);
+                        startActivityForResult(intent, EDIT_TODO);
                         ((TodoListAdaptor) dailyTodoList.getAdapter()).change(pos, data);
                     }
 
@@ -138,7 +141,7 @@ public class CalendarFragment extends Fragment {
                         new TodoDAO(getContext()).delTodo(data.getId());
                         ((TodoListAdaptor) dailyTodoList.getAdapter()).remove(pos);
                     }
-                }, dailyTodoList));
+                }, dailyTodoList, true));
 
         dailyExpenseList = view.findViewById(R.id.daily_expense_list);
         dailyExpenseList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -173,7 +176,7 @@ public class CalendarFragment extends Fragment {
                 new ExpenseDAO(getContext()).delExpense(((EntryNode.ExpenseItem) data).getExpense().getId());
                 ((ExpenseListAdapter) dailyExpenseList.getAdapter()).remove(pos, data);
             }
-        }, dailyExpenseList));
+        }, dailyExpenseList, false));
     }
 
     @Override
@@ -186,10 +189,13 @@ public class CalendarFragment extends Fragment {
                 Expense newExpense = (Expense) data.getSerializableExtra(ExpenseEditActivity.LAST_EXPENSE);
                 new ExpenseDAO(getContext()).editExpense(newExpense);
                 ((ExpenseListAdapter) dailyExpenseList.getAdapter()).change(index, new EntryNode.ExpenseItem(newExpense));
-            }
+            } break;
             case EDIT_TODO: {
-                // TODO
-            }
+                int index = data.getIntExtra(TodoEditActivity.INDEX, -1);
+                Todo newTodo = (Todo) data.getSerializableExtra(TodoEditActivity.LAST_TODO);
+                new TodoDAO(getContext()).editTodo(newTodo);
+                ((TodoListAdaptor) dailyTodoList.getAdapter()).change(index, newTodo);
+            } break;
         }
     }
 }

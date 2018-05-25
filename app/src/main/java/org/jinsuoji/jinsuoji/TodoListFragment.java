@@ -123,7 +123,7 @@ public class TodoListFragment extends Fragment implements
                             }
                         }, 1000);
                     }
-        }, unfinishedListView));
+        }, unfinishedListView, true));
         unfinishedListView.addItemDecoration(decoration);
 
         finishedListView = view.findViewById(R.id.finished_list);
@@ -161,7 +161,7 @@ public class TodoListFragment extends Fragment implements
                             }
                         }, 1000);
                     }
-                }, finishedListView));
+                }, finishedListView, true));
 
         if (Preference.getShowFinished(view.getContext())) {
             onShowFinished();
@@ -189,7 +189,7 @@ public class TodoListFragment extends Fragment implements
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK ||
                 (requestCode != EDIT_TODO_FINISHED && requestCode != EDIT_TODO_UNFINISHED)) return;
-        int index = data.getIntExtra(ExpenseEditActivity.INDEX, -1);
+        int index = data.getIntExtra(TodoEditActivity.INDEX, -1);
         Todo todo = (Todo) data.getSerializableExtra(TodoEditActivity.LAST_TODO);
         new TodoDAO(getContext()).editTodo(todo);
         RecyclerView recyclerView = requestCode == EDIT_TODO_FINISHED ? finishedListView : unfinishedListView;

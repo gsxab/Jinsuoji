@@ -81,6 +81,7 @@ public class TodoEditActivity extends AppCompatActivity {
                     return;
                 }
                 intent.putExtra(LAST_TODO, todo);
+                intent.putExtra(INDEX, getIntent().getIntExtra(INDEX, -1));
                 setResult(RESULT_OK, intent);
                 finish();
             }

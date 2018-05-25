@@ -140,7 +140,7 @@ public class ExpenditureListFragment extends Fragment
         recyclerView = view.findViewById(R.id.expenditure_list);
         if (adapter != null) {
             recyclerView.setAdapter(adapter);
-            recyclerView.addOnItemTouchListener(new ItemTouchListener<>(this, recyclerView));
+            recyclerView.addOnItemTouchListener(new ItemTouchListener<>(this, recyclerView, false));
         }
     }
 

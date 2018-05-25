@@ -124,6 +124,7 @@ public class ExpenseEditActivity extends AppCompatActivity {
                     return;
                 }
                 intent.putExtra(LAST_EXPENSE, expense);
+                intent.putExtra(INDEX, getIntent().getIntExtra(INDEX, -1));
                 setResult(RESULT_OK, intent);
                 finish();
             }
