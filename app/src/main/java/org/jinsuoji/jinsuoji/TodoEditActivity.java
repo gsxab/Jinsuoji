@@ -148,19 +148,31 @@ public class TodoEditActivity extends AppCompatActivity {
 
 
     /**
-     * 合成{@link Todo}并检查是否已经填写完毕. TODO 部分保存
+     * 合成{@link Todo}并检查是否已经填写完毕.
      * @return true=填写完毕;false=未完毕
      */
     private boolean composeTodo() {
-        if (name.getText().length() == 0 || time.getText().length() == 0 ||
-                priority.getText().length() == 0 || reminder.getText().length() == 0 ||
-                memo.getText().length() == 0) {
+        boolean flag = true;
+        if (name.getText().length() == 0) {
+            todo.setTaskName(name.getText().toString());
+            flag = false;
+        }
+        if (time.getText().length() == 0) {
+            todo.setDateTime(DateUtils.fromDateTimeString(time.getText().toString()));
+            flag = false;
+        }
+        if (priority.getText().length() == 0) {
+            todo.setPriority(Integer.valueOf(priority.getText().toString()));
             return false;
         }
-        todo.setTaskName(name.getText().toString());
-        todo.setDateTime(DateUtils.fromDateString(time.getText().toString()));
-        todo.setPriority(Integer.valueOf(priority.getText().toString()));
-        todo.setMemo(memo.getText().toString());
+        if (reminder.getText().length() == 0) {
+            // TODO 加进任务里
+            return false;
+        }
+        if (memo.getText().length() == 0) {
+            todo.setMemo(memo.getText().toString());
+            return false;
+        }
         return true;
     }
 
