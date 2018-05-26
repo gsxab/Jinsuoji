@@ -41,6 +41,11 @@ public class CalendarFragment extends Fragment {
         return new CalendarFragment();
     }
 
+    public void refreshList() {
+        dailyTodoList.getAdapter().notifyDataSetChanged();
+        dailyExpenseList.getAdapter().notifyDataSetChanged();
+    }
+
     interface OnFragmentInteractionListener {}
 
     private Calendar current = Calendar.getInstance();

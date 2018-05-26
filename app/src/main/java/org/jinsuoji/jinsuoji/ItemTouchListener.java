@@ -61,7 +61,7 @@ public class ItemTouchListener<T extends ContextualStringConvertible> implements
         mGestureDetector = new GestureDetector(operator.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                if (right && e.getX() > 1150) return false; // FIXME 不知道可不可以，把多选框空出去
+                if (right && e.getX() > 1150) return false; // 不知道是不是总可以，把多选框空出去
                 Log.d("ITL", "onSingleTapUp: " + e.getX());
                 return true;
             }

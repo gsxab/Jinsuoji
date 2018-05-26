@@ -113,7 +113,6 @@ public class ExpenditureListFragment extends Fragment
             @Override
             public void run() {
                 try {
-                    // TODO 没法刷新另一个，这个函数无效，引起仍有旧有条目，点开这个实际不存在的条目会引发数据不一致
                     ((ExpenditureFragment) getParentFragment()).refreshList();
                 } catch (NullPointerException | ClassCastException ignored) {}
             }
@@ -128,7 +127,7 @@ public class ExpenditureListFragment extends Fragment
             @Override
             public void run() {
                 try {
-                    ((ExpenditureFragment) getParentFragment()).refreshList(); // 因为没法刷新另一个……
+                    ((ExpenditureFragment) getParentFragment()).refreshList();
                 } catch (NullPointerException | ClassCastException ignored) {}
             }
         }, 1000);

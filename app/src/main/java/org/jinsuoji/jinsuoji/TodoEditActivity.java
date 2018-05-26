@@ -119,7 +119,7 @@ public class TodoEditActivity extends AppCompatActivity {
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                Date date = DateUtils.makeDate(year, monthOfYear, dayOfMonth, hourOfDay, minute);
+                                Date date = DateUtils.makeDate(year, monthOfYear + 1, dayOfMonth, hourOfDay, minute);
                                 time.setText(DateUtils.toDateTimeString(date));
                             }
                         }, current.get(Calendar.HOUR_OF_DAY), current.get(Calendar.MINUTE), true);
@@ -144,7 +144,7 @@ public class TodoEditActivity extends AppCompatActivity {
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                Date date = DateUtils.makeDate(year, monthOfYear, dayOfMonth, hourOfDay, minute);
+                                Date date = DateUtils.makeDate(year, monthOfYear + 1, dayOfMonth, hourOfDay, minute);
                                 reminder.setText(DateUtils.toDateTimeString(date));
                             }
                         }, current.get(Calendar.HOUR_OF_DAY), current.get(Calendar.MINUTE), true);
@@ -157,8 +157,6 @@ public class TodoEditActivity extends AppCompatActivity {
         }
     }
 
-
-
     /**
      * 合成{@link Todo}并检查是否已经填写完毕.
      * @return true=填写完毕;false=未完毕
@@ -166,25 +164,25 @@ public class TodoEditActivity extends AppCompatActivity {
     private boolean composeTodo() {
         boolean flag = true;
         if (name.getText().length() == 0) {
-            todo.setTaskName(name.getText().toString());
             flag = false;
+        } else {
+            todo.setTaskName(name.getText().toString());
         }
         if (time.getText().length() == 0) {
-            todo.setDateTime(DateUtils.fromDateTimeString(time.getText().toString()));
             flag = false;
+        } else {
+            todo.setDateTime(DateUtils.fromDateTimeString(time.getText().toString()));
         }
         if (priority.getText().length() == 0) {
+            flag = false;
+        } else {
             todo.setPriority(Integer.valueOf(priority.getText().toString()));
-            flag = false;
         }
-        if (reminder.getText().length() == 0) {
+        //if (reminder.getText().length() == 0) {
             // TODO 加进任务里
-            flag = false;
-        }
-        if (memo.getText().length() == 0) {
-            todo.setMemo(memo.getText().toString());
-            flag = false;
-        }
+        //    flag = false;
+        //}
+        todo.setMemo(memo.getText().toString()); // 备注可空
         return flag;
     }
 

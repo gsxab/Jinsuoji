@@ -67,12 +67,15 @@ public class MainActivity extends AppCompatActivity implements
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
             case R.id.navigation_home:
+                ((CalendarFragment) fragments.get(0)).refreshList();
                 pager.setCurrentItem(0);
                 return true;
             case R.id.navigation_todo:
+                ((TodoListFragment) fragments.get(1)).refreshList();
                 pager.setCurrentItem(1);
                 return true;
             case R.id.navigation_expenditure:
+                ((ExpenditureFragment) fragments.get(2)).refreshList();
                 pager.setCurrentItem(2);
                 return true;
             case R.id.navigation_zhongcao:

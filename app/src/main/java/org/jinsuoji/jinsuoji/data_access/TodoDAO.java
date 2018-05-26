@@ -37,7 +37,7 @@ public class TodoDAO {
         public void inLoop(Cursor cursor, List<Todo> entryNodes) {
             Todo todo = new Todo(
                     cursor.getInt(0),
-                    DateUtils.fromDateString(cursor.getString(4)),
+                    DateUtils.fromDateTimeString(cursor.getString(4)),
                     cursor.getString(1),
                     cursor.getInt(3),
                     cursor.getString(2),
