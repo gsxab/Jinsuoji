@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".ExpenseEditActivity" />
         <activity android:name=".GuideActivity" />
-        <activity android:name=".TodoEditActivity"></activity>
+        <activity android:name=".TodoEditActivity" />
+        <activity android:name=".SettingsActivity" />
     </application>
 
 </manifest>

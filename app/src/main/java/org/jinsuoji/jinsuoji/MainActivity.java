@@ -185,10 +185,13 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.personal_info:
                 case R.id.about:
                 case R.id.feedback:
-                case R.id.sync_settings:
                     // TODO 这些个菜单项
                     Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
                             .show();
+                    break;
+                case R.id.sync_settings:
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
                     break;
                 case R.id.load_example:
                     Toast.makeText(MainActivity.this, R.string.load_example, Toast.LENGTH_SHORT).show();
@@ -227,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements
                     todoDAO.replaceTodo(todo);
                     if (navigation.getSelectedItemId() == R.id.navigation_todo) {
                         try {
-                            // TODO 试图刷新 ((TodoListFragment) fragments.get(pager.getCurrentItem())).refreshList();
+                            ((TodoListFragment) fragments.get(pager.getCurrentItem())).refreshList();
                         } catch (ClassCastException ignored) {
                         }
                     }

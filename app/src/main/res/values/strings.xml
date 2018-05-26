@@ -46,6 +46,7 @@
     <string name="minute">分</string>
     <string name="missing_args">信息不完整</string>
     <string name="skip"><![CDATA[跳过>>>]]></string>
+
     <string name="edit_todo">编辑任务</string>
     <string name="todo_title" translatable="false">任务名称</string>
     <string name="priority">优先级</string>
@@ -58,4 +59,49 @@
     <string name="expense_format">名称：%1$s，时间：%2$s，金额：%3$.2f</string>
     <string name="todo_format">任务：%1$s，时间：%2$s</string>
     <string name="load_example">加载样例(debug)</string>
+
+    <!-- preference -->
+    <!-- key -->
+    <string name="pref_key_personal_info">pref_key_personal_info</string>
+    <string name="pref_key_sync_settings">pref_key_sync_settings</string>
+    <string name="pref_key_about">pref_key_about</string>
+    <string name="pref_key_feedback">pref_key_feedback</string>
+
+    <string name="pref_key_sync_switch">pref_key_sync_switch</string>
+    <string name="pref_key_sync_frequence">pref_key_sync_frequence</string>
+    <string name="pref_key_sync_wifi">pref_key_sync_wifi</string>
+    <!--
+    <string name="pref_key_version">pref_key_version</string>
+    -->
+
+    <!-- title 应该没什么用-->
+    <string name="pref_title_personal_info">个人信息</string>
+    <string name="pref_title_sync_settings">同步设置</string>
+    <string name="pref_title_about">关于我们</string>
+    <string name="pref_title_feedback">反馈建议</string>
+
+    <string name="pref_title_sync_switch">同步数据</string>
+    <string name="pref_title_sync_switch_yes">同步</string>
+    <string name="pref_title_sync_switch_no">不同步</string>
+    <string name="pref_title_sync_frequence">同步频率设置</string>
+    <string name="pref_title_sync_frequence_day">每天同步一次</string>
+    <string name="pref_title_sync_frequence_week">每周同步一次</string>
+    <string name="pref_title_sync_frequence_month">每月同步一次</string>
+    <string name="pref_title_sync_wifi">只在WIFI下同步</string>
+
+    <!-- entries 是显示在界面上的-->
+    <string-array name="pref_entries_sync_frequence">
+        <item>每天</item>
+        <item>每周</item>
+        <item>每月</item>
+    </string-array>
+
+    <!-- entryValues 真正存储的值-->
+    <string-array name="pref_entryValues_sync_frequence">
+        <item>每天</item>
+        <item>每周</item>
+        <item>每月</item>
+    </string-array>
+
+
 </resources>
