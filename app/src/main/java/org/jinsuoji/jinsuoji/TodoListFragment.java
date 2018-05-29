@@ -37,9 +37,6 @@ public class TodoListFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            // params
-        }
     }
 
     @Override
@@ -197,9 +194,11 @@ public class TodoListFragment extends Fragment implements
     }
 
     public void refreshList() {
-        unfinishedListView.getAdapter().notifyDataSetChanged();
-        if (Preference.getShowFinished(getContext())) {
-            finishedListView.getAdapter().notifyDataSetChanged();
+        if (unfinishedListView != null) {
+            unfinishedListView.getAdapter().notifyDataSetChanged();
+            if (Preference.getShowFinished(getContext())) {
+                finishedListView.getAdapter().notifyDataSetChanged();
+            }
         }
     }
 }

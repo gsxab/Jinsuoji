@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import org.jinsuoji.jinsuoji.model.EntryNode;
 import org.jinsuoji.jinsuoji.model.Expense;
@@ -229,8 +228,7 @@ public class ExpenseDAO {
         values.put("time", DateUtils.toDateString(expense.getDatetime()));
         values.put("money", expense.getMoney());
         values.put("category_id", cateId);
-        long ret = db.insert(DBHelper.EXPENSE, null, values);
-        Log.d(TAG, "addExpense: " + ret);
+        db.insert(DBHelper.EXPENSE, null, values);
         expense.setId(query(db, "SELECT last_insert_rowid()", null, new QueryOperation<Integer>() {
             @Override
             public Integer operate(Cursor cursor) {

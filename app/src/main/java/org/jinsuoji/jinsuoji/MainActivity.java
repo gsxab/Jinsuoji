@@ -67,16 +67,16 @@ public class MainActivity extends AppCompatActivity implements
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
             case R.id.navigation_home:
-                ((CalendarFragment) fragments.get(0)).refreshList();
                 pager.setCurrentItem(0);
+                ((CalendarFragment) fragments.get(0)).refreshList();
                 return true;
             case R.id.navigation_todo:
-                ((TodoListFragment) fragments.get(1)).refreshList();
                 pager.setCurrentItem(1);
+                ((TodoListFragment) fragments.get(1)).refreshList();
                 return true;
             case R.id.navigation_expenditure:
-                ((ExpenditureFragment) fragments.get(2)).refreshList();
                 pager.setCurrentItem(2);
+                ((ExpenditureFragment) fragments.get(2)).refreshList();
                 return true;
             case R.id.navigation_zhongcao:
                 Toast.makeText(MainActivity.this, getString(R.string.placeholder),
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements
                 case CREATE_TODO: {
                     Todo todo = (Todo) data.getSerializableExtra(TodoEditActivity.LAST_TODO);
                     TodoDAO todoDAO = new TodoDAO(this);
-                    todoDAO.replaceTodo(todo);
+                    todoDAO.addTodo(todo);
                     if (navigation.getSelectedItemId() == R.id.navigation_todo) {
                         try {
                             ((TodoListFragment) fragments.get(pager.getCurrentItem())).refreshList();

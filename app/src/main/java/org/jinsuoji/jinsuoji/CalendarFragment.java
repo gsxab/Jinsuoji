@@ -42,8 +42,10 @@ public class CalendarFragment extends Fragment {
     }
 
     public void refreshList() {
-        dailyTodoList.getAdapter().notifyDataSetChanged();
-        dailyExpenseList.getAdapter().notifyDataSetChanged();
+        if (dailyTodoList != null)
+            dailyTodoList.getAdapter().notifyDataSetChanged();
+        if (dailyExpenseList != null)
+            dailyExpenseList.getAdapter().notifyDataSetChanged();
     }
 
     interface OnFragmentInteractionListener {}

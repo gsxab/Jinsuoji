@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.view.ViewGroup;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.model.EntryNode;
 import org.jinsuoji.jinsuoji.model.Expense;
+
+import java.util.Calendar;
 
 /**
  * A {@link Fragment} representing a list of {@link org.jinsuoji.jinsuoji.model.EntryNode}.
@@ -31,6 +34,13 @@ public class ExpenditureListFragment extends Fragment
     private OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private ExpenseListAdapter adapter;
+    private static final String KEY_YEAR = "key_year";
+    private static final String KEY_MONTH = "key_month";
+    private static final String KEY_DATE = "key_date";
+    private static final String KEY_BY_DATE = "key_by_date";
+
+    private int year, month, date;
+    private boolean byDate;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -83,6 +93,10 @@ public class ExpenditureListFragment extends Fragment
 
     public static ExpenditureListFragment newInstance(Context context, int year, int month, int date, boolean byDate) {
         ExpenditureListFragment fragment = new ExpenditureListFragment();
+        fragment.year = year;
+        fragment.month = month;
+        fragment.date = date;
+        fragment.byDate = byDate;
         fragment.adapter = new ExpenseListAdapter(context, year, month, date, byDate);
         return fragment;
     }
@@ -137,10 +151,21 @@ public class ExpenditureListFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById(R.id.expenditure_list);
-        if (adapter != null) {
-            recyclerView.setAdapter(adapter);
-            recyclerView.addOnItemTouchListener(new ItemTouchListener<>(this, recyclerView, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        if (adapter == null) {
+            if (savedInstanceState != null) {
+                year = savedInstanceState.getInt(KEY_YEAR);
+                month = savedInstanceState.getInt(KEY_MONTH);
+                date = savedInstanceState.getInt(KEY_DATE);
+                byDate = savedInstanceState.getBoolean(KEY_BY_DATE);
+                adapter = new ExpenseListAdapter(getContext(), year, month, date, byDate);
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                adapter = new ExpenseListAdapter(getContext(), calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 0,true);
+            }
         }
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnItemTouchListener(new ItemTouchListener<>(this, recyclerView, false));
     }
 
     @Override
@@ -166,5 +191,14 @@ public class ExpenditureListFragment extends Fragment
         if (recyclerView != null)
             ((ExpenseListAdapter) recyclerView.getAdapter())
                     .setNewDate(context, year, month, 0, byDate);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_YEAR, year);
+        outState.putInt(KEY_MONTH, month);
+        outState.putInt(KEY_DATE, date);
+        outState.putBoolean(KEY_BY_DATE, byDate);
     }
 }
