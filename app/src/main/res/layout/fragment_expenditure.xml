@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:paddingStart="@dimen/activity_margin"
     android:paddingEnd="@dimen/activity_margin"
+    android:background="@color/colorCategoryBackground"
     tools:context=".ExpenditureFragment">
 
     <TextView
@@ -15,11 +16,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_margin"
+        android:fontFamily="serif"
         android:text="@string/title_expenditure_frag"
         android:textColor="@color/colorAccent"
         android:textSize="@dimen/font_size_xl"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:layout_width="wrap_content"

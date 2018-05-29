@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/activity_margin"
+    android:background="@color/colorCategoryBackground"
     tools:context=".TodoListFragment">
 
     <RelativeLayout
@@ -29,10 +30,12 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/unfinished_list_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/unfinished_list_title"
-        android:text="@string/unfinished"/>
+        android:fontFamily="sans-serif"
+        android:text="@string/unfinished"
+        android:textAlignment="viewStart" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/unfinished_list"
