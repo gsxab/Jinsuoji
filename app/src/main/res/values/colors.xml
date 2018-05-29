@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFE0B2</color>
-    <color name="colorPrimaryDark">#E6CAA1</color>
-    <color name="colorAccent">#FFE666</color>
+    <color name="colorPrimary">#4daacf</color>
+    <color name="colorPrimaryDark">#4daacf</color>
+    <color name="colorAccent">#4daacf</color>
     <color name="colorInActionBar">#EEEEEE</color>
-    <color name="editPageColor">#009688</color>
-    <color name="colorItemBackground">#FFFFFF</color>
-    <color name="colorCategoryBackground">#EEEEEE</color>
+    <color name="editPageColor">#56949f</color>
+    <color name="colorItemBackground">#ffffff</color>
+    <color name="colorCategoryBackground">#F5FAFA</color>
 </resources>
