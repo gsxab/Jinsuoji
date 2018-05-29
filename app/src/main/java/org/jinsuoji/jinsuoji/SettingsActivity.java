@@ -3,6 +3,7 @@ package org.jinsuoji.jinsuoji;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.view.View;
 
 public class SettingsActivity extends Activity {
         @Override
@@ -14,5 +15,9 @@ public class SettingsActivity extends Activity {
         fragmentManager.beginTransaction()
                 .replace(R.id.settings_frame, new SettingsFragment())
                 .commit();
+    }
+
+    public void finished(View v) {
+            finish();
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--这是同步设置的设置页面-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
     <PreferenceCategory
         android:key = "@string/pref_key_sync_settings"
         android:title="@string/pref_title_sync_settings">
