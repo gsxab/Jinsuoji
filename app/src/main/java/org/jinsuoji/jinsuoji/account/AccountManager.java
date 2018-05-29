@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.jinsuoji.jinsuoji.net.AuthTask;
+import org.jinsuoji.jinsuoji.net.ErrorBean;
 import org.jinsuoji.jinsuoji.net.RestfulAsyncTask;
 
 import java.math.BigInteger;
@@ -51,7 +52,7 @@ public class AccountManager {
             //noinspection ConstantConditions
             return null;
         }
-        byte[] raw =digest.digest(asciiString.getBytes(ASCII));
+        byte[] raw = digest.digest(asciiString.getBytes(ASCII));
         return new BigInteger(1, raw).toString(16);
     }
 
@@ -75,10 +76,11 @@ public class AccountManager {
      * @param onSuccess 验证成功
      * @param onMessage 验证失败及信息
      */
-    public void login(RestfulAsyncTask.SuccessOperation<Void> onSuccess,
+    public void login(RestfulAsyncTask.SuccessOperation<String> onSuccess,
                       RestfulAsyncTask.MessageOperation onMessage) {
         if (account == null) {
             // 无信息不能登录
+            onMessage.onFailure(new ErrorBean("NO_LOGIN_INFO", ""));
         } else {
             new AuthTask(this, onSuccess, onMessage);
         }
@@ -95,8 +97,7 @@ public class AccountManager {
      * @param password 密码
      */
     public void register(String username, String password, RegisterCallback callback) {
-        // MD5
-        String storedPassword = digest(password);
+        String storedPassword = digest(username + password);
         // set account
         account = new Account(username, storedPassword);
         // 发送username和hexStoredPassword

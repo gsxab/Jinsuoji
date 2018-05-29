@@ -18,7 +18,7 @@ class UploadTask extends RestfulAsyncTask<Void> {
      */
     public UploadTask(AccountManager manager, final Context context,
                       SuccessOperation<Void> onSuccess, MessageOperation onMessage) {
-        super(ReqAttr.RESTFUL_POST, "/sync", onSuccess, onMessage);
+        super(ReqAttr.RESTFUL_PUT, "/sync", onSuccess, onMessage);
         new LoginTask(manager, new SuccessOperation<TokenBean>() {
             @Override
             public void onSuccess(TokenBean result) {
