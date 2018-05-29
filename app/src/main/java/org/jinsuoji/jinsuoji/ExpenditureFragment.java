@@ -35,7 +35,7 @@ import java.util.Locale;
  * Use the {@link ExpenditureFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ExpenditureFragment extends Fragment {
+public class ExpenditureFragment extends Fragment implements ListRefreshable {
     private static final String KEY_YEAR = "exp_year";
     private static final String KEY_MONTH = "exp_month";
 
@@ -188,11 +188,11 @@ public class ExpenditureFragment extends Fragment {
         tabNames.add(getString(R.string.details_by_category));
         //tabNames.add(getString(R.string.statistic));
         List<Fragment> fragments = new ArrayList<>(2);
-        listByDateFragment = ExpenditureListFragment.newInstance(view.getContext(),
-                year, month, 0, true);
+        listByDateFragment = ExpenditureListFragment
+                .newInstance(view.getContext(), year, month, 0, true, this);
         fragments.add(listByDateFragment);
         listByCategoryFragment = ExpenditureListFragment
-                .newInstance(view.getContext(), year, month, 0, false);
+                .newInstance(view.getContext(), year, month, 0, false, this);
         fragments.add(listByCategoryFragment);
         // ExpenditureChartsFragment.newInstance()
         PagerAdapter adapter = new PagerAdapter(getFragmentManager(),

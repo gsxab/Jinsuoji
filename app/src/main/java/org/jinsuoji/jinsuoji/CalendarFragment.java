@@ -28,7 +28,7 @@ import java.util.Calendar;
  * 日历页{@link Fragment}.
  * 日历+当日列表.
  */
-public class CalendarFragment extends Fragment {
+public class CalendarFragment extends Fragment implements ListRefreshable {
     private static final String TAG = "jsj.CalendarFragment";
     private static final int EDIT_EXPENSE = 4;
     private static final int EDIT_TODO = 5;
@@ -152,10 +152,11 @@ public class CalendarFragment extends Fragment {
 
         dailyExpenseList = view.findViewById(R.id.daily_expense_list);
         dailyExpenseList.setLayoutManager(new LinearLayoutManager(getContext()));
-        dailyExpenseList.setAdapter(new ExpenseListAdapter(getContext(), current.get(Calendar.YEAR),
-                current.get(Calendar.MONTH) + 1, current.get(Calendar.DATE), false));
+        ExpenseListAdapter adapter = new ExpenseListAdapter(getContext(), current.get(Calendar.YEAR),
+                current.get(Calendar.MONTH) + 1, current.get(Calendar.DATE), false);
+        //adapter.toRefresh = this;
+        dailyExpenseList.setAdapter(adapter);
         dailyExpenseList.addItemDecoration(new SpaceItemDecoration(16));
-        //dailyExpenseList.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
 
         dailyExpenseList.addOnItemTouchListener(new ItemTouchListener<>(
                 new ItemTouchListener.RecyclerViewOperator<EntryNode>() {

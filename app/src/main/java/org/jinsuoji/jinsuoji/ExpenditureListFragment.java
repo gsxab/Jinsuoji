@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,6 +37,7 @@ public class ExpenditureListFragment extends Fragment
     private static final String KEY_MONTH = "key_month";
     private static final String KEY_DATE = "key_date";
     private static final String KEY_BY_DATE = "key_by_date";
+    private static final String TAG = "o.j.j.ELF";
 
     private int year, month, date;
     private boolean byDate;
@@ -91,13 +91,16 @@ public class ExpenditureListFragment extends Fragment
         void onFragmentInteraction();
     }
 
-    public static ExpenditureListFragment newInstance(Context context, int year, int month, int date, boolean byDate) {
+    public static ExpenditureListFragment newInstance(
+            Context context, int year, int month, int date, boolean byDate,
+            ListRefreshable parent) {
         ExpenditureListFragment fragment = new ExpenditureListFragment();
         fragment.year = year;
         fragment.month = month;
         fragment.date = date;
         fragment.byDate = byDate;
         fragment.adapter = new ExpenseListAdapter(context, year, month, date, byDate);
+        fragment.adapter.toRefresh = parent;
         return fragment;
     }
 
@@ -123,28 +126,12 @@ public class ExpenditureListFragment extends Fragment
         Expense expense = (Expense) data.getSerializableExtra(ExpenseEditActivity.LAST_EXPENSE);
         new ExpenseDAO(getContext()).editExpense(expense);
         adapter.change(index, new EntryNode.ExpenseItem(expense));
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ((ExpenditureFragment) getParentFragment()).refreshList();
-                } catch (NullPointerException | ClassCastException ignored) {}
-            }
-        }, 1000);
     }
 
     @Override
     public void performRemove(View view, int pos, EntryNode data) {
         new ExpenseDAO(getContext()).delExpense(((EntryNode.ExpenseItem) data).getExpense().getId());
         adapter.remove(pos, data);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ((ExpenditureFragment) getParentFragment()).refreshList();
-                } catch (NullPointerException | ClassCastException ignored) {}
-            }
-        }, 1000);
     }
 
     @Override

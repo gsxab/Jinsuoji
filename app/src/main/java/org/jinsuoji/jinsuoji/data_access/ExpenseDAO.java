@@ -140,7 +140,7 @@ public class ExpenseDAO {
                         Expense expense = new Expense(
                                 cursor.getInt(0),
                                 cursor.getString(1),
-                                DateUtils.fromDateTimeString(cursor.getString(2)),
+                                DateUtils.fromDateString(cursor.getString(2)),
                                 cursor.getInt(3),
                                 cursor.getString(4));
                         entryNodes.add(new EntryNode.ExpenseItem(expense));

@@ -23,7 +23,7 @@ import org.jinsuoji.jinsuoji.model.Todo;
 /**
  * 任务页的{@link Fragment}.
  */
-public class TodoListFragment extends Fragment implements
+public class TodoListFragment extends Fragment implements ListRefreshable,
         CompoundButton.OnCheckedChangeListener {
     private static final int EDIT_TODO_UNFINISHED = 4;
     private static final int EDIT_TODO_FINISHED = 6;

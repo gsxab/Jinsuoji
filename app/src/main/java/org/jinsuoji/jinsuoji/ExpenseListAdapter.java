@@ -19,6 +19,8 @@ import java.util.List;
 public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.ViewHolder> {
     private List<EntryNode> nodes;
 
+    ListRefreshable toRefresh;
+
     private void pChangeDate(Context context, int year, int month, int date, boolean byDate) {
         if (date == 0) {
             if (byDate) {
@@ -103,6 +105,9 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.
         }
         notifyItemChanged(pos, data);
         nodes.set(pos, data);
+        if (toRefresh != null) {
+            toRefresh.refreshList();
+        }
     }
 
     public void remove(int pos, EntryNode data) {
@@ -110,8 +115,19 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.
             pos = getPos(((EntryNode.ExpenseItem) data));
             if (pos == -1) return;
         }
-        notifyItemRemoved(pos);
-        nodes.remove(pos);
+        if (pos != 0 && nodes.get(pos - 1).getType() == EntryNode.ItemType.CATEGORY &&
+                (pos + 1 == nodes.size() ||
+                        nodes.get(pos + 1).getType() == EntryNode.ItemType.CATEGORY)) {
+            notifyItemRangeRemoved(pos - 1, 2);
+            nodes.remove(pos - 1);
+            nodes.remove(pos - 1);
+        } else {
+            notifyItemRemoved(pos);
+            nodes.remove(pos);
+        }
+        if (toRefresh != null) {
+            toRefresh.refreshList();
+        }
     }
 
     /**
