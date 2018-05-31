@@ -19,7 +19,9 @@ import android.widget.Toast;
 import org.jinsuoji.jinsuoji.data_access.DBWrapper;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.data_access.Serializer;
+import org.jinsuoji.jinsuoji.data_access.TodoDAO;
 import org.jinsuoji.jinsuoji.model.Expense;
+import org.jinsuoji.jinsuoji.model.Todo;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,12 +68,15 @@ public class MainActivity extends AppCompatActivity implements
             switch (item.getItemId()) {
             case R.id.navigation_home:
                 pager.setCurrentItem(0);
+                ((CalendarFragment) fragments.get(0)).refreshList();
                 return true;
             case R.id.navigation_todo:
                 pager.setCurrentItem(1);
+                ((TodoListFragment) fragments.get(1)).refreshList();
                 return true;
             case R.id.navigation_expenditure:
                 pager.setCurrentItem(2);
+                ((ExpenditureFragment) fragments.get(2)).refreshList();
                 return true;
             case R.id.navigation_zhongcao:
                 Toast.makeText(MainActivity.this, getString(R.string.placeholder),
@@ -161,7 +166,9 @@ public class MainActivity extends AppCompatActivity implements
                     // TODO 弹出选择框
                 }   break;
                 case R.id.navigation_todo:{
-                    // TODO 进入任务编辑Activity
+                    Intent intent = new Intent(MainActivity.this, TodoEditActivity.class);
+                    intent.putExtra(TodoEditActivity.TIME, Calendar.getInstance().getTime());
+                    startActivityForResult(intent, CREATE_TODO);
                 }   break;
                 case R.id.navigation_expenditure:{
                     Intent intent = new Intent(MainActivity.this, ExpenseEditActivity.class);
@@ -181,10 +188,13 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.personal_info:
                 case R.id.about:
                 case R.id.feedback:
-                case R.id.sync_settings:
                     // TODO 这些个菜单项
                     Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
                             .show();
+                    break;
+                case R.id.sync_settings:
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
                     break;
                 case R.id.load_example:
                     Toast.makeText(MainActivity.this, R.string.load_example, Toast.LENGTH_SHORT).show();
@@ -216,9 +226,18 @@ public class MainActivity extends AppCompatActivity implements
                         } catch (ClassCastException ignored) {
                         }
                     }
-                }
-                case CREATE_TODO:
-                    // TODO 创建Todo的返回
+                } break;
+                case CREATE_TODO: {
+                    Todo todo = (Todo) data.getSerializableExtra(TodoEditActivity.LAST_TODO);
+                    TodoDAO todoDAO = new TodoDAO(this);
+                    todoDAO.addTodo(todo);
+                    if (navigation.getSelectedItemId() == R.id.navigation_todo) {
+                        try {
+                            ((TodoListFragment) fragments.get(pager.getCurrentItem())).refreshList();
+                        } catch (ClassCastException ignored) {
+                        }
+                    }
+                } break;
                 default:
                     // 这是Fragment调用的Activity在返回，不作处理
             }

@@ -37,7 +37,7 @@ public class TodoDAO {
         public void inLoop(Cursor cursor, List<Todo> entryNodes) {
             Todo todo = new Todo(
                     cursor.getInt(0),
-                    DateUtils.fromDateString(cursor.getString(4)),
+                    DateUtils.fromDateTimeString(cursor.getString(4)),
                     cursor.getString(1),
                     cursor.getInt(3),
                     cursor.getString(2),
@@ -134,6 +134,38 @@ public class TodoDAO {
         });
     }
 
+    static void addTodo(Todo todoItem, SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+        values.put("name", todoItem.getTaskName());
+        values.put("time", DateUtils.toDateTimeString(todoItem.getDateTime()));
+        values.put("memo", todoItem.getMemo());
+        values.put("priority", todoItem.getPriority());
+        values.put("finished", todoItem.isFinished());
+        db.insert(DBHelper.TODO, null, values);
+        todoItem.setId(query(db, "SELECT last_insert_rowid()", null, new QueryOperation<Integer>() {
+            @Override
+            public Integer operate(Cursor cursor) {
+                cursor.moveToFirst();
+                return cursor.getInt(0);
+            }
+        }));
+    }
+
+    /**
+     * 向数据库插入新的任务记录.传入的记录的id字段会被忽略，执行后设置为新建的id.
+     *
+     * @param todoItem 要插入的新的任务记录.id会被设置.
+     */
+    public void addTodo(final Todo todoItem) {
+        wrapper.write(new Operation<Void>() {
+            @Override
+            public Void operate(SQLiteDatabase db) {
+                replaceTodo(todoItem, db);
+                return null;
+            }
+        });
+    }
+
     static void replaceTodo(Todo todoItem, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         values.put("id", todoItem.getId());
@@ -143,21 +175,6 @@ public class TodoDAO {
         values.put("priority", todoItem.getPriority());
         values.put("finished", todoItem.isFinished());
         db.replace(DBHelper.TODO, null, values);
-    }
-
-    /**
-     * 向数据库插入新的任务记录.传入的记录的id字段会被忽略，执行后设置为新建的id.
-     *
-     * @param todoItem 要插入的新的任务记录.id会被设置.
-     */
-    public void replaceTodo(final Todo todoItem) {
-        wrapper.write(new Operation<Void>() {
-            @Override
-            public Void operate(SQLiteDatabase db) {
-                replaceTodo(todoItem, db);
-                return null;
-            }
-        });
     }
 
     /**
@@ -179,7 +196,13 @@ public class TodoDAO {
      * 删除指定id的任务记录.
      * @param id 要删除的记录id
      */
-    public void delTodo(int id) {
-        // TODO
+    public void delTodo(final int id) {
+        wrapper.write(new Operation<Void>() {
+            @Override
+            public Void operate(SQLiteDatabase db) {
+                db.delete(DBHelper.TODO, "id = ?", new String[]{String.valueOf(id)});
+                return null;
+            }
+        });
     }
 }

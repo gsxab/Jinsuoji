@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -54,12 +55,14 @@ public class ItemTouchListener<T extends ContextualStringConvertible> implements
     private RecyclerViewOperator<T> mOperator;
     private RecyclerView mRecyclerView;
 
-    ItemTouchListener(final RecyclerViewOperator<T> operator, RecyclerView recyclerView) {
+    ItemTouchListener(final RecyclerViewOperator<T> operator, RecyclerView recyclerView, final boolean right) {
         mOperator = operator;
         mRecyclerView = recyclerView;
         mGestureDetector = new GestureDetector(operator.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
+                if (right && e.getX() > 1150) return false; // 不知道是不是总可以，把多选框空出去
+                Log.d("ITL", "onSingleTapUp: " + e.getX());
                 return true;
             }
 

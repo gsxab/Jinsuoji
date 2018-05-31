@@ -36,6 +36,13 @@ public class DateUtils {
         }
     }
 
+    public static Date makeDate(int year, int month, int date, int hour, int minute) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(year, month - 1, date, hour, minute);
+        return calendar.getTime();
+    }
+
     public static Date makeDate(int year, int month, int date) {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();

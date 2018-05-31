@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ExpenseEditActivity" />
-        <activity android:name=".GuideActivity"></activity>
+        <activity android:name=".GuideActivity" />
+        <activity android:name=".TodoEditActivity" />
+        <activity android:name=".SettingsActivity" />
     </application>
 
 </manifest>

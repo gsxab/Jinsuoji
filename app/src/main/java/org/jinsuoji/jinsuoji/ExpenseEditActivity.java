@@ -1,21 +1,18 @@
 package org.jinsuoji.jinsuoji;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.jzxiang.pickerview.TimePickerDialog;
-import com.jzxiang.pickerview.data.Type;
-import com.jzxiang.pickerview.listener.OnDateSetListener;
 
 import org.jinsuoji.jinsuoji.data_access.DateUtils;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
@@ -42,36 +39,16 @@ public class ExpenseEditActivity extends AppCompatActivity {
     ImageButton cancel, ok;
 
     public void showDateTimeDialog(View v) {
-        TimePickerDialog dialog = new TimePickerDialog.Builder()
-                .setCallBack(new OnDateSetListener() {
-                    @Override
-                    public void onDateSet(TimePickerDialog timePickerView, final long millseconds) {
-                        time.setText(DateUtils.toDateTimeString(new Date(millseconds)));
-                        Log.d(TAG, "after setText: " + time.getText());
-                    }
-                })
-                .setCancelStringId(getString(R.string.cancel))
-                .setSureStringId(getString(R.string.ok))
-                .setTitleStringId(getString(R.string.time))
-                .setYearText(getString(R.string.year))
-                .setMonthText(getString(R.string.month))
-                .setDayText(getString(R.string.date_of_month))
-                .setType(Type.YEAR_MONTH_DAY)
-                .setCyclic(false)
-                .setCurrentMillseconds(System.currentTimeMillis())
-                .setThemeColor(getResources().getColor(R.color.colorPrimary))
-                .setWheelItemTextNormalColor(R.color.colorPrimaryDark)
-                .setWheelItemTextSelectorColor(R.color.colorAccent)
-                .setWheelItemTextSize(14)
-                .build();
-//        以下代码不能用.这个库的布局的工具栏字体大小竟然是写死的.
-//        View dialogView = dialog.getView();
-//        if (dialogView != null) {
-//            ((TextView) dialogView.findViewById(R.id.tv_cancel)).setTextSize(18);
-//            ((TextView) dialogView.findViewById(R.id.tv_title)).setTextSize(18);
-//            ((TextView) dialogView.findViewById(R.id.tv_sure)).setTextSize(18);
-//        }
-        dialog.show(getSupportFragmentManager(), TAG);
+        Calendar calendar = Calendar.getInstance();
+        //noinspection ConstantConditions
+        calendar.setTimeInMillis(DateUtils.fromDateString(time.getText().toString()).getTime());
+        new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                time.setText(DateUtils.toDateString(DateUtils.makeDate(year, month + 1, dayOfMonth)));
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+                .show();
     }
 
     @Override
@@ -124,6 +101,7 @@ public class ExpenseEditActivity extends AppCompatActivity {
                     return;
                 }
                 intent.putExtra(LAST_EXPENSE, expense);
+                intent.putExtra(INDEX, getIntent().getIntExtra(INDEX, -1));
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -135,7 +113,6 @@ public class ExpenseEditActivity extends AppCompatActivity {
         money.setText(expense.getMoney() == 0 ? "" : String.format(Locale.getDefault(),
                 "%1$.2f", expense.getMoney() / 100f));
         category.setText(expense.getCategory() == null ? "" : expense.getCategory());
-
         category.setAdapter(new ArrayAdapter<>(this,
                 android.R.layout.simple_dropdown_item_1line/*layout_id*/,
                 new ExpenseDAO(this).getAllCategories()));
