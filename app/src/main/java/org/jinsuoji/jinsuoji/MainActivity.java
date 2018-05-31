@@ -166,18 +166,14 @@ public class MainActivity extends AppCompatActivity implements
                     // TODO 弹出选择框
                 }   break;
                 case R.id.navigation_todo:{
-                    Intent intent = new Intent(MainActivity.this, TodoEditActivity.class);
-                    intent.putExtra(TodoEditActivity.TIME, Calendar.getInstance().getTime());
-                    startActivityForResult(intent, CREATE_TODO);
+                    showCreateTodo();
                 }   break;
                 case R.id.navigation_expenditure:{
-                    Intent intent = new Intent(MainActivity.this, ExpenseEditActivity.class);
-                    intent.putExtra(ExpenseEditActivity.TIME, Calendar.getInstance().getTime());
-                    startActivityForResult(intent, CREATE_EXPENSE);
+                    showCreateExpense();
                 }   break;
-                case R.id.navigation_zhongcao:{
-                    // TODO ?
-                }   break;
+                //case R.id.navigation_zhongcao:{
+                //
+                //}   break;
                 }
             }
         });
@@ -209,6 +205,18 @@ public class MainActivity extends AppCompatActivity implements
                 return false;
             }
         });
+    }
+
+    private void showCreateExpense() {
+        Intent intent = new Intent(MainActivity.this, ExpenseEditActivity.class);
+        intent.putExtra(ExpenseEditActivity.TIME, Calendar.getInstance().getTime());
+        startActivityForResult(intent, CREATE_EXPENSE);
+    }
+
+    private void showCreateTodo() {
+        Intent intent = new Intent(MainActivity.this, TodoEditActivity.class);
+        intent.putExtra(TodoEditActivity.TIME, Calendar.getInstance().getTime());
+        startActivityForResult(intent, CREATE_TODO);
     }
 
     @Override
