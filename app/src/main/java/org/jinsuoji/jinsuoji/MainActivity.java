@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements
                 case CREATE_EXPENSE: {
                     Expense expense = (Expense) data.getSerializableExtra(ExpenseEditActivity.LAST_EXPENSE);
                     ExpenseDAO expenseDAO = new ExpenseDAO(this);
-                    expenseDAO.replaceExpense(expense);
+                    expenseDAO.addExpense(expense);
                     if (navigation.getSelectedItemId() == R.id.navigation_expenditure) {
                         try {
                             ((ExpenditureFragment) fragments.get(pager.getCurrentItem())).refreshList();

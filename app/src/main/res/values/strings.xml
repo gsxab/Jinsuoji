@@ -88,6 +88,9 @@
     <string name="pref_title_sync_frequence_week">每周同步一次</string>
     <string name="pref_title_sync_frequence_month">每月同步一次</string>
     <string name="pref_title_sync_wifi">只在WIFI下同步</string>
+    <string name="motto">今日事，今日记</string>
+    <string name="login">登 录</string>
+    <string name="register">注 册</string>
 
     <!-- entries 是显示在界面上的-->
     <string-array name="pref_entries_sync_frequence">
