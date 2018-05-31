@@ -7,8 +7,9 @@ import org.jinsuoji.jinsuoji.data_access.Serializer;
 
 import java.net.HttpURLConnection;
 
-class DownloadTask extends RestfulAsyncTask<Serializer.DBMirror> {
+public class DownloadTask extends RestfulAsyncTask<Serializer.DBMirror> {
     private String token;
+    private final LoginTask loginTask;
 
     /**
      * 构造并访问执行一个对sync的GET请求，包括之前的login的和salt请求.
@@ -26,11 +27,10 @@ class DownloadTask extends RestfulAsyncTask<Serializer.DBMirror> {
                 onSuccess.onSuccess(result);
             }
         }, onMessage);
-        new LoginTask(manager, new SuccessOperation<TokenBean>() {
+        loginTask = new LoginTask(manager, new SuccessOperation<TokenBean>() {
             @Override
             public void onSuccess(TokenBean result) {
                 token = result.getToken();
-                execute();
                 DownloadTask.this.execute(null, Serializer.DBMirror.class);
             }
         }, onMessage);
@@ -39,5 +39,10 @@ class DownloadTask extends RestfulAsyncTask<Serializer.DBMirror> {
     @Override
     protected void decorate(HttpURLConnection conn) {
         conn.setRequestProperty("Token", token);
+    }
+
+    @Override
+    public void start() {
+        loginTask.start();
     }
 }

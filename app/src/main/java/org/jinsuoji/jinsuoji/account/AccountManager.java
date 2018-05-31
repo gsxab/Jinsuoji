@@ -1,12 +1,17 @@
 package org.jinsuoji.jinsuoji.account;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import org.jinsuoji.jinsuoji.data_access.Serializer;
 import org.jinsuoji.jinsuoji.net.AuthTask;
+import org.jinsuoji.jinsuoji.net.DownloadTask;
 import org.jinsuoji.jinsuoji.net.ErrorBean;
+import org.jinsuoji.jinsuoji.net.RegisterTask;
 import org.jinsuoji.jinsuoji.net.RestfulAsyncTask;
+import org.jinsuoji.jinsuoji.net.UploadTask;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -24,11 +29,11 @@ public class AccountManager {
         return manager;
     }
 
-    void retrieveAccount() {
+    private void retrieveAccount() {
         // TODO 从本地存储获取account
     }
 
-    void saveAccount() {
+    private void saveAccount() {
         // TODO 向本地存储写入account
     }
 
@@ -36,8 +41,9 @@ public class AccountManager {
         // retrieveAccount();
     }
 
-    public boolean hasLoginInfo() {
-        return account != null;
+    public boolean checkNoLoginInfo() {
+        if (account == null) retrieveAccount();
+        return account == null;
     }
 
     private @Nullable Account account;
@@ -76,38 +82,68 @@ public class AccountManager {
      * @param onSuccess 验证成功
      * @param onMessage 验证失败及信息
      */
-    public void login(RestfulAsyncTask.SuccessOperation<String> onSuccess,
+    public void login(final RestfulAsyncTask.SuccessOperation<String> onSuccess,
                       RestfulAsyncTask.MessageOperation onMessage) {
         if (account == null) {
             // 无信息不能登录
             onMessage.onFailure(new ErrorBean("NO_LOGIN_INFO", ""));
         } else {
-            new AuthTask(this, onSuccess, onMessage);
+            new AuthTask(this, new RestfulAsyncTask.SuccessOperation<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    saveAccount();
+                    onSuccess.onSuccess(result);
+                }
+            }, onMessage).start();
         }
     }
 
-    interface RegisterCallback {
-        void onInfo(String string);
-        void onRegisterSuccess(Account account);
-    }
-
     /**
-     * UI线程或子线程中使用.
+     * UI线程使用.注册.
      * @param username 用户名
      * @param password 密码
+     * @param onSuccess 验证成功
+     * @param onMessage 验证失败及信息
      */
-    public void register(String username, String password, RegisterCallback callback) {
+    public void register(String username, String password,
+                         RestfulAsyncTask.SuccessOperation<String> onSuccess,
+                         RestfulAsyncTask.MessageOperation onMessage) {
         String storedPassword = digest(username + password);
         // set account
         account = new Account(username, storedPassword);
         // 发送username和hexStoredPassword
-
-        // 服务器回调成功/失败
-
+        new RegisterTask(this, account, onSuccess, onMessage).start();
     }
 
+    /**
+     * UI线程使用.注销.
+     */
     public void logout() {
         account = null;
         saveAccount();
+    }
+
+    /**
+     * UI线程使用.上同步.
+     * @param context 上下文，用于取得数据库
+     * @param onSuccess 上传成功
+     * @param onMessage 上传失败及信息
+     */
+    public void upload(Context context,
+                       RestfulAsyncTask.SuccessOperation<Void> onSuccess,
+                       RestfulAsyncTask.MessageOperation onMessage) {
+        new UploadTask(this, context, onSuccess, onMessage).start();
+    }
+
+    /**
+     * UI线程使用.上同步.
+     * @param context 上下文，用于取得数据库
+     * @param onSuccess 上传成功
+     * @param onMessage 上传失败及信息
+     */
+    public void download(Context context,
+                       RestfulAsyncTask.SuccessOperation<Serializer.DBMirror> onSuccess,
+                       RestfulAsyncTask.MessageOperation onMessage) {
+        new DownloadTask(this, context, onSuccess, onMessage).start();
     }
 }

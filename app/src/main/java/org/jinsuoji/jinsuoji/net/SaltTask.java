@@ -20,6 +20,8 @@ class SaltTask extends RestfulAsyncTask<SaltTask.SaltBean> {
         }
     }
 
+    private AccountBean bean;
+
     /**
      * 构造并访问执行一个对login_salt的请求.
      * @param bean 账户信息，仅username字段有效
@@ -27,6 +29,11 @@ class SaltTask extends RestfulAsyncTask<SaltTask.SaltBean> {
      */
     SaltTask(AccountBean bean, SuccessOperation<SaltBean> op, MessageOperation onMessage) {
         super(ReqAttr.RESTFUL_LOGIN, "/login_salt", op, onMessage);
+        this.bean = bean;
+    }
+
+    @Override
+    public void start() {
         super.execute(bean, TokenBean.class);
     }
 }

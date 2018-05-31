@@ -15,7 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-public class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Object> {
+public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Object> {
     public interface SuccessOperation<T> {
         void onSuccess(T result);
     }
@@ -138,4 +138,6 @@ public class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Object> {
     }
 
     protected void decorate(HttpURLConnection conn) {}
+
+    public abstract void start();
 }
