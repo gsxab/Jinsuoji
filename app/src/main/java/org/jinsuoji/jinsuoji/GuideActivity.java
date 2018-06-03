@@ -14,14 +14,27 @@ import org.jinsuoji.jinsuoji.net.ToastOnFailure;
 
 public class GuideActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String TAG = "o.j.j.GuideActivity";
-    public static final String USER_NAME = "org.jinsuoji.jinsuoji.UserName";
+    public static final String HAS_USER_NAME = "org.jinsuoji.jinsuoji.UserName";
     TextView skip;
     Button okLogin, okRegister;
     EditText username, password;
+    boolean status;
+
+    @Override
+    public void onBackPressed() {
+        if (status) {
+            status = false;
+            findViewById(R.id.edit_wrapper).setVisibility(View.GONE);
+            findViewById(R.id.button_wrapper).setVisibility(View.VISIBLE);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        status = false;
         setContentView(R.layout.activity_guide);
 
         Button login = findViewById(R.id.login);
@@ -48,6 +61,7 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
             public void onClick(View v) {
                 String username = GuideActivity.this.username.getText().toString();
                 String password = GuideActivity.this.password.getText().toString();
+                if (username.isEmpty() || password.isEmpty()) return;
                 AccountManager.getInstance()
                         .setInfo(username, password)
                         .login(new RestfulAsyncTask.SuccessOperation<String>() {
@@ -55,12 +69,8 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
                             public void onSuccess(String result) {
                                 startMainActivity(true);
                             }
-                        }, new ToastOnFailure(GuideActivity.this), new RestfulAsyncTask.MessageOperation() {
-                            @Override
-                            public void onProgressUpdate(int phase) {
-                                //TODO 登录显示进度
-                            }
-                        });
+                        }, new ToastOnFailure(GuideActivity.this),
+                                RestfulAsyncTask.MessageOperation.ignore);
             }
         });
         okRegister.setOnClickListener(new View.OnClickListener() {
@@ -68,18 +78,15 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
             public void onClick(View v) {
                 String username = GuideActivity.this.username.getText().toString();
                 String password = GuideActivity.this.password.getText().toString();
+                if (username.isEmpty() || password.isEmpty()) return;
                 AccountManager.getInstance()
                         .register(username, password, new RestfulAsyncTask.SuccessOperation<String>() {
                             @Override
                             public void onSuccess(String result) {
                                 startMainActivity(true);
                             }
-                        }, new ToastOnFailure(GuideActivity.this), new RestfulAsyncTask.MessageOperation() {
-                            @Override
-                            public void onProgressUpdate(int phase) {
-                                // TODO 注册显示进度
-                            }
-                        });
+                        }, new ToastOnFailure(GuideActivity.this),
+                                RestfulAsyncTask.MessageOperation.ignore);
             }
         });
     }
@@ -87,15 +94,14 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
     private void startMainActivity(boolean withAccount) {
         Preference.setGuided(GuideActivity.this);
         Intent intent = new Intent(this, MainActivity.class);
-        if (withAccount) {
-            intent.putExtra(USER_NAME, AccountManager.getInstance().getUsername());
-        }
+        intent.putExtra(HAS_USER_NAME, withAccount);
         startActivity(intent);
         finish();
     }
 
     @Override
     public void onClick(View v) {
+        status = true;
         findViewById(R.id.button_wrapper).setVisibility(View.GONE);
         findViewById(R.id.edit_wrapper).setVisibility(View.VISIBLE);
     }

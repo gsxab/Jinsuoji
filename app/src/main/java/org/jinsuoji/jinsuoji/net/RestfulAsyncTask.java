@@ -23,6 +23,11 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
     }
     public interface MessageOperation {
         void onProgressUpdate(int phase);
+        MessageOperation ignore = new MessageOperation() {
+            @Override
+            public void onProgressUpdate(int phase) {
+            }
+        };
     }
 
     private static final String BASE_URL = "http://60.205.186.150/";
