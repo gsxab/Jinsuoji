@@ -83,10 +83,11 @@ public class AccountManager {
      * @param onMessage 验证失败及信息
      */
     public void login(final RestfulAsyncTask.SuccessOperation<String> onSuccess,
+                      RestfulAsyncTask.FailureOperation onFailure,
                       RestfulAsyncTask.MessageOperation onMessage) {
         if (account == null) {
             // 无信息不能登录
-            onMessage.onFailure(new ErrorBean("NO_LOGIN_INFO", ""));
+            onFailure.onFailure(new ErrorBean("NO_LOGIN_INFO", ""));
         } else {
             new AuthTask(this, new RestfulAsyncTask.SuccessOperation<String>() {
                 @Override
@@ -94,7 +95,7 @@ public class AccountManager {
                     saveAccount();
                     onSuccess.onSuccess(result);
                 }
-            }, onMessage).start();
+            }, onFailure, onMessage).start();
         }
     }
 
@@ -103,16 +104,21 @@ public class AccountManager {
      * @param username 用户名
      * @param password 密码
      * @param onSuccess 验证成功
-     * @param onMessage 验证失败及信息
+     * @param onFailure 验证失败
+     * @param onMessage 验证信息
      */
     public void register(String username, String password,
-                         RestfulAsyncTask.SuccessOperation<String> onSuccess,
+                         final RestfulAsyncTask.SuccessOperation<String> onSuccess,
+                         RestfulAsyncTask.FailureOperation onFailure,
                          RestfulAsyncTask.MessageOperation onMessage) {
-        String storedPassword = digest(username + password);
-        // set account
-        account = new Account(username, storedPassword);
-        // 发送username和hexStoredPassword
-        new RegisterTask(this, account, onSuccess, onMessage).start();
+        setInfo(username, password);
+        new RegisterTask(account, new RestfulAsyncTask.SuccessOperation<String>() {
+            @Override
+            public void onSuccess(String result) {
+                saveAccount();
+                onSuccess.onSuccess(result);
+            }
+        },  onFailure, onMessage).start();
     }
 
     /**
@@ -129,10 +135,10 @@ public class AccountManager {
      * @param onSuccess 上传成功
      * @param onMessage 上传失败及信息
      */
-    public void upload(Context context,
-                       RestfulAsyncTask.SuccessOperation<Void> onSuccess,
+    public void upload(Context context, RestfulAsyncTask.SuccessOperation<Void> onSuccess,
+                       RestfulAsyncTask.FailureOperation onFailure,
                        RestfulAsyncTask.MessageOperation onMessage) {
-        new UploadTask(this, context, onSuccess, onMessage).start();
+        new UploadTask(this, context, onSuccess, onFailure, onMessage).start();
     }
 
     /**
@@ -143,7 +149,14 @@ public class AccountManager {
      */
     public void download(Context context,
                        RestfulAsyncTask.SuccessOperation<Serializer.DBMirror> onSuccess,
+                       RestfulAsyncTask.FailureOperation onFailure,
                        RestfulAsyncTask.MessageOperation onMessage) {
-        new DownloadTask(this, context, onSuccess, onMessage).start();
+        new DownloadTask(this, context, onSuccess, onFailure, onMessage).start();
+    }
+
+    public AccountManager setInfo(String username, String password) {
+        String storedPassword = digest(username + password);
+        account = new Account(username, storedPassword);
+        return this;
     }
 }

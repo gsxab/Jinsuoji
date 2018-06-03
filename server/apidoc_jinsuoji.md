@@ -106,6 +106,15 @@ Connection: keep-alive
 
 #### 用户名不合法
 ``` http
+HTTP/1.1 400 Bad Request
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 41
+ETag: W/"29-pB4Y58x3ZUI33KtgYkp0gKPqBNk"
+Date: Thu, 31 May 2018 06:04:42 GMT
+Connection: keep-alive
+
+{"error":"USERNAME_INVALID","data":"../"}
 
 ```
 
@@ -221,7 +230,7 @@ Connection: keep-alive
 
 ```
 
-#### 盐使用过了或不是最新请求的
+#### 盐使用过了或不是最新请求的或假的
 
 ``` http
 HTTP/1.1 400 Bad Request

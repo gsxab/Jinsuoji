@@ -17,9 +17,9 @@ public class UploadTask extends RestfulAsyncTask<Void> {
      * @param onSuccess 回调
      * @param onMessage 显示消息
      */
-    public UploadTask(AccountManager manager, final Context context,
-                      SuccessOperation<Void> onSuccess, MessageOperation onMessage) {
-        super(ReqAttr.RESTFUL_PUT, "/sync", onSuccess, onMessage);
+    public UploadTask(AccountManager manager, final Context context, SuccessOperation<Void> onSuccess,
+                      FailureOperation onFailure, MessageOperation onMessage) {
+        super(ReqAttr.RESTFUL_PUT, "/sync", onSuccess, onFailure, onMessage);
         loginTask = new LoginTask(manager, new SuccessOperation<TokenBean>() {
             @Override
             public void onSuccess(TokenBean result) {
@@ -27,7 +27,7 @@ public class UploadTask extends RestfulAsyncTask<Void> {
                 Serializer.DBMirror mirror = new Serializer(context).export();
                 UploadTask.this.execute(mirror);
             }
-        }, onMessage);
+        }, onFailure, onMessage);
     }
 
     @Override

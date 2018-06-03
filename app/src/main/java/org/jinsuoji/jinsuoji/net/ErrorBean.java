@@ -1,6 +1,8 @@
 package org.jinsuoji.jinsuoji.net;
 
 public class ErrorBean {
+    public ErrorBean() {}
+
     public ErrorBean(String error, String data) {
         this.error = error;
         this.data = data;

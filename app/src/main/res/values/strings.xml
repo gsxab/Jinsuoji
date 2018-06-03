@@ -91,6 +91,17 @@
     <string name="motto">今日事，今日记</string>
     <string name="login">登 录</string>
     <string name="register">注 册</string>
+    <string name="login_success">登录成功</string>
+    <string name="username">用户名</string>
+    <string name="password">密码</string>
+    <string name="no_login_info">尚未登录</string>
+    <string name="username_too_long">用户名“%s”超过长度限制</string>
+    <string name="missing_args2">服务器报错数据不完整，缺少%s</string>
+    <string name="user_exists">用户名“%s”已存在</string>
+    <string name="username_invalid">用户名“%s”中含有汉字、数字、英文字母、下划线、横线以外的字符</string>
+    <string name="user_not_found">用户名“%s”未找到</string>
+    <string name="essential_timeout">登录过程中超时</string>
+    <string name="login_incorrect">用户名或密码不正确</string>
 
     <!-- entries 是显示在界面上的-->
     <string-array name="pref_entries_sync_frequence">

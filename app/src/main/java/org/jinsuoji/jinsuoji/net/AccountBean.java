@@ -1,5 +1,6 @@
 package org.jinsuoji.jinsuoji.net;
 
+@SuppressWarnings("WeakerAccess")
 public class AccountBean {
     public AccountBean() {
         req = false;
@@ -7,6 +8,7 @@ public class AccountBean {
 
     private String username;
     private String encrypted;
+    private String salt;
     private boolean req;
 
     public String getUsername() {
@@ -31,5 +33,13 @@ public class AccountBean {
 
     public void setReq(boolean req) {
         this.req = req;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 }

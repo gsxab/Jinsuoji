@@ -32,9 +32,7 @@
             android:text="@string/edit_todo"
             android:textColor="@color/colorInActionBar"
             android:textSize="@dimen/title_font_size"
-            tools:ignore="SpUsage"
-            tools:layout_editor_absoluteX="144dp"
-            tools:layout_editor_absoluteY="12dp" />
+            tools:ignore="SpUsage" />
 
         <ImageButton
             android:id="@+id/toolbar_ok"

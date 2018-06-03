@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements
             intent.setClass(this, GuideActivity.class);
             startActivity(intent);
             finish();
+            return;
         }
 
         navigation = findViewById(R.id.navigation);

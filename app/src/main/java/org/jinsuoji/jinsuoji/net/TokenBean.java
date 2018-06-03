@@ -1,6 +1,9 @@
 package org.jinsuoji.jinsuoji.net;
 
 public class TokenBean {
+    public TokenBean() {
+    }
+
     private String token;
 
     public TokenBean(String token) {

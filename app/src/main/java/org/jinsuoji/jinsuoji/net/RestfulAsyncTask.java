@@ -10,17 +10,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Object> {
     public interface SuccessOperation<T> {
         void onSuccess(T result);
     }
-    public interface MessageOperation {
+    public interface FailureOperation {
         void onFailure(ErrorBean errorBean);
+    }
+    public interface MessageOperation {
         void onProgressUpdate(int phase);
     }
 
@@ -30,19 +31,25 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
     private ReqAttr reqAttr;
     private String api;
     private SuccessOperation<T> onSuccess;
+    private FailureOperation onFailure;
     private MessageOperation onMessage;
     private boolean successFlag = false;
 
     RestfulAsyncTask(ReqAttr reqAttr, String api, SuccessOperation<T> onSuccess,
-                     MessageOperation onMessage) {
+                     FailureOperation onFailure, MessageOperation onMessage) {
         super();
         this.reqAttr = reqAttr;
-        try {
-            this.api = URLEncoder.encode(api, "UTF-8");
-        } catch (UnsupportedEncodingException ignored) {
-            // never
+        if (api.startsWith("/")) {
+            api = api.substring(1);
         }
+//        try {
+//            this.api = URLEncoder.encode(api, "UTF-8");
+//        } catch (UnsupportedEncodingException ignored) {
+//            // never
+//        }
+        this.api = api;
         this.onSuccess = onSuccess;
+        this.onFailure = onFailure;
         this.onMessage = onMessage;
     }
 
@@ -75,6 +82,7 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
             publishProgress(2);
             conn.connect();
             publishProgress(3);
+            Log.d(TAG, "doInBackground: response code " + conn.getResponseCode());
             successFlag = conn.getResponseCode() == reqAttr.successCode;
             if (successFlag) {
                 if (reqAttr.openInputStream) {
@@ -104,7 +112,11 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
                 publishProgress(4);
                 return result;
             }
-        } catch (IOException ignored) {}
+        } catch (ConnectException e) {
+            result = new ErrorBean("CONNECTION_FAILED", "");
+        } catch (IOException e) {
+            Log.d(TAG, "doInBackground: error", e);
+        }
         publishProgress(5);
         return result;
     }
@@ -115,7 +127,7 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
         if (successFlag) {
             onSuccess.onSuccess((T) result);
         } else {
-            onMessage.onFailure(((ErrorBean) result));
+            onFailure.onFailure(((ErrorBean) result));
         }
         super.onPostExecute(result);
     }

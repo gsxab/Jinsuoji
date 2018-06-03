@@ -18,7 +18,8 @@ public class DownloadTask extends RestfulAsyncTask<Serializer.DBMirror> {
      * @param onMessage 显示消息
      */
     public DownloadTask(AccountManager manager, final Context context,
-                        final SuccessOperation<Serializer.DBMirror> onSuccess, MessageOperation onMessage) {
+                        final SuccessOperation<Serializer.DBMirror> onSuccess,
+                        FailureOperation onFailure, MessageOperation onMessage) {
         super(ReqAttr.RESTFUL_GET, "/sync", new SuccessOperation<Serializer.DBMirror>() {
             @Override
             public void onSuccess(Serializer.DBMirror result) {
@@ -26,14 +27,14 @@ public class DownloadTask extends RestfulAsyncTask<Serializer.DBMirror> {
                 serializer.replaceImport(result);
                 onSuccess.onSuccess(result);
             }
-        }, onMessage);
+        }, onFailure, onMessage);
         loginTask = new LoginTask(manager, new SuccessOperation<TokenBean>() {
             @Override
             public void onSuccess(TokenBean result) {
                 token = result.getToken();
                 DownloadTask.this.execute(null, Serializer.DBMirror.class);
             }
-        }, onMessage);
+        }, onFailure, onMessage);
     }
 
     @Override
