@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_stars"
+            android:src="@drawable/welcome_page"
             android:contentDescription="@string/app_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
