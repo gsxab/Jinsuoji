@@ -134,7 +134,7 @@ public class TodoDAO {
         });
     }
 
-    static void addTodo(Todo todoItem, SQLiteDatabase db) {
+    private static void addTodo(Todo todoItem, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         values.put("name", todoItem.getTaskName());
         values.put("time", DateUtils.toDateTimeString(todoItem.getDateTime()));
@@ -160,7 +160,7 @@ public class TodoDAO {
         wrapper.write(new Operation<Void>() {
             @Override
             public Void operate(SQLiteDatabase db) {
-                replaceTodo(todoItem, db);
+                addTodo(todoItem, db);
                 return null;
             }
         });

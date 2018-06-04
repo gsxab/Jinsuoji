@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import org.jinsuoji.jinsuoji.data_access.TodoDAO;
 import org.jinsuoji.jinsuoji.model.Todo;
 
+import java.util.Calendar;
 import java.util.List;
 
 //import android.widget.CheckedTextView
@@ -46,6 +48,17 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
             name = view.findViewById(R.id.todo_name);
             memo = view.findViewById(R.id.todo_memo);
             finished = view.findViewById(R.id.todo_finished);
+            mView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent motionEvent) {
+                    if (v.getId() == finished.getId()) {
+                        finished.performClick();
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            });
         }
         TextView name;
         TextView memo;
@@ -64,19 +77,23 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         Todo todo = todoList.get(position);
         holder.name.setText(todo.getTaskName());
         holder.finished.setChecked(todo.isFinished());
         holder.finished.setTag(position);
         holder.finished.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            private static final int MIN_CLICK_DELAY_TIME = 1000;
+            private long lastClickTime = 0;
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                int position = (int) buttonView.getTag();
-                Todo todo = todoList.get(position);
-                todo.setFinished(isChecked);
-                new TodoDAO(buttonView.getContext()).editTodo(todo);
-                refreshable.refreshList();
+                long currentTime = Calendar.getInstance().getTimeInMillis();
+                if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+                    int position = (int) buttonView.getTag();
+                    Todo todo = todoList.get(position);
+                    new TodoDAO(buttonView.getContext()).changeStateById(todo.getId(), isChecked);
+                    refreshable.refreshList();
+                }
             }
         });
         holder.memo.setText(todo.getMemo());
