@@ -1,6 +1,7 @@
 package org.jinsuoji.jinsuoji;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,15 +23,18 @@ import java.util.List;
  */
 public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHolder> {
     private List<Todo> todoList;
+    private final ListRefreshable refreshable;
 
-    TodoListAdaptor(Context context, int year, int month, int day) {
+    TodoListAdaptor(Context context, ListRefreshable refreshable, int year, int month, int day) {
         super();
         todoList = new TodoDAO(context).getDaily(year, month, day);
+        this.refreshable = refreshable;
     }
 
-    TodoListAdaptor(Context context, boolean finished) {
+    TodoListAdaptor(Context context, ListRefreshable refreshable, boolean finished) {
         super();
         todoList = new TodoDAO(context).getTodoListByFinished(finished);
+        this.refreshable = refreshable;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -72,16 +76,31 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
                 Todo todo = todoList.get(position);
                 todo.setFinished(isChecked);
                 new TodoDAO(buttonView.getContext()).editTodo(todo);
+                refreshable.refreshList();
             }
         });
         holder.memo.setText(todo.getMemo());
         holder.mView.setTag(todo);
     }
 
-    public void setNewDate(Context context, int year, int month, int day) {
-        notifyItemRangeRemoved(0, getItemCount());
+    public void refresh(Context context, int year, int month, int day) {
         todoList = new TodoDAO(context).getDaily(year, month, day);
-        notifyItemRangeInserted(0, getItemCount());
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+    }
+
+    public void refresh(Context context, boolean finished) {
+        todoList = new TodoDAO(context).getTodoListByFinished(finished);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     public void change(int pos, Todo data) {

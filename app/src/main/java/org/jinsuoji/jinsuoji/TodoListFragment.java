@@ -72,7 +72,7 @@ public class TodoListFragment extends Fragment implements ListRefreshable,
         finishedListView.setVisibility(View.VISIBLE);
         finishedListTitle.setVisibility(View.VISIBLE);
         finishedListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        finishedListView.setAdapter(new TodoListAdaptor(getContext(), true));
+        finishedListView.setAdapter(new TodoListAdaptor(getContext(), this, true));
         finishedListView.addItemDecoration(decoration);
     }
 
@@ -86,7 +86,7 @@ public class TodoListFragment extends Fragment implements ListRefreshable,
     public void onViewCreated(final @NonNull View view, @Nullable Bundle savedInstanceState) {
         unfinishedListView = view.findViewById(R.id.unfinished_list);
         unfinishedListView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        unfinishedListView.setAdapter(new TodoListAdaptor(getContext(), false));
+        unfinishedListView.setAdapter(new TodoListAdaptor(getContext(), this, false));
         unfinishedListView.addOnItemTouchListener(new ItemTouchListener<>(
                 new ItemTouchListener.RecyclerViewOperator<Todo>() {
                     @Override
@@ -195,9 +195,9 @@ public class TodoListFragment extends Fragment implements ListRefreshable,
 
     public void refreshList() {
         if (unfinishedListView != null) {
-            unfinishedListView.getAdapter().notifyDataSetChanged();
+            ((TodoListAdaptor) unfinishedListView.getAdapter()).refresh(getContext(), false);
             if (Preference.getShowFinished(getContext())) {
-                finishedListView.getAdapter().notifyDataSetChanged();
+                ((TodoListAdaptor) finishedListView.getAdapter()).refresh(getContext(), true);
             }
         }
     }

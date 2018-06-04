@@ -78,11 +78,11 @@ public class MainActivity extends AppCompatActivity implements
                 pager.setCurrentItem(2);
                 ((ExpenditureFragment) fragments.get(2)).refreshList();
                 return true;
-            case R.id.navigation_zhongcao:
-                Toast.makeText(MainActivity.this, getString(R.string.placeholder),
-                        Toast.LENGTH_SHORT).show();
-                //pager.setCurrentItem(3);
-                return false;
+            //case R.id.navigation_zhongcao:
+            //    Toast.makeText(MainActivity.this, getString(R.string.placeholder),
+            //            Toast.LENGTH_SHORT).show();
+            //    //pager.setCurrentItem(3);
+            //    return false;
             }
             return false;
         }

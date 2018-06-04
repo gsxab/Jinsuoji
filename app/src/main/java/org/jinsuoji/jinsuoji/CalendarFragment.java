@@ -87,7 +87,7 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
                 tempCalendar.clear();
                 tempCalendar.set(year, month, dayOfMonth);
                 current = tempCalendar;
-                ((TodoListAdaptor) dailyTodoList.getAdapter()).setNewDate(getActivity(),
+                ((TodoListAdaptor) dailyTodoList.getAdapter()).refresh(getActivity(),
                         year, month + 1, dayOfMonth);
                 ((ExpenseListAdapter) dailyExpenseList.getAdapter()).setNewDate(getActivity(),
                         year, month + 1, dayOfMonth, true);
@@ -117,8 +117,8 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
 
         dailyTodoList = view.findViewById(R.id.daily_todo_list);
         dailyTodoList.setLayoutManager(new LinearLayoutManager(getContext()));
-        dailyTodoList.setAdapter(new TodoListAdaptor(getContext(), current.get(Calendar.YEAR),
-                current.get(Calendar.MONTH) + 1, current.get(Calendar.DATE)));
+        dailyTodoList.setAdapter(new TodoListAdaptor(getContext(), this,
+                current.get(Calendar.YEAR), current.get(Calendar.MONTH) + 1, current.get(Calendar.DATE)));
         dailyTodoList.addItemDecoration(new SpaceItemDecoration(16));
         //dailyTodoList.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
 
