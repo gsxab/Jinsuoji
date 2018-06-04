@@ -129,6 +129,9 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
     @Override
     @SuppressWarnings("unchecked")
     protected void onPostExecute(Object result) {
+        if (result == null) {
+            onFailure.onFailure(new ErrorBean("UNKNOWN", ""));
+        }
         if (successFlag) {
             onSuccess.onSuccess((T) result);
         } else {

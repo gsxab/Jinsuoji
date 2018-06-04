@@ -13,7 +13,7 @@ import org.jinsuoji.jinsuoji.net.RestfulAsyncTask;
 import org.jinsuoji.jinsuoji.net.ToastOnFailure;
 
 public class GuideActivity extends AppCompatActivity implements View.OnClickListener {
-    public static final String TAG = "o.j.j.GuideActivity";
+    private static final String TAG = "o.j.j.GuideActivity";
     public static final String HAS_USER_NAME = "org.jinsuoji.jinsuoji.UserName";
     TextView skip;
     Button okLogin, okRegister;

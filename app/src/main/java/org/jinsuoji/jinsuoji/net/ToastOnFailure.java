@@ -41,6 +41,9 @@ public class ToastOnFailure implements RestfulAsyncTask.FailureOperation {
         case "AUTHENTICATION_FAILED":
             toast = context.getString(R.string.login_incorrect);
             break;
+        case "UNKNOWN":
+            toast = context.getString(R.string.unknown_error);
+            break;
         default:
         }
         if (toast != null) {
