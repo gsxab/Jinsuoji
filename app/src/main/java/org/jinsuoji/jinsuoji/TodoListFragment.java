@@ -1,36 +1,28 @@
 package org.jinsuoji.jinsuoji;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.TextView;
 
-import org.jinsuoji.jinsuoji.data_access.TodoDAO;
-import org.jinsuoji.jinsuoji.model.Todo;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 任务页的{@link Fragment}.
  */
-public class TodoListFragment extends Fragment implements ListRefreshable,
-        CompoundButton.OnCheckedChangeListener {
+public class TodoListFragment extends Fragment implements ListRefreshable {
     private static final int EDIT_TODO_UNFINISHED = 4;
     private static final int EDIT_TODO_FINISHED = 6;
     private OnFragmentInteractionListener listener = null;
-    private RecyclerView finishedListView, unfinishedListView;
-    private TextView finishedListTitle;
-    private RecyclerView.ItemDecoration decoration = new SpaceItemDecoration(16);
+    private List<Fragment> fragments;
+    private PagerAdapter adapter;
 
     public TodoListFragment() {}
 
@@ -59,116 +51,22 @@ public class TodoListFragment extends Fragment implements ListRefreshable,
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Preference.setShowFinished(buttonView.getContext(), isChecked);
-        if (isChecked) {
-            onShowFinished();
-        } else {
-            onHideFinished();
-        }
-    }
-
-    private void onShowFinished() {
-        finishedListView.setVisibility(View.VISIBLE);
-        finishedListTitle.setVisibility(View.VISIBLE);
-        finishedListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        finishedListView.setAdapter(new TodoListAdaptor(getContext(), this, true));
-        finishedListView.addItemDecoration(decoration);
-    }
-
-    private void onHideFinished() {
-        finishedListView.removeItemDecoration(decoration);
-        finishedListView.setVisibility(View.GONE);
-        finishedListTitle.setVisibility(View.GONE);
-    }
-
-    @Override
     public void onViewCreated(final @NonNull View view, @Nullable Bundle savedInstanceState) {
-        unfinishedListView = view.findViewById(R.id.unfinished_list);
-        unfinishedListView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        unfinishedListView.setAdapter(new TodoListAdaptor(getContext(), this, false));
-        unfinishedListView.addOnItemTouchListener(new ItemTouchListener<>(
-                new ItemTouchListener.RecyclerViewOperator<Todo>() {
-                    @Override
-                    public Context getContext() {
-                        return TodoListFragment.this.getContext();
-                    }
-
-                    @Override
-                    public boolean isTouchable(Todo data) {
-                        return true;
-                    }
-
-                    @Override
-                    public void performEdit(View view, int pos, Todo data) {
-                        Intent intent = new Intent(getActivity(), TodoEditActivity.class);
-                        intent.putExtra(TodoEditActivity.LAST_TODO, data);
-                        intent.putExtra(TodoEditActivity.INDEX, pos);
-                        startActivityForResult(intent, EDIT_TODO_UNFINISHED);
-                    }
-
-                    @Override
-                    public void performRemove(View view, int pos, Todo data) {
-                        new TodoDAO(getContext()).delTodo(data.getId());
-                        ((TodoListAdaptor) unfinishedListView.getAdapter()).remove(pos);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    refreshList();
-                                } catch (NullPointerException | ClassCastException ignored) {}
-                            }
-                        }, 1000);
-                    }
-        }, unfinishedListView, true));
-        unfinishedListView.addItemDecoration(decoration);
-
-        finishedListView = view.findViewById(R.id.finished_list);
-        finishedListTitle = view.findViewById(R.id.finished_list_title);
-        finishedListView.addOnItemTouchListener(new ItemTouchListener<>(
-                new ItemTouchListener.RecyclerViewOperator<Todo>() {
-                    @Override
-                    public Context getContext() {
-                        return TodoListFragment.this.getContext();
-                    }
-
-                    @Override
-                    public boolean isTouchable(Todo data) {
-                        return true;
-                    }
-
-                    @Override
-                    public void performEdit(View view, int pos, Todo data) {
-                        Intent intent = new Intent(getActivity(), TodoEditActivity.class);
-                        intent.putExtra(TodoEditActivity.LAST_TODO, data);
-                        intent.putExtra(TodoEditActivity.INDEX, pos);
-                        startActivityForResult(intent, EDIT_TODO_FINISHED);
-                    }
-
-                    @Override
-                    public void performRemove(View view, int pos, Todo data) {
-                        new TodoDAO(getContext()).delTodo(data.getId());
-                        ((TodoListAdaptor) finishedListView.getAdapter()).remove(pos);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    refreshList();
-                                } catch (NullPointerException | ClassCastException ignored) {}
-                            }
-                        }, 1000);
-                    }
-                }, finishedListView, true));
-
-        if (Preference.getShowFinished(view.getContext())) {
-            onShowFinished();
-        } else {
-            onHideFinished();
+        if (adapter == null) {
+            if (fragments == null) {
+                fragments = Arrays.asList(
+                        (Fragment) TodoTabContentFragment.getInstance(this, EDIT_TODO_UNFINISHED, false),
+                        TodoTabContentFragment.getInstance(this, EDIT_TODO_FINISHED, true)
+                );
+            }
+            adapter = new PagerAdapter(getChildFragmentManager(), Arrays.asList("未完成", "已完成"), fragments);
         }
+        TabLayout tabLayout = view.findViewById(R.id.todo_tab);
+        ViewPager pager = view.findViewById(R.id.todo_viewpager);
+        tabLayout.setupWithViewPager(pager);
+        pager.setAdapter(adapter);
 
-        Switch aSwitch = view.findViewById(R.id.show_finished_switch);
-        aSwitch.setChecked(Preference.getShowFinished(view.getContext()));
-        aSwitch.setOnCheckedChangeListener(this);
+        refreshList();
     }
 
     @Override
@@ -181,24 +79,10 @@ public class TodoListFragment extends Fragment implements ListRefreshable,
         return new TodoListFragment();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != Activity.RESULT_OK ||
-                (requestCode != EDIT_TODO_FINISHED && requestCode != EDIT_TODO_UNFINISHED)) return;
-        int index = data.getIntExtra(TodoEditActivity.INDEX, -1);
-        Todo todo = (Todo) data.getSerializableExtra(TodoEditActivity.LAST_TODO);
-        new TodoDAO(getContext()).editTodo(todo);
-        RecyclerView recyclerView = requestCode == EDIT_TODO_FINISHED ? finishedListView : unfinishedListView;
-        ((TodoListAdaptor) recyclerView.getAdapter()).change(index, todo);
-    }
-
     public void refreshList() {
-        if (unfinishedListView != null) {
-            ((TodoListAdaptor) unfinishedListView.getAdapter()).refresh(getContext(), false);
-            if (Preference.getShowFinished(getContext())) {
-                ((TodoListAdaptor) finishedListView.getAdapter()).refresh(getContext(), true);
-            }
+        if (fragments != null) {
+            ((TodoTabContentFragment) fragments.get(0)).refreshList();
+            ((TodoTabContentFragment) fragments.get(1)).refreshList();
         }
     }
 }

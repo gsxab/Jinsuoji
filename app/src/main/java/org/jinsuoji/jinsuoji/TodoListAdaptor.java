@@ -92,7 +92,9 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
                     int position = (int) buttonView.getTag();
                     Todo todo = todoList.get(position);
                     new TodoDAO(buttonView.getContext()).changeStateById(todo.getId(), isChecked);
-                    refreshable.refreshList();
+                    if (refreshable != null) {
+                        refreshable.refreshList();
+                    }
                 }
             }
         });
