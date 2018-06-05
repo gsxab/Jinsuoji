@@ -9,12 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
 import android.widget.ImageButton;
+
+import com.haibin.calendarview.CalendarView;
 
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.data_access.TodoDAO;
@@ -43,9 +43,11 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
 
     public void refreshList() {
         if (dailyTodoList != null)
-            dailyTodoList.getAdapter().notifyDataSetChanged();
+            ((TodoListAdaptor) dailyTodoList.getAdapter()).refresh(getContext(),
+                    current.get(Calendar.YEAR), current.get(Calendar.MONTH) + 1, current.get(Calendar.DATE));
         if (dailyExpenseList != null)
-            dailyExpenseList.getAdapter().notifyDataSetChanged();
+            ((ExpenseListAdapter) dailyExpenseList.getAdapter()).setNewDate(getContext(),
+                    current.get(Calendar.YEAR), current.get(Calendar.MONTH) + 1, current.get(Calendar.DATE), true);
     }
 
     interface OnFragmentInteractionListener {}
@@ -70,27 +72,26 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
     @Override
     public @Nullable View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                        @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated: view==null");
         calendar = view.findViewById(R.id.calendar);
-        calendar.setDate(current.getTimeInMillis());
-        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+        calendar.scrollToCurrent();
+        calendar.setOnDateSelectedListener(new CalendarView.OnDateSelectedListener() {
             @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+            public void onDateSelected(com.haibin.calendarview.Calendar calendar, boolean isClick) {
+                onSelectedDayChange(calendar.getYear(), calendar.getMonth() - 1, calendar.getDay());
+            }
+
+            private void onSelectedDayChange(/*@NonNull CalendarView view, */int year, int month, int dayOfMonth) {
                 Calendar tempCalendar = Calendar.getInstance();
                 tempCalendar.clear();
                 tempCalendar.set(year, month, dayOfMonth);
                 current = tempCalendar;
-                ((TodoListAdaptor) dailyTodoList.getAdapter()).refresh(getActivity(),
-                        year, month + 1, dayOfMonth);
-                ((ExpenseListAdapter) dailyExpenseList.getAdapter()).setNewDate(getActivity(),
-                        year, month + 1, dayOfMonth, true);
+                refreshList();
             }
         });
         calendarCollapse = view.findViewById(R.id.calendar_collapse);
@@ -100,7 +101,6 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
                 switch (calendar.getVisibility()) {
                     case View.VISIBLE:
                         calendar.setVisibility(View.GONE);
-                        // TODO it.animate() 动画可能还要看要不要换日历
                         break;
                     case View.INVISIBLE:
                     case View.GONE:
@@ -110,8 +110,6 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
                     default:
                         break;
                 }
-                //calendarCollapse.setAnimation();
-                //calendarCollapse.animate();
             }
         });
 
