@@ -46,9 +46,8 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<ExpenseListAdapter.
     }
 
     public void setNewDate(Context context, int year, int month, int date, boolean byDate) {
-        notifyItemRangeRemoved(0, nodes.size());
         pChangeDate(context, year, month, date, byDate);
-        notifyItemRangeInserted(0, nodes.size());
+        notifyDataSetChanged();
     }
 
     @Override
