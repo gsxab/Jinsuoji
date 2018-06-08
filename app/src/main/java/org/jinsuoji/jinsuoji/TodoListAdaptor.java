@@ -26,6 +26,24 @@ import java.util.List;
 public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHolder> {
     private List<Todo> todoList;
     private final ListRefreshable refreshable;
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        private static final int MIN_CLICK_DELAY_TIME = 1000;
+        private long lastClickTime = 0;
+
+        @Override
+        public void onClick(View view) {
+            CompoundButton buttonView = ((CompoundButton) view);
+            long currentTime = Calendar.getInstance().getTimeInMillis();
+            if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+                int position = (int) buttonView.getTag();
+                Todo todo = todoList.get(position);
+                new TodoDAO(buttonView.getContext()).changeStateById(todo.getId(), !todo.isFinished());
+                if (refreshable != null) {
+                    refreshable.refreshList();
+                }
+            }
+        }
+    };;
 
     TodoListAdaptor(Context context, ListRefreshable refreshable, int year, int month, int day) {
         super();
@@ -82,22 +100,7 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
         holder.name.setText(todo.getTaskName());
         holder.finished.setChecked(todo.isFinished());
         holder.finished.setTag(position);
-        holder.finished.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            private static final int MIN_CLICK_DELAY_TIME = 1000;
-            private long lastClickTime = 0;
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                long currentTime = Calendar.getInstance().getTimeInMillis();
-                if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
-                    int position = (int) buttonView.getTag();
-                    Todo todo = todoList.get(position);
-                    new TodoDAO(buttonView.getContext()).changeStateById(todo.getId(), isChecked);
-                    if (refreshable != null) {
-                        refreshable.refreshList();
-                    }
-                }
-            }
-        });
+        holder.finished.setOnClickListener(clickListener);
         holder.memo.setText(todo.getMemo());
         holder.mView.setTag(todo);
     }

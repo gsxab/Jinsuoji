@@ -13,9 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.haibin.calendarview.CalendarView;
 
+import org.jinsuoji.jinsuoji.data_access.DateUtils;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.data_access.TodoDAO;
 import org.jinsuoji.jinsuoji.model.EntryNode;
@@ -60,6 +62,8 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
     private ImageButton calendarCollapse;
     private RecyclerView dailyTodoList;
     private RecyclerView dailyExpenseList;
+    private ImageButton lastMonth, nextMonth;
+    private TextView dateDisplay;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,6 +95,7 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
                 tempCalendar.clear();
                 tempCalendar.set(year, month, dayOfMonth);
                 current = tempCalendar;
+                dateDisplay.setText(DateUtils.toDateString(current.getTime()));
                 refreshList();
             }
         });
@@ -112,6 +117,22 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
                 }
             }
         });
+
+        lastMonth = view.findViewById(R.id.last_month);
+        lastMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lastMonth(v);
+            }
+        });
+        nextMonth = view.findViewById(R.id.next_month);
+        nextMonth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nextMonth(v);
+            }
+        });
+        dateDisplay = view.findViewById(R.id.date_display);
 
         dailyTodoList = view.findViewById(R.id.daily_todo_list);
         dailyTodoList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -203,5 +224,20 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
                 ((TodoListAdaptor) dailyTodoList.getAdapter()).change(index, newTodo);
             } break;
         }
+    }
+
+    private void nextMonth(View view) {
+        current.add(Calendar.MONTH, 1);
+        scroll();
+    }
+
+    private void lastMonth(View view) {
+        current.add(Calendar.MONTH, -1);
+        scroll();
+    }
+
+    private void scroll() {
+        calendar.scrollToCalendar(current.get(Calendar.YEAR), current.get(Calendar.MONTH) + 1, current.get(Calendar.DATE));
+        // scrollToCalendar会触发onDateSelected
     }
 }
