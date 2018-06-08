@@ -61,7 +61,8 @@ public class ItemTouchListener<T extends ContextualStringConvertible> implements
         mGestureDetector = new GestureDetector(operator.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
-                if (right && e.getX() > 1150) return false; // 不知道是不是总可以，把多选框空出去
+                final View childView = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
+                if (childView.dispatchTouchEvent(e)) return false;
                 Log.d("ITL", "onSingleTapUp: " + e.getX());
                 return true;
             }
@@ -77,9 +78,7 @@ public class ItemTouchListener<T extends ContextualStringConvertible> implements
                     }
                     final AlertDialog dialog = new AlertDialog.Builder(mOperator.getContext())
                             .setTitle(R.string.delete_warning)
-                            .setMessage(childView.getResources()
-                                    .getString(R.string.delete_warning_message,
-                                            data.toContextualString(mOperator.getContext())))
+                            .setMessage(childView.getResources().getString(R.string.delete_warning_message, data.toContextualString(mOperator.getContext())))
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

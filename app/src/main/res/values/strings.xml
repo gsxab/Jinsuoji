@@ -103,6 +103,7 @@
     <string name="essential_timeout">登录过程中超时</string>
     <string name="login_incorrect">用户名或密码不正确</string>
     <string name="unknown_error">未知错误</string>
+    <string name="title_todo_list">任务清单</string>
 
     <!-- entries 是显示在界面上的-->
     <string-array name="pref_entries_sync_frequence">
