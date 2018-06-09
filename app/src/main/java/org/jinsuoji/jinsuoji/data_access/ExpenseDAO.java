@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Pair;
 
 import org.jinsuoji.jinsuoji.model.EntryNode;
 import org.jinsuoji.jinsuoji.model.Expense;
@@ -369,7 +368,7 @@ public class ExpenseDAO {
      * 按日期求和.
      * @return 日期求和数组
      */
-    public int[][] groupByDate(final int year, final int month) {
+    public int[] groupByDate(final int year, final int month) {
         int dateNumber;
         {
             Calendar calendar = Calendar.getInstance();
@@ -378,61 +377,56 @@ public class ExpenseDAO {
             calendar.set(Calendar.MONTH, month - 1);
             dateNumber = calendar.getActualMaximum(Calendar.DATE);
         }
-        final int[][] dailyExpenses = new int[dateNumber][2];
-        return wrapper.read(new Operation<int[][]>() {
+        final int[] dailyExpenses = new int[dateNumber];
+        return wrapper.read(new Operation<int[]>() {
             @Override
-            public int[][] operate(SQLiteDatabase db) {
+            public int[] operate(SQLiteDatabase db) {
                 return query(db,
                         "SELECT strftime(\"%d\", time), " +
-                                "sum(CASE WHEN money < 0 THEN -money ELSE 0 END) AS expense, " +
-                                "sum(CASE WHEN money > 0 THEN money ELSE 0 END) AS income " +
+                                "-sum(money) AS expense " +
                                 "FROM " + DBHelper.EXPENSE + " " +
-                                "WHERE time >= ? AND time < ? " +
+                                "WHERE time >= ? AND time < ? AND money < 0 " +
                                 "GROUP BY time",
                         DateUtils.makeDateInterval(year, month),
-                        new QueryAdapter<int[][]>() {
+                        new QueryAdapter<int[]>() {
                             @Override
-                            public int[][] beforeLoop(Cursor cursor) {
+                            public int[] beforeLoop(Cursor cursor) {
                                 return dailyExpenses;
                             }
 
                             @Override
-                            public void inLoop(Cursor cursor, int[][] dailyExpenses) {
-                                int[] dailyExpense = new int[2];
-                                dailyExpense[0] = cursor.getInt(1);
-                                dailyExpense[1] = cursor.getInt(2);
-                                dailyExpenses[Integer.valueOf(cursor.getString(0)) - 1] = dailyExpense;
+                            public void inLoop(Cursor cursor, int[] dailyExpenses) {
+                                dailyExpenses[Integer.valueOf(cursor.getString(0)) - 1] = cursor.getInt(1);
                             }
                         });
             }
         });
     }
 
-    public Map<String, Pair<Integer, Integer>> groupByCategory(final int year, final int month) {
-        return wrapper.read(new Operation<Map<String, Pair<Integer, Integer>>>() {
+    public Map<String, Integer> groupByCategory(final int year, final int month) {
+        return wrapper.read(new Operation<Map<String, Integer>>() {
             @Override
-            public Map<String, Pair<Integer, Integer>> operate(SQLiteDatabase db) {
+            public Map<String, Integer> operate(SQLiteDatabase db) {
                 return query(db,
-                        "SELECT category_id, name, income, expense " +
+                        "SELECT category_id, name, expense " +
                                 "FROM " + DBHelper.EXPENSE_CATE + " AS S JOIN (" +
                                 "SELECT category_id, " +
-                                "sum(CASE WHEN money < 0 THEN -money ELSE 0 END) AS expense, " +
-                                "sum(CASE WHEN money > 0 THEN money ELSE 0 END) AS income " +
+                                "-sum(money) AS expense " +
                                 "FROM " + DBHelper.EXPENSE + " " +
-                                "WHERE time >= ? AND time < ? " +
+                                "WHERE time >= ? AND time < ? AND money < 0 " +
                                 "GROUP BY category_id" +
                                 ") AS T ON T.category_id=S.id;",
                         DateUtils.makeDateInterval(year, month),
-                        new QueryAdapter<Map<String, Pair<Integer, Integer>>>() {
+                        new QueryAdapter<Map<String, Integer>>() {
                             @Override
-                            public Map<String, Pair<Integer, Integer>> beforeLoop(Cursor cursor) {
+                            public Map<String, Integer> beforeLoop(Cursor cursor) {
                                 return new HashMap<>();
                             }
 
                             @Override
-                            public void inLoop(Cursor cursor, Map<String, Pair<Integer, Integer>> stringPairMap) {
+                            public void inLoop(Cursor cursor, Map<String, Integer> stringPairMap) {
                                 stringPairMap.put(cursor.getString(1),
-                                        Pair.create(cursor.getInt(2), cursor.getInt(3)));
+                                        cursor.getInt(2));
                             }
                         }
                 );

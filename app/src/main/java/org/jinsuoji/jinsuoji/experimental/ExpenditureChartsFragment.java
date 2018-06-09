@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,14 +89,13 @@ public class ExpenditureChartsFragment extends Fragment {
 
         {
             LineChartData lineChartData = new LineChartData();
-            int[][] dailyExpenses = expenseDAO.groupByDate(year, month);
-            List<PointValue> incomeValues = new ArrayList<>(),
-                    expenseValues = new ArrayList<>();
+            int[] dailyExpenses = expenseDAO.groupByDate(year, month);
+            List<PointValue> expenseValues = new ArrayList<>();
             for (int i = 0; i < dailyExpenses.length; i++) {
-                int[] dailyExpense = dailyExpenses[i];
+                int dailyExpense = dailyExpenses[i];
                 PointValue expense = new PointValue();
-                expense.setLabel(context.getString(R.string.chart_expense_label, i + 1, dailyExpense == null ? 0f : dailyExpense[0] / 100f))
-                        .set(i + 1, dailyExpense == null ? 0f : dailyExpense[0] / 100f)
+                expense.setLabel(context.getString(R.string.chart_expense_label, i + 1, dailyExpense / 100f))
+                        .set(i + 1, dailyExpense / 100f)
                         .finish();
                 expenseValues.add(expense);
             }
@@ -119,20 +117,18 @@ public class ExpenditureChartsFragment extends Fragment {
         }
 
         {
-            PieChartData expensePieChartData = new PieChartData();
             List<SliceValue> expenseValues = new ArrayList<>();
-            Map<String, Pair<Integer, Integer>> groupByCategory = expenseDAO.groupByCategory(year, month);
-            for (Map.Entry<String, Pair<Integer, Integer>> entry : groupByCategory.entrySet()) {
-                SliceValue incomeSlice = new SliceValue(), expenseSlice = new SliceValue();
-                expenseSlice.setLabel(context.getString(R.string.pie_expense_label,
-                        entry.getKey(), entry.getValue().second / 100f))
+            Map<String, Integer> groupByCategory = expenseDAO.groupByCategory(year, month);
+            for (Map.Entry<String, Integer> entry : groupByCategory.entrySet()) {
+                expenseValues.add(new SliceValue()
+                        .setLabel(context.getString(R.string.pie_expense_label,
+                        entry.getKey(), entry.getValue() / 100f))
                         .setColor(ChartUtils.nextColor())
-                        .setValue(entry.getValue().second / 100f);
-                expenseValues.add(expenseSlice);
+                        .setValue(entry.getValue() / 100f));
             }
-            expensePieChartData.setValues(expenseValues)
-                    .setHasLabelsOnlyForSelected(true);
-            expensePieChart.setPieChartData(expensePieChartData);
+            expensePieChart.setPieChartData(new PieChartData()
+                    .setValues(expenseValues)
+                    .setHasLabelsOnlyForSelected(true));
         }
     }
 }
