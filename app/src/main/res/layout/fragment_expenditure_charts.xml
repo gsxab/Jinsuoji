@@ -13,21 +13,9 @@
         android:layout_marginTop="@dimen/activity_half_margin"
         android:id="@+id/column_by_date" />
 
-    <LinearLayout
+    <lecho.lib.hellocharts.view.PieChartView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <lecho.lib.hellocharts.view.PieChartView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/income_pie_by_category" />
-        <lecho.lib.hellocharts.view.PieChartView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/expense_pie_by_category" />
-    </LinearLayout>
+        android:id="@+id/expense_pie_by_category" />
 
 </LinearLayout>
