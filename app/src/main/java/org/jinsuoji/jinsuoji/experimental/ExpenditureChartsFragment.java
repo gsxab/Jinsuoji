@@ -72,6 +72,10 @@ public class ExpenditureChartsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         lineChart = view.findViewById(R.id.column_by_date);
         expensePieChart = view.findViewById(R.id.expense_pie_by_category);
+        if (savedInstanceState != null) {
+            year = savedInstanceState.getInt(KEY_YEAR);
+            month = savedInstanceState.getInt(KEY_MONTH);
+        }
         refresh(getContext());
     }
 
@@ -130,5 +134,12 @@ public class ExpenditureChartsFragment extends Fragment {
                     .setValues(expenseValues)
                     .setHasLabelsOnlyForSelected(true));
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_YEAR, year);
+        outState.putInt(KEY_MONTH, month);
     }
 }
