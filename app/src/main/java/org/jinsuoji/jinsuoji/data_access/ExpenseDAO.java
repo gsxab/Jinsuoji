@@ -4,13 +4,17 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Pair;
 
 import org.jinsuoji.jinsuoji.model.EntryNode;
 import org.jinsuoji.jinsuoji.model.Expense;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.jinsuoji.jinsuoji.data_access.DBWrapper.query;
 
@@ -357,6 +361,81 @@ public class ExpenseDAO {
                                 strings.add(cursor.getString(0));
                             }
                         });
+            }
+        });
+    }
+
+    /**
+     * 按日期求和.
+     * @return 日期求和数组
+     */
+    public int[][] groupByDate(final int year, final int month) {
+        int dateNumber;
+        {
+            Calendar calendar = Calendar.getInstance();
+            calendar.clear();
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month - 1);
+            dateNumber = calendar.getActualMaximum(Calendar.DATE);
+        }
+        final int[][] dailyExpenses = new int[dateNumber][2];
+        return wrapper.read(new Operation<int[][]>() {
+            @Override
+            public int[][] operate(SQLiteDatabase db) {
+                return query(db,
+                        "SELECT strftime(\"%d\", time), " +
+                                "sum(CASE WHEN money < 0 THEN -money ELSE 0 END) AS expense, " +
+                                "sum(CASE WHEN money > 0 THEN money ELSE 0 END) AS income " +
+                                "FROM " + DBHelper.EXPENSE + " " +
+                                "WHERE time >= ? AND time < ? " +
+                                "GROUP BY time",
+                        DateUtils.makeDateInterval(year, month),
+                        new QueryAdapter<int[][]>() {
+                            @Override
+                            public int[][] beforeLoop(Cursor cursor) {
+                                return dailyExpenses;
+                            }
+
+                            @Override
+                            public void inLoop(Cursor cursor, int[][] dailyExpenses) {
+                                int[] dailyExpense = new int[2];
+                                dailyExpense[0] = cursor.getInt(1);
+                                dailyExpense[1] = cursor.getInt(2);
+                                dailyExpenses[Integer.valueOf(cursor.getString(0)) - 1] = dailyExpense;
+                            }
+                        });
+            }
+        });
+    }
+
+    public Map<String, Pair<Integer, Integer>> groupByCategory(final int year, final int month) {
+        return wrapper.read(new Operation<Map<String, Pair<Integer, Integer>>>() {
+            @Override
+            public Map<String, Pair<Integer, Integer>> operate(SQLiteDatabase db) {
+                return query(db,
+                        "SELECT category_id, name, income, expense " +
+                                "FROM " + DBHelper.EXPENSE_CATE + " AS S JOIN (" +
+                                "SELECT category_id, " +
+                                "sum(CASE WHEN money < 0 THEN -money ELSE 0 END) AS expense, " +
+                                "sum(CASE WHEN money > 0 THEN money ELSE 0 END) AS income " +
+                                "FROM " + DBHelper.EXPENSE + " " +
+                                "WHERE time >= ? AND time < ? " +
+                                "GROUP BY category_id" +
+                                ") AS T ON T.category_id=S.id;",
+                        DateUtils.makeDateInterval(year, month),
+                        new QueryAdapter<Map<String, Pair<Integer, Integer>>>() {
+                            @Override
+                            public Map<String, Pair<Integer, Integer>> beforeLoop(Cursor cursor) {
+                                return new HashMap<>();
+                            }
+
+                            @Override
+                            public void inLoop(Cursor cursor, Map<String, Pair<Integer, Integer>> stringPairMap) {
+                                stringPairMap.put(cursor.getString(1),
+                                        Pair.create(cursor.getInt(2), cursor.getInt(3)));
+                            }
+                        }
+                );
             }
         });
     }

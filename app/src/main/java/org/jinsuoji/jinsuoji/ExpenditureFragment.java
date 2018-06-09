@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
+import org.jinsuoji.jinsuoji.experimental.ExpenditureChartsFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,7 +55,7 @@ public class ExpenditureFragment extends Fragment implements ListRefreshable {
 
     private ExpenditureListFragment listByDateFragment;
     private ExpenditureListFragment listByCategoryFragment;
-    // private ExpenditureChartsFragment chartsFragment;
+    private ExpenditureChartsFragment chartsFragment;
 
     private OnFragmentInteractionListener mListener;
 
@@ -138,6 +139,9 @@ public class ExpenditureFragment extends Fragment implements ListRefreshable {
         if (listByCategoryFragment != null) {
             listByCategoryFragment.setSelector(getActivity(), year, month, false);
         }
+        if (chartsFragment != null) {
+            chartsFragment.setSelector(getContext(), year, month);
+        }
     }
 
     @Override
@@ -183,10 +187,11 @@ public class ExpenditureFragment extends Fragment implements ListRefreshable {
         tab = view.findViewById(R.id.expenditure_tab);
         pager = view.findViewById(R.id.expenditure_viewpager);
         tab.setupWithViewPager(pager);
+        pager.setOffscreenPageLimit(2);
         List<String> tabNames = new ArrayList<>(2);
         tabNames.add(getString(R.string.details_by_date));
         tabNames.add(getString(R.string.details_by_category));
-        //tabNames.add(getString(R.string.statistic));
+        tabNames.add(getString(R.string.statistic));
         List<Fragment> fragments = new ArrayList<>(2);
         listByDateFragment = ExpenditureListFragment
                 .newInstance(view.getContext(), year, month, 0, true, this);
@@ -194,7 +199,8 @@ public class ExpenditureFragment extends Fragment implements ListRefreshable {
         listByCategoryFragment = ExpenditureListFragment
                 .newInstance(view.getContext(), year, month, 0, false, this);
         fragments.add(listByCategoryFragment);
-        // ExpenditureChartsFragment.newInstance()
+        chartsFragment = ExpenditureChartsFragment.newInstance(year, month);
+        fragments.add(chartsFragment);
         PagerAdapter adapter = new PagerAdapter(getFragmentManager(),
                 tabNames, fragments);
         pager.setAdapter(adapter);
