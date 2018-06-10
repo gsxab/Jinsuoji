@@ -153,7 +153,8 @@ public class AccountManager {
         if (ContextCompat.checkSelfPermission(context, INTERNET) != PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(context, ACCESS_NETWORK_STATE) != PERMISSION_GRANTED
                 || !NetworkUtils.checkNetwork(context)) {
-            onFailure.onFailure(new ErrorBean("CONNECTION_FAILED", ""));
+            //申请权限 ActivityCompat.requestPermissions();
+            onFailure.onFailure(new ErrorBean("NETWORK_ACCESS_FAILED", ""));
             onMessage.onTaskOver();
             return false;
         }

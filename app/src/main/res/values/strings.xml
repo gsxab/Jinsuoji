@@ -83,8 +83,8 @@
     <string name="pref_title_about">关于我们</string>
     <string name="pref_title_feedback">反馈建议</string>
 
-    <string name="pref_title_sync_switch">同步数据</string>
-    <string name="pref_title_sync_switch_yes">自动同步</string>
+    <string name="pref_title_sync_switch">自动同步</string>
+    <string name="pref_title_sync_switch_yes">开启自动同步</string>
     <string name="pref_title_sync_switch_no">仅手动同步</string>
     <string name="pref_title_sync_frequence">同步频率设置</string>
     <string name="pref_title_sync_frequence_day">每天同步一次</string>
@@ -99,7 +99,7 @@
     <string name="password">密码</string>
     <string name="no_login_info">尚未登录</string>
     <string name="username_too_long">用户名“%s”超过长度限制</string>
-    <string name="missing_args2">服务器报错数据不完整，缺少%s</string>
+    <string name="missing_args2">数据不完整，缺少%s</string>
     <string name="user_exists">用户名“%s”已存在</string>
     <string name="username_invalid">用户名“%s”中含有汉字、数字、英文字母、下划线、横线以外的字符</string>
     <string name="user_not_found">用户名“%s”未找到</string>
@@ -111,8 +111,9 @@
     <string name="please_wait">请稍等……</string>
     <string name="manually_sync">手动同步</string>
     <string name="upload_now">点击同步数据</string>
-    <string name="download_now">点击恢复到之前同步的数据</string>
+    <string name="download_now">恢复上次同步的数据</string>
     <string name="never_sync">上次同步：未曾同步</string>
+    <string name="network_access_failed">网络未开启或应用无网络权限</string>
 
     <!-- entries 是显示在界面上的-->
     <string-array name="pref_entries_sync_frequence">

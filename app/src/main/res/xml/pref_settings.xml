@@ -37,10 +37,6 @@
         android:title="@string/manually_sync">
 
         <Preference
-            android:selectable="false"
-            android:key="@string/pref_key_last_sync" />
-
-        <Preference
             android:key="@string/pref_key_upload_now"
             android:title="@string/upload_now" />
 

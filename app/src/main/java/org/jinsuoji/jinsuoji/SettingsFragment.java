@@ -31,7 +31,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     private ListPreference sync_freq;
     private SwitchPreference sync_wifi;
 
-    private Preference last_sync, upload_now, download_now;
+    private Preference upload_now, download_now;
 
     @Override
     public void onCreate(Bundle saveInstanceState) {
@@ -59,8 +59,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             sync_freq.setEnabled(false);
             sync_wifi.setEnabled(false);
         }
-        last_sync = findPreference("pref_key_last_sync");
-        refreshLastSync();
         upload_now = findPreference("pref_key_upload_now");
         upload_now.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -97,11 +95,12 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                 return true;
             }
         });
+        refreshLastSync();
     }
 
     private void refreshLastSync() {
         final Calendar lastSync = org.jinsuoji.jinsuoji.Preference.getLastSync(getActivity());
-        last_sync.setTitle(lastSync == null ? getString(R.string.never_sync):
+        upload_now.setSummary(lastSync == null ? getString(R.string.never_sync):
                 getString(R.string.last_sync, DateUtils.toDateTimeString(lastSync.getTime())));
     }
 
