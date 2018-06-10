@@ -18,6 +18,9 @@ import java.util.Date;
  * </table>
  */
 public class Expense implements Serializable {
+    public Expense() {
+    }
+
     private int id;
     private String item;
     private Date datetime;

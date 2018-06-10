@@ -13,6 +13,9 @@ import java.util.Date;
  * 保存一次任务条目的基本信息.
  */
 public class Todo implements Serializable, ContextualStringConvertible {
+    public Todo() {
+    }
+
     public Todo(int id, Date dateTime, String taskName, String memo, boolean finished) {
         this.id = id;
         this.dateTime = dateTime;

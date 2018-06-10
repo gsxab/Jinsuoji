@@ -23,6 +23,9 @@ public class Serializer {
      * 对应数据库的表.model包的Expense对应的是数据库的视图,
      */
     static class ExpenseBean {
+        public ExpenseBean() {
+        }
+
         public ExpenseBean(int id, String item, Date datetime, int money, int categoryId) {
             this.id = id;
             this.item = item;
@@ -82,6 +85,9 @@ public class Serializer {
      * 数据库的分类表.
      */
     static class ExpenseCategoryBean {
+        public ExpenseCategoryBean() {
+        }
+
         ExpenseCategoryBean(int id, String name) {
             this.id = id;
             this.name = name;
@@ -213,7 +219,7 @@ public class Serializer {
                             expenseList.add(new ExpenseBean(
                                     cursor.getInt(0),
                                     cursor.getString(1),
-                                    DateUtils.fromDateTimeString(cursor.getString(2)),
+                                    DateUtils.fromDateString(cursor.getString(2)),
                                     cursor.getInt(3),
                                     cursor.getInt(4)
                             ));
