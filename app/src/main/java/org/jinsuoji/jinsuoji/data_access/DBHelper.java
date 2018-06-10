@@ -54,7 +54,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "name NTEXT, " +
                 "memo NTEXT, " +
-                "priority INTEGER, " +
                 "time DATETIME, " +
                 "finished BOOLEAN" +
                 ");");
