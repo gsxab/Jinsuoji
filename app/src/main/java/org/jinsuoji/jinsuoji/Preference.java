@@ -111,24 +111,39 @@ public class Preference {
     }
 
     /**
-     * 获取自动同步设置. TODO
+     * 获取自动同步设置.
      */
     public static boolean getAutoSync(Context context) {
-        return false;
+        return getDefaultSharedPreferences(context).getBoolean(
+                context.getString(R.string.pref_key_sync_switch), false
+        );
     }
 
     /**
-     * 获取仅wifi设置. TODO
+     * 获取仅wifi设置.
      */
     public static boolean getSyncWifiOnly(Context context) {
-        return false;
+        return getDefaultSharedPreferences(context).getBoolean(
+                context.getString(R.string.pref_key_sync_wifi), false
+        );
     }
 
     /**
-     * 获取同步间隔设置. TODO
+     * 获取同步间隔设置.
      */
     public static int getSyncFreq(Context context) {
-        return Calendar.DATE;
+        String frequency = (getDefaultSharedPreferences(context).getString(
+                context.getString(R.string.pref_key_sync_frequence), null));
+        if (frequency == null) return -1;
+        switch (frequency) {
+        case "每天":
+            return Calendar.DATE;
+        case "每周":
+            return Calendar.WEEK_OF_MONTH;
+        case "每月":
+            return Calendar.MONTH;
+        }
+        return -1;
     }
 
     /**

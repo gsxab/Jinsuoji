@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements
     ImageButton toolbarAdd;
     ViewPager pager;
 
-
     List<String> stringList;
     List<Fragment> fragments;
 
@@ -216,15 +215,20 @@ public class MainActivity extends AppCompatActivity implements
 
         if (Preference.getAutoSync(this) &&
                 !(Preference.getSyncWifiOnly(this) && !isWifi())) {
-            Calendar calendar = Preference.getLastSync(this);
-            boolean flag = false;
-            if (calendar != null) {
-                calendar.roll(Preference.getSyncFreq(this), true);
-                if (calendar.after(Calendar.getInstance())) {
-                    flag = true;
+            boolean shouldSync = true;
+            int freq = Preference.getSyncFreq(this);
+            if (freq == -1) {
+                shouldSync = false;
+            } else {
+                Calendar calendar = Preference.getLastSync(this);
+                if (calendar != null) {
+                    calendar.roll(freq, true);
+                    if (Calendar.getInstance().before(calendar)) {
+                        shouldSync = false;
+                    }
                 }
             }
-            if (!flag) {
+            if (shouldSync) {
                 AccountManager.getInstance(this).upload(this, new RestfulAsyncTask.SuccessOperation<Void>() {
                     @Override
                     public void onSuccess(Void result) {
