@@ -67,11 +67,15 @@ public class Preference {
     /**
      * 查看上次同步信息.
      */
-    public static Calendar getLastSync(Context context) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(getDefaultSharedPreferences(context)
-                .getLong(KEY_LAST_SYNC_TIME, 0));
-        return calendar;
+    public static @Nullable Calendar getLastSync(Context context) {
+        long timeInMillis = getDefaultSharedPreferences(context).getLong(KEY_LAST_SYNC_TIME, -1);
+        if (timeInMillis == -1) {
+            return null;
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(timeInMillis);
+            return calendar;
+        }
     }
 
     /**

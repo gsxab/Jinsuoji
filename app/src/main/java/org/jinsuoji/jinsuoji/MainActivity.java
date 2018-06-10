@@ -190,33 +190,7 @@ public class MainActivity extends AppCompatActivity implements
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                 case R.id.personal_info:
-                    // TODO 借用来做触发上传的操作
-                    AccountManager.getInstance(MainActivity.this)
-                            .upload(MainActivity.this,
-                                    new RestfulAsyncTask.SuccessOperation<Void>() {
-                                        @Override
-                                        public void onSuccess(Void result) {
-                                            Toast.makeText(MainActivity.this, R.string.sync_success, Toast.LENGTH_SHORT).show();
-                                            Preference.setLastSync(MainActivity.this);
-                                        }
-                                    },
-                                    new ToastOnFailure(MainActivity.this),
-                                    new ProgressDialogOperation(MainActivity.this, 3));
-                    break;
                 case R.id.about:
-                    // TODO 借用来做触发下载的操作
-                    AccountManager.getInstance(MainActivity.this)
-                            .download(MainActivity.this,
-                                    new RestfulAsyncTask.SuccessOperation<Serializer.DBMirror>() {
-                                        @Override
-                                        public void onSuccess(Serializer.DBMirror result) {
-                                            Toast.makeText(MainActivity.this, R.string.sync_success, Toast.LENGTH_SHORT).show();
-                                            // ignore
-                                        }
-                                    },
-                                    new ToastOnFailure(MainActivity.this),
-                                    new ProgressDialogOperation(MainActivity.this, 3));
-                    break;
                 case R.id.feedback:
                     // TODO 这些个菜单项
                     Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
@@ -243,8 +217,14 @@ public class MainActivity extends AppCompatActivity implements
         if (Preference.getAutoSync(this) &&
                 !(Preference.getSyncWifiOnly(this) && !isWifi())) {
             Calendar calendar = Preference.getLastSync(this);
-            calendar.roll(Preference.getSyncFreq(this), true);
-            if (calendar.before(Calendar.getInstance())) {
+            boolean flag = false;
+            if (calendar != null) {
+                calendar.roll(Preference.getSyncFreq(this), true);
+                if (calendar.after(Calendar.getInstance())) {
+                    flag = true;
+                }
+            }
+            if (!flag) {
                 AccountManager.getInstance(this).upload(this, new RestfulAsyncTask.SuccessOperation<Void>() {
                     @Override
                     public void onSuccess(Void result) {

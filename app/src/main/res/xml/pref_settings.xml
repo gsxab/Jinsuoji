@@ -33,8 +33,22 @@
     <!--检查当前的登录状态，显示用户信息  好像不应该放在这儿
     <Preference android:key="@string/pref_key_personal_info" /> -->
 
+    <PreferenceCategory
+        android:title="@string/manually_sync">
 
+        <Preference
+            android:selectable="false"
+            android:key="@string/pref_key_last_sync" />
 
+        <Preference
+            android:key="@string/pref_key_upload_now"
+            android:title="@string/upload_now" />
+
+        <Preference
+            android:key="@string/pref_key_download_now"
+            android:title="@string/download_now" />
+
+    </PreferenceCategory>
 
 
 

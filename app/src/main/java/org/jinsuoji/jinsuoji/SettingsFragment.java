@@ -11,6 +11,16 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.Toast;
+
+import org.jinsuoji.jinsuoji.account.AccountManager;
+import org.jinsuoji.jinsuoji.data_access.DateUtils;
+import org.jinsuoji.jinsuoji.data_access.Serializer;
+import org.jinsuoji.jinsuoji.net.ProgressDialogOperation;
+import org.jinsuoji.jinsuoji.net.RestfulAsyncTask;
+import org.jinsuoji.jinsuoji.net.ToastOnFailure;
+
+import java.util.Calendar;
 
 /**
  * sync_freq:单选选项同步频率
@@ -20,6 +30,8 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
     private SwitchPreference sync_switch;
     private ListPreference sync_freq;
     private SwitchPreference sync_wifi;
+
+    private Preference last_sync, upload_now, download_now;
 
     @Override
     public void onCreate(Bundle saveInstanceState) {
@@ -47,6 +59,50 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
             sync_freq.setEnabled(false);
             sync_wifi.setEnabled(false);
         }
+        last_sync = findPreference("pref_key_last_sync");
+        refreshLastSync();
+        upload_now = findPreference("pref_key_upload_now");
+        upload_now.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AccountManager.getInstance(getActivity()).upload(getActivity(),
+                        new RestfulAsyncTask.SuccessOperation<Void>() {
+                            @Override
+                            public void onSuccess(Void result) {
+                                Toast.makeText(getActivity(), R.string.sync_success, Toast.LENGTH_SHORT).show();
+                                org.jinsuoji.jinsuoji.Preference.setLastSync(getActivity());
+                                refreshLastSync();
+                            }
+                        },
+                        new ToastOnFailure(getActivity()),
+                        new ProgressDialogOperation(getActivity(), 3));
+                return true;
+            }
+        });
+        download_now = findPreference("pref_key_download_now");
+        download_now.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AccountManager.getInstance(getActivity()).download(getActivity(),
+                        new RestfulAsyncTask.SuccessOperation<Serializer.DBMirror>() {
+                            @Override
+                            public void onSuccess(Serializer.DBMirror result) {
+                                Toast.makeText(getActivity(), R.string.sync_success, Toast.LENGTH_SHORT).show();
+                                org.jinsuoji.jinsuoji.Preference.setLastSync(getActivity());
+                                refreshLastSync();
+                            }
+                        },
+                        new ToastOnFailure(getActivity()),
+                        new ProgressDialogOperation(getActivity(), 3));
+                return true;
+            }
+        });
+    }
+
+    private void refreshLastSync() {
+        final Calendar lastSync = org.jinsuoji.jinsuoji.Preference.getLastSync(getActivity());
+        last_sync.setTitle(lastSync == null ? getString(R.string.never_sync):
+                getString(R.string.last_sync, DateUtils.toDateTimeString(lastSync.getTime())));
     }
 
     @Override
