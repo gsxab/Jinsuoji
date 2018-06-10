@@ -1,6 +1,9 @@
 package org.jinsuoji.jinsuoji;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,12 +19,16 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import org.jinsuoji.jinsuoji.account.AccountManager;
 import org.jinsuoji.jinsuoji.data_access.DBWrapper;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.data_access.Serializer;
 import org.jinsuoji.jinsuoji.data_access.TodoDAO;
 import org.jinsuoji.jinsuoji.model.Expense;
 import org.jinsuoji.jinsuoji.model.Todo;
+import org.jinsuoji.jinsuoji.net.ProgressDialogOperation;
+import org.jinsuoji.jinsuoji.net.RestfulAsyncTask;
+import org.jinsuoji.jinsuoji.net.ToastOnFailure;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -183,7 +190,33 @@ public class MainActivity extends AppCompatActivity implements
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                 case R.id.personal_info:
+                    // TODO 借用来做触发上传的操作
+                    AccountManager.getInstance(MainActivity.this)
+                            .upload(MainActivity.this,
+                                    new RestfulAsyncTask.SuccessOperation<Void>() {
+                                        @Override
+                                        public void onSuccess(Void result) {
+                                            Toast.makeText(MainActivity.this, R.string.sync_success, Toast.LENGTH_SHORT).show();
+                                            Preference.setLastSync(MainActivity.this);
+                                        }
+                                    },
+                                    new ToastOnFailure(MainActivity.this),
+                                    new ProgressDialogOperation(MainActivity.this, 3));
+                    break;
                 case R.id.about:
+                    // TODO 借用来做触发下载的操作
+                    AccountManager.getInstance(MainActivity.this)
+                            .download(MainActivity.this,
+                                    new RestfulAsyncTask.SuccessOperation<Serializer.DBMirror>() {
+                                        @Override
+                                        public void onSuccess(Serializer.DBMirror result) {
+                                            Toast.makeText(MainActivity.this, R.string.sync_success, Toast.LENGTH_SHORT).show();
+                                            // ignore
+                                        }
+                                    },
+                                    new ToastOnFailure(MainActivity.this),
+                                    new ProgressDialogOperation(MainActivity.this, 3));
+                    break;
                 case R.id.feedback:
                     // TODO 这些个菜单项
                     Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
@@ -206,6 +239,31 @@ public class MainActivity extends AppCompatActivity implements
                 return false;
             }
         });
+
+        if (Preference.getAutoSync(this) &&
+                !(Preference.getSyncWifiOnly(this) && !isWifi())) {
+            Calendar calendar = Preference.getLastSync(this);
+            calendar.roll(Preference.getSyncFreq(this), true);
+            if (calendar.before(Calendar.getInstance())) {
+                AccountManager.getInstance(this).upload(this, new RestfulAsyncTask.SuccessOperation<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        Toast.makeText(MainActivity.this, R.string.sync_success, Toast.LENGTH_SHORT).show();
+                        Preference.setLastSync(MainActivity.this);
+                    }
+                }, new ToastOnFailure(this), new ProgressDialogOperation(this, 3));
+            }
+        }
+    }
+
+    private boolean isWifi() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = null;
+        if (connectivityManager != null) {
+            info = connectivityManager.getActiveNetworkInfo();
+        }
+        return info != null && info.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
     private void showCreateExpense() {

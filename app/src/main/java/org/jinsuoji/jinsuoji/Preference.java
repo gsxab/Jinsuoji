@@ -4,9 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import org.jinsuoji.jinsuoji.account.Account;
+
+import java.util.Calendar;
 
 /**
  * 封装SharedPreference(偏好设置，储存少量数据，对应于数据文件夹的一个文件).
@@ -14,15 +19,22 @@ import android.util.Log;
 public class Preference {
     private static final String TAG = "o.j.j.Preference";
 
-    // 偏好设置文件名
-    private static final String PREFERENCE_NAME = "my_pref";
     // 上次打开引导界面是在哪个版本
     private static final String KEY_LAST_GUIDED = "guide_activity";
-    // 是否显示已完成项
-    private static final String KEY_SHOW_FINISHED = "show_finished";
+
+    // 上次同步
+    private static final String KEY_LAST_SYNC_TIME = "last_sync_time";
+    // 账户
+    private static final String KEY_USER_NAME = "user_name";
+    // 密码
+    private static final String KEY_STORED_PASSWORD = "stored_password";
 
     private static SharedPreferences getPreferences(Context context) {
-        return context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        return getDefaultSharedPreferences(context);
+    }
+
+    private static SharedPreferences getDefaultSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
 
     /**
@@ -53,6 +65,69 @@ public class Preference {
     }
 
     /**
+     * 查看上次同步信息.
+     */
+    public static Calendar getLastSync(Context context) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(getDefaultSharedPreferences(context)
+                .getLong(KEY_LAST_SYNC_TIME, 0));
+        return calendar;
+    }
+
+    /**
+     * 设置同步时间为当前.
+     */
+    public static void setLastSync(Context context) {
+        getDefaultSharedPreferences(context).edit()
+                .putLong(KEY_LAST_SYNC_TIME, Calendar.getInstance().getTime().getTime())
+                .apply();
+    }
+
+    /**
+     * 写入用户信息.
+     * @param account 账户信息
+     */
+    public static void setAccountInfo(Context context, @NonNull Account account) {
+        getDefaultSharedPreferences(context).edit()
+                .putString(KEY_USER_NAME, account.getUsername())
+                .putString(KEY_STORED_PASSWORD, account.getStoredPassword())
+                .apply();
+    }
+
+    /**
+     * 提取用户信息.
+     * @return 账户信息
+     */
+    public static Account getAccountInfo(Context context) {
+        Account account = new Account(
+                getDefaultSharedPreferences(context).getString(KEY_USER_NAME, null),
+                getDefaultSharedPreferences(context).getString(KEY_STORED_PASSWORD, null)
+        );
+        return account.getUsername() == null ? null : account;
+    }
+
+    /**
+     * 获取自动同步设置. TODO
+     */
+    public static boolean getAutoSync(Context context) {
+        return false;
+    }
+
+    /**
+     * 获取仅wifi设置. TODO
+     */
+    public static boolean getSyncWifiOnly(Context context) {
+        return false;
+    }
+
+    /**
+     * 获取同步间隔设置. TODO
+     */
+    public static int getSyncFreq(Context context) {
+        return Calendar.DATE;
+    }
+
+    /**
      * 设置被引导过了.
      *
      * @param context 应用上下文
@@ -67,18 +142,6 @@ public class Preference {
                 .edit()
                 .putInt(KEY_LAST_GUIDED, versionCode)
                 .apply();
-    }
-
-    public static void setShowFinished(Context context, boolean showUnfinished) {
-        if (context == null) return;
-        getPreferences(context)
-                .edit()
-                .putBoolean(KEY_SHOW_FINISHED, showUnfinished)
-                .apply();
-    }
-
-    public static boolean getShowFinished(@NonNull Context context) {
-        return getPreferences(context).getBoolean(KEY_SHOW_FINISHED, false);
     }
 
     public static void clear(Context context) {

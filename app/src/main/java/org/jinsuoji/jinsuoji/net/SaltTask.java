@@ -42,4 +42,9 @@ class SaltTask extends RestfulAsyncTask<SaltTask.SaltBean> {
     public void start() {
         super.execute(bean, SaltBean.class);
     }
+
+    @Override
+    protected boolean isFinalTask() {
+        return false;
+    }
 }

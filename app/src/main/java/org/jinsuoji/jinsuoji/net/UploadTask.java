@@ -39,4 +39,9 @@ public class UploadTask extends RestfulAsyncTask<Void> {
     public void start() {
         loginTask.start();
     }
+
+    @Override
+    protected boolean isFinalTask() {
+        return true;
+    }
 }

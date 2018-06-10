@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jinsuoji.jinsuoji.account.AccountManager;
 import org.jinsuoji.jinsuoji.net.RestfulAsyncTask;
@@ -62,14 +63,17 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
                 String username = GuideActivity.this.username.getText().toString();
                 String password = GuideActivity.this.password.getText().toString();
                 if (username.isEmpty() || password.isEmpty()) return;
-                AccountManager.getInstance()
+                AccountManager.getInstance(GuideActivity.this)
                         .setInfo(username, password)
-                        .login(new RestfulAsyncTask.SuccessOperation<String>() {
-                            @Override
-                            public void onSuccess(String result) {
-                                startMainActivity(true);
-                            }
-                        }, new ToastOnFailure(GuideActivity.this),
+                        .login(GuideActivity.this,
+                                new RestfulAsyncTask.SuccessOperation<String>() {
+                                    @Override
+                                    public void onSuccess(String result) {
+                                        Toast.makeText(GuideActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
+                                        startMainActivity(true);
+                                    }
+                                },
+                                new ToastOnFailure(GuideActivity.this),
                                 RestfulAsyncTask.MessageOperation.ignore);
             }
         });
@@ -79,10 +83,11 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
                 String username = GuideActivity.this.username.getText().toString();
                 String password = GuideActivity.this.password.getText().toString();
                 if (username.isEmpty() || password.isEmpty()) return;
-                AccountManager.getInstance()
-                        .register(username, password, new RestfulAsyncTask.SuccessOperation<String>() {
+                AccountManager.getInstance(GuideActivity.this)
+                        .register(GuideActivity.this, username, password, new RestfulAsyncTask.SuccessOperation<String>() {
                             @Override
                             public void onSuccess(String result) {
+                                Toast.makeText(GuideActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
                                 startMainActivity(true);
                             }
                         }, new ToastOnFailure(GuideActivity.this),

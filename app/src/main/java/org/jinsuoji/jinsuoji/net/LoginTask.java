@@ -39,4 +39,9 @@ class LoginTask extends RestfulAsyncTask<TokenBean> {
     public void start() {
         new SaltTask(bean, onSuccess, onFailure, onMessage).start();
     }
+
+    @Override
+    protected boolean isFinalTask() {
+        return false;
+    }
 }

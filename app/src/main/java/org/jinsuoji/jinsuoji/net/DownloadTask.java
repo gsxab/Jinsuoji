@@ -46,4 +46,9 @@ public class DownloadTask extends RestfulAsyncTask<Serializer.DBMirror> {
     public void start() {
         loginTask.start();
     }
+
+    @Override
+    protected boolean isFinalTask() {
+        return true;
+    }
 }

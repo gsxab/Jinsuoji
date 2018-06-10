@@ -22,8 +22,13 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
         void onFailure(ErrorBean errorBean);
     }
     public interface MessageOperation {
+        void onTaskOver();
         void onProgressUpdate(int phase);
         MessageOperation ignore = new MessageOperation() {
+            @Override
+            public void onTaskOver() {
+            }
+
             @Override
             public void onProgressUpdate(int phase) {
             }
@@ -129,7 +134,7 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
     @Override
     @SuppressWarnings("unchecked")
     protected void onPostExecute(Object result) {
-        if (result == null) {
+        if (result == null && reqAttr.openInputStream) {
             onFailure.onFailure(new ErrorBean("UNKNOWN", ""));
         }
         if (successFlag) {
@@ -138,6 +143,9 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
             onFailure.onFailure(((ErrorBean) result));
         }
         super.onPostExecute(result);
+        if (isFinalTask()) {
+            onMessage.onTaskOver();
+        }
     }
 
     @Override
@@ -160,4 +168,6 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
     protected void decorate(HttpURLConnection conn) {}
 
     public abstract void start();
+
+    protected abstract boolean isFinalTask();
 }

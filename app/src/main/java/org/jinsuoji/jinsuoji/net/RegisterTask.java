@@ -25,4 +25,9 @@ public class RegisterTask extends RestfulAsyncTask<String> {
     public void start() {
         execute(account, String.class);
     }
+
+    @Override
+    protected boolean isFinalTask() {
+        return true;
+    }
 }

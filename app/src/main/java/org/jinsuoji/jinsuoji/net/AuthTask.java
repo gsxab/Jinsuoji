@@ -17,7 +17,7 @@ public class AuthTask extends RestfulAsyncTask<String> {
      */
     public AuthTask(final AccountManager manager, final SuccessOperation<String> onSuccess,
                     final FailureOperation onFailure, final MessageOperation onMessage) {
-        super(new ReqAttr("POST", false, true, true,
+        super(new ReqAttr("POST", true, true, true,
                 HttpURLConnection.HTTP_OK), "/login", onSuccess, onFailure, onMessage);
         if (manager.checkNoLoginInfo()) throw new AssertionError();
         final AccountBean bean = new AccountBean();
@@ -36,5 +36,10 @@ public class AuthTask extends RestfulAsyncTask<String> {
     @Override
     public void start() {
         saltTask.start();
+    }
+
+    @Override
+    protected boolean isFinalTask() {
+        return true;
     }
 }
