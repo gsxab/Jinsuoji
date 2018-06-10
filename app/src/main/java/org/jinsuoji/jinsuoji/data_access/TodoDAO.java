@@ -84,7 +84,7 @@ public class TodoDAO {
             @Override
             public List<Todo> operate(SQLiteDatabase db) {
                 return query(db,
-                        "SELECT id, name, memo, priority, time, finished " +
+                        "SELECT id, name, memo, time, finished " +
                                 "FROM " + DBHelper.TODO + " " +
                                 "WHERE date(time) = ? " +
                                 "ORDER BY finished ASC, time DESC",
@@ -104,7 +104,7 @@ public class TodoDAO {
             @Override
             public List<Todo> operate(SQLiteDatabase db) {
                 return query(db,
-                        "SELECT id, name, memo, priority, time, finished " +
+                        "SELECT id, name, memo, time, finished " +
                                 "FROM " + DBHelper.TODO + " " +
                                 "WHERE finished = ? " +
                                 "ORDER BY time DESC",
