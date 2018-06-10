@@ -37,11 +37,10 @@ public class TodoDAO {
         public void inLoop(Cursor cursor, List<Todo> entryNodes) {
             Todo todo = new Todo(
                     cursor.getInt(0),
-                    DateUtils.fromDateTimeString(cursor.getString(4)),
+                    DateUtils.fromDateTimeString(cursor.getString(3)),
                     cursor.getString(1),
-                    cursor.getInt(3),
                     cursor.getString(2),
-                    cursor.getInt(5) != 0);
+                    cursor.getInt(4) != 0);
             entryNodes.add(todo);
         }
     };
@@ -139,7 +138,6 @@ public class TodoDAO {
         values.put("name", todoItem.getTaskName());
         values.put("time", DateUtils.toDateTimeString(todoItem.getDateTime()));
         values.put("memo", todoItem.getMemo());
-        values.put("priority", todoItem.getPriority());
         values.put("finished", todoItem.isFinished());
         db.insert(DBHelper.TODO, null, values);
         todoItem.setId(query(db, "SELECT last_insert_rowid()", null, new QueryOperation<Integer>() {
@@ -172,7 +170,6 @@ public class TodoDAO {
         values.put("name", todoItem.getTaskName());
         values.put("time", DateUtils.toDateTimeString(todoItem.getDateTime()));
         values.put("memo", todoItem.getMemo());
-        values.put("priority", todoItem.getPriority());
         values.put("finished", todoItem.isFinished());
         db.replace(DBHelper.TODO, null, values);
     }
