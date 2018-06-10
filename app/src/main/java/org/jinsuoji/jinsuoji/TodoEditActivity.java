@@ -32,7 +32,7 @@ public class TodoEditActivity extends AppCompatActivity {
 
     Handler handler;
     Todo todo;
-    EditText name,priority, memo;
+    EditText name, memo;
     TextView time,reminder;
     ImageButton cancel, ok;
 
@@ -44,7 +44,6 @@ public class TodoEditActivity extends AppCompatActivity {
 
         handler = new Handler();
         name = findViewById(R.id.name_editor);
-        priority = findViewById(R.id.priority_editor);
         reminder = findViewById(R.id.remind_editor);
         memo = findViewById(R.id.memo_editor);
         time = findViewById(R.id.time_editor);
@@ -54,7 +53,7 @@ public class TodoEditActivity extends AppCompatActivity {
         }else{
             Todo todo = (Todo)getIntent().getSerializableExtra(LAST_TODO);
             if(todo == null){
-                this.todo = new Todo(-1,null,"",0,"",false);
+                this.todo = new Todo(-1,null,"","",false);
                 if(getIntent() != null){
                     this.todo.setDateTime((Date) getIntent().getSerializableExtra(TIME));
                 }
@@ -87,7 +86,6 @@ public class TodoEditActivity extends AppCompatActivity {
             }
         });
         name.setText(todo.getTaskName());
-        priority.setText(String.valueOf(todo.getPriority()));
         memo.setText(todo.getMemo());
         time.setText(todo.getDateTime() == null ? "" : DateUtils.toDateTimeString(todo.getDateTime()));
 
@@ -172,11 +170,6 @@ public class TodoEditActivity extends AppCompatActivity {
             flag = false;
         } else {
             todo.setDateTime(DateUtils.fromDateTimeString(time.getText().toString()));
-        }
-        if (priority.getText().length() == 0) {
-            flag = false;
-        } else {
-            todo.setPriority(Integer.valueOf(priority.getText().toString()));
         }
         //if (reminder.getText().length() == 0) {
             // TODO 加进任务里
