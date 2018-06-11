@@ -1,11 +1,15 @@
 package org.jinsuoji.jinsuoji;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -35,6 +39,8 @@ public class TodoEditActivity extends AppCompatActivity {
     EditText name,priority, memo;
     TextView time,reminder;
     ImageButton cancel, ok;
+
+    Date remindDate;
 
 
     @Override
@@ -83,6 +89,23 @@ public class TodoEditActivity extends AppCompatActivity {
                 intent.putExtra(LAST_TODO, todo);
                 intent.putExtra(INDEX, getIntent().getIntExtra(INDEX, -1));
                 setResult(RESULT_OK, intent);
+                long value1 = remindDate.getTime();
+
+                long value2 = System.currentTimeMillis();
+                if(value1 <= value2){
+                    Toast.makeText(getApplicationContext(), "选择时间不能小于当前系统时间", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                int delaytime = (int)((value1 - value2)/1000);
+
+                Log.e("id=",todo.getId()+"");
+
+                Bundle bundle = new Bundle();
+                bundle.putString("task",name.getText().toString());
+                bundle.putString("time",reminder.getText().toString());
+                // ToDo  todo.getId()等于-1
+                addAlarm(todo.getId(), bundle,delaytime);
                 finish();
             }
         });
@@ -145,6 +168,7 @@ public class TodoEditActivity extends AppCompatActivity {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                 Date date = DateUtils.makeDate(year, monthOfYear + 1, dayOfMonth, hourOfDay, minute);
+                                remindDate = date;
                                 reminder.setText(DateUtils.toDateTimeString(date));
                             }
                         }, current.get(Calendar.HOUR_OF_DAY), current.get(Calendar.MINUTE), true);
@@ -191,5 +215,25 @@ public class TodoEditActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         composeTodo();
         savedInstanceState.putSerializable(KEY, todo);
+    }
+
+    //    添加提醒
+    public void addAlarm(int id,Bundle bundle,int second){
+        Intent intent = new Intent(TodoEditActivity.this, RemindReciever.class);
+        intent.putExtras(bundle);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(TodoEditActivity.this,id,intent,0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.SECOND,second);
+        //注册新提醒
+        AlarmManager alarmManager;
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        //单次提醒
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }else{
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
+
     }
 }
