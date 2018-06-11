@@ -54,6 +54,10 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
 
     interface OnFragmentInteractionListener {}
 
+    public Calendar getCurrent() {
+        return current;
+    }
+
     private Calendar current = Calendar.getInstance();
     private OnFragmentInteractionListener listener = null;
     private static final String ARG_CUR_DATE = "cal_SelectedDate";
@@ -92,7 +96,6 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
 
             private void onSelectedDayChange(/*@NonNull CalendarView view, */int year, int month, int dayOfMonth) {
                 Calendar tempCalendar = Calendar.getInstance();
-                tempCalendar.clear();
                 tempCalendar.set(year, month, dayOfMonth);
                 current = tempCalendar;
                 dateDisplay.setText(DateUtils.toDateString(current.getTime()));

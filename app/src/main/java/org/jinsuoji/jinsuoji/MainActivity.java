@@ -1,5 +1,6 @@
 package org.jinsuoji.jinsuoji;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements
             });
         }
         FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment = manager.findFragmentById(R.id.content_container);
+        final Fragment fragment = manager.findFragmentById(R.id.content_container);
         if (fragment == null) {
             manager.beginTransaction()
                     .add(R.id.content_container, new CalendarFragment())
@@ -163,13 +165,31 @@ public class MainActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 switch (navigation.getSelectedItemId()) {
                 case R.id.navigation_home:{
-                    // TODO 弹出选择框
+                    new AlertDialog.Builder(MainActivity.this).setTitle(R.string.create)
+                            .setItems(new String[]{getString(R.string.create_todo),
+                                        getString(R.string.create_expenditure)},
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (which == 0) {
+                                            dialog.dismiss();
+                                            showCreateTodo(((CalendarFragment) fragments.get(0)).getCurrent());
+                                        } else if (which == 1) {
+                                            dialog.dismiss();
+                                            showCreateExpense(((CalendarFragment) fragments.get(0)).getCurrent());
+                                        } else {
+                                            dialog.cancel();
+                                        }
+                                    }
+                                })
+                            .setCancelable(true)
+                            .show();
                 }   break;
                 case R.id.navigation_todo:{
-                    showCreateTodo();
+                    showCreateTodo(Calendar.getInstance());
                 }   break;
                 case R.id.navigation_expenditure:{
-                    showCreateExpense();
+                    showCreateExpense(Calendar.getInstance());
                 }   break;
                 //case R.id.navigation_zhongcao:{
                 //
@@ -207,15 +227,15 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void showCreateExpense() {
+    private void showCreateExpense(Calendar calendar) {
         Intent intent = new Intent(MainActivity.this, ExpenseEditActivity.class);
-        intent.putExtra(ExpenseEditActivity.TIME, Calendar.getInstance().getTime());
+        intent.putExtra(ExpenseEditActivity.TIME, calendar.getTime());
         startActivityForResult(intent, CREATE_EXPENSE);
     }
 
-    private void showCreateTodo() {
+    private void showCreateTodo(Calendar calendar) {
         Intent intent = new Intent(MainActivity.this, TodoEditActivity.class);
-        intent.putExtra(TodoEditActivity.TIME, Calendar.getInstance().getTime());
+        intent.putExtra(TodoEditActivity.TIME, calendar.getTime());
         startActivityForResult(intent, CREATE_TODO);
     }
 

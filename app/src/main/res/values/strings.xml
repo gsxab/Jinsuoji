@@ -89,6 +89,8 @@
     <string name="pref_title_sync_frequence_month">每月同步一次</string>
     <string name="pref_title_sync_wifi">只在WIFI下同步</string>
     <string name="title_todo_list">任务清单</string>
+    <string name="create_todo">新建任务</string>
+    <string name="create_expenditure">新建记账</string>
 
     <!-- entries 是显示在界面上的-->
     <string-array name="pref_entries_sync_frequence">
