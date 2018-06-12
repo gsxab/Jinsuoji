@@ -55,8 +55,8 @@ public class TodoListFragment extends Fragment implements ListRefreshable {
         if (adapter == null) {
             if (fragments == null) {
                 fragments = Arrays.asList(
-                        (Fragment) TodoTabContentFragment.getInstance(this, EDIT_TODO_UNFINISHED, false),
-                        TodoTabContentFragment.getInstance(this, EDIT_TODO_FINISHED, true)
+                        (Fragment) TodoTabContentFragment.getInstance(EDIT_TODO_UNFINISHED, false),
+                        TodoTabContentFragment.getInstance(EDIT_TODO_FINISHED, true)
                 );
             }
             adapter = new PagerAdapter(getChildFragmentManager(), Arrays.asList("未完成", "已完成"), fragments);

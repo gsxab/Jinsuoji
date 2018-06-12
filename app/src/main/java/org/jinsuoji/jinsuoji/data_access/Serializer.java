@@ -150,15 +150,15 @@ public class Serializer {
             DBMirror mirror = new DBMirror();
             mirror.todoList = new ArrayList<>();
             mirror.todoList.add(new Todo(1, DateUtils.fromDateTimeString("2018-05-21 18:14"),
-                    "跑步", "一千米", false));
+                    "跑步", "一千米", null, false));
             mirror.todoList.add(new Todo(2, DateUtils.fromDateTimeString("2018-05-21 18:20"),
-                    "跑步", "两千米", true));
+                    "跑步", "两千米", null,true));
             mirror.todoList.add(new Todo(3, DateUtils.fromDateTimeString("2018-05-21 18:21"),
-                    "跑步", "三千米", false));
+                    "跑步", "三千米", null, false));
             mirror.todoList.add(new Todo(4, DateUtils.fromDateTimeString("2018-05-21 18:33"),
-                    "遛狗", "四千米", true));
+                    "遛狗", "四千米", null,true));
             mirror.todoList.add(new Todo(5, DateUtils.fromDateTimeString("2018-05-20 18:20"),
-                    "跑步", "两千米", true));
+                    "跑步", "两千米", null,true));
             mirror.expenseCategoryList = new ArrayList<>();
             mirror.expenseCategoryList.add(new ExpenseCategoryBean(1, "食品"));
             mirror.expenseCategoryList.add(new ExpenseCategoryBean(2, "逛街"));
@@ -185,7 +185,7 @@ public class Serializer {
             wrapper.read(new Operation<Void>() {
                 @Override
                 public Void operate(SQLiteDatabase db) {
-                    query(db, "SELECT id, time, name, memo, finished FROM "
+                    query(db, "SELECT id, time, name, memo, finished, reminderTime FROM "
                             + DBHelper.TODO, null, new QueryAdapter<Void>() {
                         @Override
                         public Void beforeLoop(Cursor cursor) {
@@ -202,6 +202,7 @@ public class Serializer {
                                     DateUtils.fromDateTimeString(cursor.getString(1)),
                                     cursor.getString(2),
                                     cursor.getString(3),
+                                    DateUtils.fromDateTimeString(cursor.getString(5)),
                                     cursor.getInt(4) == 1
                             ));
                         }

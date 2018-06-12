@@ -16,7 +16,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * </ul>
  */
 public class DBHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     private static final String DB_NAME = "jinsuoji.db";
     static final String EXPENSE_CATE = "expense_category", EXPENSE = "expense", TODO = "TODO";
     private static final String[] TABLE_NAMES = new String[]{
@@ -55,6 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "name NTEXT, " +
                 "memo NTEXT, " +
                 "time DATETIME, " +
+                "reminderTime DATETIME, " +
                 "finished BOOLEAN" +
                 ");");
     }

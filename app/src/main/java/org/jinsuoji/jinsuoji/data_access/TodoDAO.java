@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.jinsuoji.jinsuoji.calendar.MyAlarmManager;
 import org.jinsuoji.jinsuoji.model.EntryNode;
 import org.jinsuoji.jinsuoji.model.Todo;
 
@@ -40,6 +41,7 @@ public class TodoDAO {
                     DateUtils.fromDateTimeString(cursor.getString(3)),
                     cursor.getString(1),
                     cursor.getString(2),
+                    DateUtils.fromDateTimeString(cursor.getString(5)),
                     cursor.getInt(4) != 0);
             entryNodes.add(todo);
         }
@@ -84,7 +86,7 @@ public class TodoDAO {
             @Override
             public List<Todo> operate(SQLiteDatabase db) {
                 return query(db,
-                        "SELECT id, name, memo, time, finished " +
+                        "SELECT id, name, memo, time, finished, reminderTime " +
                                 "FROM " + DBHelper.TODO + " " +
                                 "WHERE date(time) = ? " +
                                 "ORDER BY finished ASC, time DESC",
@@ -104,7 +106,7 @@ public class TodoDAO {
             @Override
             public List<Todo> operate(SQLiteDatabase db) {
                 return query(db,
-                        "SELECT id, name, memo, time, finished " +
+                        "SELECT id, name, memo, time, finished, reminderTime " +
                                 "FROM " + DBHelper.TODO + " " +
                                 "WHERE finished = ? " +
                                 "ORDER BY time DESC",
@@ -133,11 +135,12 @@ public class TodoDAO {
         });
     }
 
-    private static void addTodo(Todo todoItem, SQLiteDatabase db) {
+    private void addTodo(Todo todoItem, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         values.put("name", todoItem.getTaskName());
         values.put("time", DateUtils.toDateTimeString(todoItem.getDateTime()));
         values.put("memo", todoItem.getMemo());
+        values.put("reminderTime", DateUtils.toDateTimeString(todoItem.getReminderTime()));
         values.put("finished", todoItem.isFinished());
         db.insert(DBHelper.TODO, null, values);
         todoItem.setId(query(db, "SELECT last_insert_rowid()", null, new QueryOperation<Integer>() {
@@ -162,6 +165,9 @@ public class TodoDAO {
                 return null;
             }
         });
+        if (todoItem.getReminderTime() != null) {
+            MyAlarmManager.replaceAlarm(context, todoItem.getId(), todoItem.getReminderTime());
+        }
     }
 
     static void replaceTodo(Todo todoItem, SQLiteDatabase db) {
@@ -187,6 +193,11 @@ public class TodoDAO {
                 return null;
             }
         });
+        if (todoItem.getReminderTime() != null) {
+            MyAlarmManager.replaceAlarm(context, todoItem.getId(), todoItem.getReminderTime());
+        } else {
+            MyAlarmManager.removeAlarmIfExists(context, todoItem.getId());
+        }
     }
 
     /**
@@ -199,6 +210,34 @@ public class TodoDAO {
             public Void operate(SQLiteDatabase db) {
                 db.delete(DBHelper.TODO, "id = ?", new String[]{String.valueOf(id)});
                 return null;
+            }
+        });
+        MyAlarmManager.removeAlarmIfExists(context, id);
+    }
+
+    public Todo getById(final int id) {
+        return wrapper.read(new Operation<Todo>() {
+            @Override
+            public Todo operate(SQLiteDatabase db) {
+                return query(db, "SELECT id, name, memo, time, finished, reminderTime " +
+                                "FROM " + DBHelper.TODO + " " +
+                                "WHERE id = ?",
+                        new String[]{String.valueOf(id)},
+                        new QueryAdapter<Todo>() {
+                            @Override
+                            public Todo beforeLoop(Cursor cursor) {
+                                if (!cursor.moveToFirst()) {
+                                    return null;
+                                }
+                                return new Todo(
+                                        cursor.getInt(0),
+                                        DateUtils.fromDateTimeString(cursor.getString(3)),
+                                        cursor.getString(1),
+                                        cursor.getString(2),
+                                        DateUtils.fromDateTimeString(cursor.getString(5)),
+                                        cursor.getInt(4) != 0);
+                            }
+                        });
             }
         });
     }

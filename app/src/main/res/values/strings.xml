@@ -91,6 +91,9 @@
     <string name="title_todo_list">任务清单</string>
     <string name="create_todo">新建任务</string>
     <string name="create_expenditure">新建记账</string>
+    <string name="reminder_toast">今琐记：闹铃响了，可以做点事情了~~</string>
+    <string name="reminder_todo_abstract">任务：%1$s\n提醒时间：%2$s</string>
+    <string name="no_alarms_found">无法访问此设备的提醒功能！</string>
 
     <!-- entries 是显示在界面上的-->
     <string-array name="pref_entries_sync_frequence">

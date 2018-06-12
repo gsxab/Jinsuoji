@@ -13,17 +13,19 @@ import java.util.Date;
  * 保存一次任务条目的基本信息.
  */
 public class Todo implements Serializable, ContextualStringConvertible {
-    public Todo(int id, Date dateTime, String taskName, String memo, boolean finished) {
+    public Todo(int id, Date dateTime, String taskName, String memo, Date reminderTime, boolean finished) {
         this.id = id;
         this.dateTime = dateTime;
         this.taskName = taskName;
         this.memo = memo;
+        this.reminderTime = reminderTime;
         this.finished = finished;
     }
 
     private int id;
     private Date dateTime;
     private String taskName;
+    private Date reminderTime;
     private String memo;
     private boolean finished;
 
@@ -49,6 +51,14 @@ public class Todo implements Serializable, ContextualStringConvertible {
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+    public Date getReminderTime() {
+        return reminderTime;
+    }
+
+    public void setReminderTime(Date reminderTime) {
+        this.reminderTime = reminderTime;
     }
 
     public String getMemo() {

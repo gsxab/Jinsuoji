@@ -21,8 +21,8 @@
         <activity android:name=".GuideActivity" android:screenOrientation="portrait" />
         <activity android:name=".TodoEditActivity" />
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".RemindActivity"></activity>
-        <receiver android:name=".RemindReciever" android:process=":remote"/>
+        <activity android:name=".RemindActivity" />
+        <receiver android:name=".RemindReceiver" android:process=":remote"/>
     </application>
 
 </manifest>

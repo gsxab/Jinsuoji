@@ -1,15 +1,11 @@
 package org.jinsuoji.jinsuoji;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -59,7 +55,7 @@ public class TodoEditActivity extends AppCompatActivity {
         }else{
             Todo todo = (Todo)getIntent().getSerializableExtra(LAST_TODO);
             if(todo == null){
-                this.todo = new Todo(-1,null,"","",false);
+                this.todo = new Todo(-1,null,"","", null,false);
                 if(getIntent() != null){
                     this.todo.setDateTime((Date) getIntent().getSerializableExtra(TIME));
                 }
@@ -96,22 +92,13 @@ public class TodoEditActivity extends AppCompatActivity {
                     return;
                 }
 
-                int delaytime = (int)((value1 - value2)/1000);
-
-                Log.e("id=",todo.getId()+"");
-
-                Bundle bundle = new Bundle();
-                bundle.putString("task",name.getText().toString());
-                bundle.putString("time",reminder.getText().toString());
-                // ToDo  todo.getId()等于-1
-                addAlarm(todo.getId(), bundle,delaytime);
                 finish();
             }
         });
         name.setText(todo.getTaskName());
         memo.setText(todo.getMemo());
         time.setText(todo.getDateTime() == null ? "" : DateUtils.toDateTimeString(todo.getDateTime()));
-
+        reminder.setText(todo.getReminderTime() == null ? "" : DateUtils.toDateTimeString(todo.getReminderTime()));
 
         time.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,10 +182,11 @@ public class TodoEditActivity extends AppCompatActivity {
         } else {
             todo.setDateTime(DateUtils.fromDateTimeString(time.getText().toString()));
         }
-        //if (reminder.getText().length() == 0) {
-            // TODO 加进任务里
-        //    flag = false;
-        //}
+        if (reminder.getText().length() == 0) {
+            todo.setReminderTime(null);
+        } else {
+            todo.setReminderTime(DateUtils.fromDateTimeString(reminder.getText().toString()));
+        }
         todo.setMemo(memo.getText().toString()); // 备注可空
         return flag;
     }
@@ -208,25 +196,5 @@ public class TodoEditActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         composeTodo();
         savedInstanceState.putSerializable(KEY, todo);
-    }
-
-    //    添加提醒
-    public void addAlarm(int id,Bundle bundle,int second){
-        Intent intent = new Intent(TodoEditActivity.this, RemindReciever.class);
-        intent.putExtras(bundle);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(TodoEditActivity.this,id,intent,0);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.SECOND,second);
-        //注册新提醒
-        AlarmManager alarmManager;
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        //单次提醒
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        }else{
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        }
-
     }
 }

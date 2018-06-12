@@ -12,6 +12,7 @@ import java.util.Locale;
 /**
  * 日期和日期字符串之间的一些操作.
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class DateUtils {
     private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     private static DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
@@ -28,10 +29,10 @@ public class DateUtils {
         }
     }
 
-    public static @Nullable Date fromDateTimeString(String str) {
+    public static @Nullable Date fromDateTimeString(@Nullable String str) {
         try {
             return dateTimeFormat.parse(str);
-        } catch (ParseException e) {
+        } catch (NullPointerException | ParseException e) {
             return null;
         }
     }

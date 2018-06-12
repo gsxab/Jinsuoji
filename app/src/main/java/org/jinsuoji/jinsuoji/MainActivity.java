@@ -191,9 +191,6 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.navigation_expenditure:{
                     showCreateExpense(Calendar.getInstance());
                 }   break;
-                //case R.id.navigation_zhongcao:{
-                //
-                //}   break;
                 }
             }
         });
