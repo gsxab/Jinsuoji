@@ -37,5 +37,18 @@ public class MyAlarmManager {
     }
 
     // 移除提醒
-    public static void removeAlarmIfExists(Context context, int id) {}
+    public static void removeAlarmIfExists(Context context, int id) {
+        Intent intent = new Intent(context, RemindReceiver.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(RemindActivity.TODO_TO_BE_REMINDED, id);
+        intent.putExtras(bundle);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent,0);
+        AlarmManager alarmManager;
+        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) {
+            Toast.makeText(context, R.string.no_alarms_found, Toast.LENGTH_SHORT).show();
+        } else {
+            alarmManager.cancel(pendingIntent);
+        }
+    }
 }

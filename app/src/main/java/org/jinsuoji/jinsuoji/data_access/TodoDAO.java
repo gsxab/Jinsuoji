@@ -176,6 +176,7 @@ public class TodoDAO {
         values.put("name", todoItem.getTaskName());
         values.put("time", DateUtils.toDateTimeString(todoItem.getDateTime()));
         values.put("memo", todoItem.getMemo());
+        values.put("reminderTime", DateUtils.toDateTimeString(todoItem.getReminderTime()));
         values.put("finished", todoItem.isFinished());
         db.replace(DBHelper.TODO, null, values);
     }

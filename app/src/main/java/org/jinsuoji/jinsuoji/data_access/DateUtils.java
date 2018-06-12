@@ -71,6 +71,10 @@ public class DateUtils {
     }
 
     public static String toDateTimeString(Date date) {
-        return dateTimeFormat.format(date);
+        try {
+            return dateTimeFormat.format(date);
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 }
