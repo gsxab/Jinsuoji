@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import org.jinsuoji.jinsuoji.data_access.DateUtils;
 import org.jinsuoji.jinsuoji.data_access.TodoDAO;
 import org.jinsuoji.jinsuoji.model.Todo;
 
@@ -43,7 +44,7 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
                 }
             }
         }
-    };;
+    };
 
     TodoListAdaptor(Context context, ListRefreshable refreshable, int year, int month, int day) {
         super();
@@ -101,7 +102,14 @@ public class TodoListAdaptor extends RecyclerView.Adapter<TodoListAdaptor.ViewHo
         holder.finished.setChecked(todo.isFinished());
         holder.finished.setTag(position);
         holder.finished.setOnClickListener(clickListener);
-        holder.memo.setText(todo.getMemo());
+        holder.memo.setText(DateUtils.toDateTimeString(todo.getDateTime()));
+        if (todo.isFinished()) {
+            holder.name.setAlpha(0.5f);
+            holder.memo.setAlpha(0.5f);
+        } else {
+            holder.name.setAlpha(1f);
+            holder.memo.setAlpha(1f);
+        }
         holder.mView.setTag(todo);
     }
 

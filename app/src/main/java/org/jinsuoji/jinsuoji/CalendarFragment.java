@@ -68,6 +68,7 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
     private RecyclerView dailyExpenseList;
     private ImageButton lastMonth, nextMonth;
     private TextView dateDisplay;
+    private int unit;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,11 +109,15 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
             public void onClick(View v) {
                 switch (calendar.getVisibility()) {
                     case View.VISIBLE:
+                        unit = Calendar.DATE;
                         calendar.setVisibility(View.GONE);
+                        calendarCollapse.setRotation(180);
                         break;
                     case View.INVISIBLE:
                     case View.GONE:
+                        unit = Calendar.MONTH;
                         calendar.setVisibility(View.VISIBLE);
+                        calendarCollapse.setRotation(0);
                         // it.animate()
                         break;
                     default:
@@ -121,18 +126,20 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
             }
         });
 
+        unit = Calendar.MONTH;
+
         lastMonth = view.findViewById(R.id.last_month);
         lastMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lastMonth(v);
+                previous(v);
             }
         });
         nextMonth = view.findViewById(R.id.next_month);
         nextMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nextMonth(v);
+                next(v);
             }
         });
         dateDisplay = view.findViewById(R.id.date_display);
@@ -229,13 +236,13 @@ public class CalendarFragment extends Fragment implements ListRefreshable {
         }
     }
 
-    private void nextMonth(View view) {
-        current.add(Calendar.MONTH, 1);
+    private void next(View view) {
+        current.add(unit, 1);
         scroll();
     }
 
-    private void lastMonth(View view) {
-        current.add(Calendar.MONTH, -1);
+    private void previous(View view) {
+        current.add(unit, -1);
         scroll();
     }
 
