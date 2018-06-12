@@ -1,7 +1,10 @@
 package org.jinsuoji.jinsuoji;
 
 import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,12 +21,16 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import org.jinsuoji.jinsuoji.account.AccountManager;
 import org.jinsuoji.jinsuoji.data_access.DBWrapper;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.data_access.Serializer;
 import org.jinsuoji.jinsuoji.data_access.TodoDAO;
 import org.jinsuoji.jinsuoji.model.Expense;
 import org.jinsuoji.jinsuoji.model.Todo;
+import org.jinsuoji.jinsuoji.net.ProgressDialogOperation;
+import org.jinsuoji.jinsuoji.net.RestfulAsyncTask;
+import org.jinsuoji.jinsuoji.net.ToastOnFailure;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements
     ImageButton toolbarAdd;
     ViewPager pager;
 
-
     List<String> stringList;
     List<Fragment> fragments;
 
@@ -80,11 +86,6 @@ public class MainActivity extends AppCompatActivity implements
                 pager.setCurrentItem(2);
                 ((ExpenditureFragment) fragments.get(2)).refreshList();
                 return true;
-            //case R.id.navigation_zhongcao:
-            //    Toast.makeText(MainActivity.this, getString(R.string.placeholder),
-            //            Toast.LENGTH_SHORT).show();
-            //    //pager.setCurrentItem(3);
-            //    return false;
             }
             return false;
         }
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements
             intent.setClass(this, GuideActivity.class);
             startActivity(intent);
             finish();
+            return;
         }
 
         navigation = findViewById(R.id.navigation);
@@ -222,6 +224,42 @@ public class MainActivity extends AppCompatActivity implements
                 return false;
             }
         });
+
+        if (Preference.getAutoSync(this) &&
+                !(Preference.getSyncWifiOnly(this) && !isWifi())) {
+            boolean shouldSync = true;
+            int freq = Preference.getSyncFreq(this);
+            if (freq == -1) {
+                shouldSync = false;
+            } else {
+                Calendar calendar = Preference.getLastSync(this);
+                if (calendar != null) {
+                    calendar.roll(freq, true);
+                    if (Calendar.getInstance().before(calendar)) {
+                        shouldSync = false;
+                    }
+                }
+            }
+            if (shouldSync) {
+                AccountManager.getInstance(this).upload(this, new RestfulAsyncTask.SuccessOperation<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        Toast.makeText(MainActivity.this, R.string.sync_success, Toast.LENGTH_SHORT).show();
+                        Preference.setLastSync(MainActivity.this);
+                    }
+                }, new ToastOnFailure(this), new ProgressDialogOperation(this, 3));
+            }
+        }
+    }
+
+    private boolean isWifi() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = null;
+        if (connectivityManager != null) {
+            info = connectivityManager.getActiveNetworkInfo();
+        }
+        return info != null && info.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
     private void showCreateExpense(Calendar calendar) {
