@@ -98,6 +98,7 @@ public class ExpenditureChartsFragment extends Fragment {
             for (int i = 0; i < dailyExpenses.length; i++) {
                 int dailyExpense = dailyExpenses[i];
                 columns.add(new Column()
+                        .setHasLabelsOnlyForSelected(true)
                         .setValues(Collections.singletonList(new SubcolumnValue()
                             .setColor(color)
                             .setLabel(context.getString(R.string.chart_expense_label, i + 1, dailyExpense / 100f))

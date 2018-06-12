@@ -86,8 +86,6 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                             @Override
                             public void onSuccess(Serializer.DBMirror result) {
                                 Toast.makeText(getActivity(), R.string.sync_success, Toast.LENGTH_SHORT).show();
-                                org.jinsuoji.jinsuoji.Preference.setLastSync(getActivity());
-                                refreshLastSync();
                             }
                         },
                         new ToastOnFailure(getActivity()),
