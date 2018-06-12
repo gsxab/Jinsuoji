@@ -16,10 +16,12 @@ import org.jinsuoji.jinsuoji.net.ToastOnFailure;
 public class GuideActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "o.j.j.GuideActivity";
     public static final String HAS_USER_NAME = "org.jinsuoji.jinsuoji.UserName";
+    public static final String KEY_LOGIN = "org.jinsuoji.jinsuoji.Login";
+
     TextView skip;
     Button okLogin, okRegister;
     EditText username, password;
-    boolean status;
+    boolean status, isLogin;
 
     @Override
     public void onBackPressed() {
@@ -94,13 +96,21 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
                                 RestfulAsyncTask.MessageOperation.ignore);
             }
         });
+
+        isLogin = getIntent().getBooleanExtra(KEY_LOGIN, false);
+        if (isLogin) {
+            onClick(null);
+            status = false;
+        }
     }
 
     private void startMainActivity(boolean withAccount) {
-        Preference.setGuided(GuideActivity.this);
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(HAS_USER_NAME, withAccount);
-        startActivity(intent);
+        if (!isLogin) {
+            Preference.setGuided(GuideActivity.this);
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(HAS_USER_NAME, withAccount);
+            startActivity(intent);
+        }
         finish();
     }
 
