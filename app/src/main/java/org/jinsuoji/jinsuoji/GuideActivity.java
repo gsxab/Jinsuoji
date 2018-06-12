@@ -63,7 +63,7 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
                 String username = GuideActivity.this.username.getText().toString();
                 String password = GuideActivity.this.password.getText().toString();
                 if (username.isEmpty() || password.isEmpty()) return;
-                AccountManager.getInstance(GuideActivity.this)
+                AccountManager.getInstance(GuideActivity.this, false)
                         .setInfo(username, password)
                         .login(GuideActivity.this,
                                 new RestfulAsyncTask.SuccessOperation<String>() {
@@ -83,7 +83,7 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
                 String username = GuideActivity.this.username.getText().toString();
                 String password = GuideActivity.this.password.getText().toString();
                 if (username.isEmpty() || password.isEmpty()) return;
-                AccountManager.getInstance(GuideActivity.this)
+                AccountManager.getInstance(GuideActivity.this, false)
                         .register(GuideActivity.this, username, password, new RestfulAsyncTask.SuccessOperation<String>() {
                             @Override
                             public void onSuccess(String result) {

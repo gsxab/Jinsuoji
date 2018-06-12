@@ -30,9 +30,9 @@ public class AccountManager {
     private static final Charset ASCII = Charset.forName("US-ASCII");
 
     private static AccountManager manager;
-    public static AccountManager getInstance(Context context) {
+    public static AccountManager getInstance(Context context, Boolean retrieve) {
         if (manager == null) manager = new AccountManager();
-        manager.retrieveAccount(context);
+        if (retrieve) manager.retrieveAccount(context);
         return manager;
     }
 
@@ -47,11 +47,9 @@ public class AccountManager {
     }
 
     private AccountManager() {
-        // retrieveAccount();
     }
 
     public boolean checkNoLoginInfo() {
-        // if (account == null) retrieveAccount(context);
         return account == null;
     }
 

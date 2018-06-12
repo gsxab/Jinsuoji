@@ -63,7 +63,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         upload_now.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                AccountManager.getInstance(getActivity()).upload(getActivity(),
+                AccountManager.getInstance(getActivity(), true).upload(getActivity(),
                         new RestfulAsyncTask.SuccessOperation<Void>() {
                             @Override
                             public void onSuccess(Void result) {
@@ -81,7 +81,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
         download_now.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                AccountManager.getInstance(getActivity()).download(getActivity(),
+                AccountManager.getInstance(getActivity(), true).download(getActivity(),
                         new RestfulAsyncTask.SuccessOperation<Serializer.DBMirror>() {
                             @Override
                             public void onSuccess(Serializer.DBMirror result) {

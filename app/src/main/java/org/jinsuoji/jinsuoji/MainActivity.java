@@ -1,7 +1,7 @@
 package org.jinsuoji.jinsuoji;
 
-import android.content.DialogInterface;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
             if (shouldSync) {
-                AccountManager.getInstance(this).upload(this, new RestfulAsyncTask.SuccessOperation<Void>() {
+                AccountManager.getInstance(this, true).upload(this, new RestfulAsyncTask.SuccessOperation<Void>() {
                     @Override
                     public void onSuccess(Void result) {
                         Toast.makeText(MainActivity.this, R.string.sync_success, Toast.LENGTH_SHORT).show();
