@@ -120,6 +120,11 @@
     <string name="reminder_todo_abstract">任务：%1$s\n提醒时间：%2$s</string>
     <string name="no_alarms_found">无法访问此设备的提醒功能！</string>
 
+    <string name="chart_income_label">%1$d日收入\n共计%2$.2f元</string>
+    <string name="chart_expense_label">%1$d日支出\n共计%2$.2f元</string>
+    <string name="pie_income_label">%1$s收入\n共计%2$.2f元</string>
+    <string name="pie_expense_label">%1$s支出\n共计%2$.2f元</string>
+
     <!-- entries 是显示在界面上的-->
     <string-array name="pref_entries_sync_frequence">
         <item>每天</item>
@@ -133,6 +138,5 @@
         <item>每周</item>
         <item>每月</item>
     </string-array>
-
 
 </resources>

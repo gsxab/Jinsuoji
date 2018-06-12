@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".experimental.ExpenditureChartsFragment">
+
+    <lecho.lib.hellocharts.view.ColumnChartView
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginTop="@dimen/activity_half_margin"
+        android:id="@+id/column_by_date" />
+
+    <lecho.lib.hellocharts.view.PieChartView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/expense_pie_by_category" />
+
+</LinearLayout>

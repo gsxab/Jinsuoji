@@ -10,8 +10,11 @@ import org.jinsuoji.jinsuoji.model.EntryNode;
 import org.jinsuoji.jinsuoji.model.Expense;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.jinsuoji.jinsuoji.data_access.DBWrapper.query;
 
@@ -358,6 +361,76 @@ public class ExpenseDAO {
                                 strings.add(cursor.getString(0));
                             }
                         });
+            }
+        });
+    }
+
+    /**
+     * 按日期求和.
+     * @return 日期求和数组
+     */
+    public int[] groupByDate(final int year, final int month) {
+        int dateNumber;
+        {
+            Calendar calendar = Calendar.getInstance();
+            calendar.clear();
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month - 1);
+            dateNumber = calendar.getActualMaximum(Calendar.DATE);
+        }
+        final int[] dailyExpenses = new int[dateNumber];
+        return wrapper.read(new Operation<int[]>() {
+            @Override
+            public int[] operate(SQLiteDatabase db) {
+                return query(db,
+                        "SELECT strftime(\"%d\", time), " +
+                                "-sum(money) AS expense " +
+                                "FROM " + DBHelper.EXPENSE + " " +
+                                "WHERE time >= ? AND time < ? AND money < 0 " +
+                                "GROUP BY time",
+                        DateUtils.makeDateInterval(year, month),
+                        new QueryAdapter<int[]>() {
+                            @Override
+                            public int[] beforeLoop(Cursor cursor) {
+                                return dailyExpenses;
+                            }
+
+                            @Override
+                            public void inLoop(Cursor cursor, int[] dailyExpenses) {
+                                dailyExpenses[Integer.valueOf(cursor.getString(0)) - 1] = cursor.getInt(1);
+                            }
+                        });
+            }
+        });
+    }
+
+    public Map<String, Integer> groupByCategory(final int year, final int month) {
+        return wrapper.read(new Operation<Map<String, Integer>>() {
+            @Override
+            public Map<String, Integer> operate(SQLiteDatabase db) {
+                return query(db,
+                        "SELECT category_id, name, expense " +
+                                "FROM " + DBHelper.EXPENSE_CATE + " AS S JOIN (" +
+                                "SELECT category_id, " +
+                                "-sum(money) AS expense " +
+                                "FROM " + DBHelper.EXPENSE + " " +
+                                "WHERE time >= ? AND time < ? AND money < 0 " +
+                                "GROUP BY category_id" +
+                                ") AS T ON T.category_id=S.id;",
+                        DateUtils.makeDateInterval(year, month),
+                        new QueryAdapter<Map<String, Integer>>() {
+                            @Override
+                            public Map<String, Integer> beforeLoop(Cursor cursor) {
+                                return new HashMap<>();
+                            }
+
+                            @Override
+                            public void inLoop(Cursor cursor, Map<String, Integer> stringPairMap) {
+                                stringPairMap.put(cursor.getString(1),
+                                        cursor.getInt(2));
+                            }
+                        }
+                );
             }
         });
     }
