@@ -18,6 +18,7 @@ import org.jinsuoji.jinsuoji.data_access.DateUtils;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.model.Expense;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -158,9 +159,10 @@ public class ExpenseEditActivity extends AppCompatActivity {
 
     //expenditure-edit categoryDialog
     public void showCategoryDialog(View v){
-        List<String> categories = new ExpenseDAO(this).getAllCategories();
+        List<String> categories = new ArrayList<>();
         categories.add(0, getString(R.string.create_category));
         categories.add(1, getString(R.string.uncategorized));
+        categories.addAll(new ExpenseDAO(this).getAllCategories());
         final String[] items = categories.toArray(new String[0]);
         AlertDialog.Builder categoryDialog = new AlertDialog.Builder(ExpenseEditActivity.this);
         categoryDialog.setTitle(R.string.category);
