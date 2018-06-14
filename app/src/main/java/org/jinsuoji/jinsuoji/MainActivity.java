@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -153,13 +152,6 @@ public class MainActivity extends AppCompatActivity implements
                     drawer.openDrawer(leftDrawer);
                 }
             });
-        }
-        FragmentManager manager = getSupportFragmentManager();
-        final Fragment fragment = manager.findFragmentById(R.id.content_container);
-        if (fragment == null) {
-            manager.beginTransaction()
-                    .add(R.id.content_container, new CalendarFragment())
-                    .commit();
         }
         toolbarAdd = findViewById(R.id.toolbar_add);
         toolbarAdd.setOnClickListener(new View.OnClickListener(){
