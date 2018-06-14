@@ -192,18 +192,23 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                case R.id.personal_info:
-                case R.id.about:
-                    Intent intent_about = new Intent(MainActivity.this,AboutActivity.class);
-                    startActivity(intent_about);
+                case R.id.personal_info: {
                     break;
-                case R.id.feedback:
-                    Intent intent_feedback = new Intent(MainActivity.this,FeedbackActivity.class);
-                    startActivity(intent_feedback);
+                }
+                case R.id.about: {
+                    Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                    startActivity(intent);
+                }
                     break;
-                case R.id.sync_settings:
+                case R.id.feedback: {
+                    Intent intent = new Intent(MainActivity.this, FeedbackActivity.class);
+                    startActivity(intent);
+                }
+                    break;
+                case R.id.sync_settings: {
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                     startActivity(intent);
+                }
                     break;
                 case R.id.load_example:
                     Toast.makeText(MainActivity.this, R.string.load_example, Toast.LENGTH_SHORT).show();
