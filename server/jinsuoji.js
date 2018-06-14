@@ -5,6 +5,8 @@ const mysql = require("mysql");
 const crypto = require('crypto');
 const fs = require("fs");
 
+const markdown = require('markdown-js');
+
 const app = express();
 app.use(bodyParser.json());
 
@@ -153,6 +155,10 @@ app.post("/login", (req,res)=>{
 		if (params.encrypted !== encrypted) {
 			res.statusCode = 401;
 			res.json({error: "AUTHENTICATION_FAILED", data: ""});
+			console.log("authentication failed:");
+			console.log("username:" + params.username);
+			console.log("client encrypted:" + params.encrypted);
+			console.log("server encrypted:" + encrypted);
 			res.end();
 			return;
 		}
@@ -260,9 +266,44 @@ app.get('/sync/example', (req, res)=>{
 	});
 });
 
+app.get('/static/style.css', (req, res)=>{
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/css');
+    fs.readFile('views/styles.css', 'utf8', (err, str)=>{
+        res.end(str);
+    });
+});
+
+app.get('/doc', (req, res)=>{
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    fs.readFile('views/doc.md', 'utf8', (err,str)=>{
+        str = '<!DOCTYPE html><html><head><meta charset="utf-8"/><title>API文档</title><link rel="stylesheet" href="/static/style.css"/></head><body class="markdown-body">' + markdown.parse(str).toString() + '</body></html>';
+        res.end(str);
+    });
+});
+
+app.get('/privacy', (req, res)=>{
+	res.statusCode = 200;
+	res.setHeader('Content-Type', 'text/html');
+	fs.readFile('views/privacy.md', 'utf8', function(err, str){  
+		str = '<!DOCTYPE html><html><head><meta charset="utf-8"/><title>今琐记·隐私政策</title><rel link=stylesheet href="/static/style.css"></head><body class="markdown-body">' + markdown.parse(str).toString() + '</body></html>';
+		res.end(str);
+	});
+});
+
+app.post('/feedback', (req, res)=>{
+    res.statusCode = 201;
+    res.setHeader('Content-Type', 'application/json');
+    console.log(JSON.parse(req.body).feedback);
+    res.json("success");
+    res.end();
+});
+
 app.all('/*', (req, res)=>{
-	res.statusCode = 404;
+	console.log("not found trial:" + req.method + " " + req.originalUrl);
+	res.statusCode = 400;
 	res.json({error: "API_NOT_FOUND", data:""});
 });
 
-app.listen(3001, '127.0.0.1');
+app.listen(80);
