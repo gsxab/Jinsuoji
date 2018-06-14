@@ -3,6 +3,7 @@
     <item
         android:id="@+id/personal_info"
         android:icon="@drawable/ic_home"
+        android:visible="false"
         android:title="@string/personal_info" />
 
     <item
@@ -13,11 +14,13 @@
     <item
         android:id="@+id/clear_all"
         android:icon="@drawable/ic_check_box"
+        android:visible="false"
         android:title="@string/recreate_database" />
 
     <item
         android:id="@+id/load_example"
         android:icon="@drawable/ic_check_box"
+        android:visible="false"
         android:title="@string/load_example" />
 
     <item

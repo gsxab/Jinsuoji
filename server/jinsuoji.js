@@ -9,6 +9,7 @@ const markdown = require('markdown-js');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const pool = mysql.createPool({
 	host:	'127.0.0.1',
@@ -292,12 +293,21 @@ app.get('/privacy', (req, res)=>{
 	});
 });
 
+app.get('/feedback', (req, res)=>{
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    fs.readFile('views/feedback.html', 'utf8', function(err, str){
+        res.end(str);
+    });
+});
+
 app.post('/feedback', (req, res)=>{
-    res.statusCode = 201;
-    res.setHeader('Content-Type', 'application/json');
-    console.log(JSON.parse(req.body).feedback);
-    res.json("success");
-    res.end();
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    console.log(req.body.feedback);
+    fs.readFile('views/feedback.html', 'utf8', function(err, str){
+        res.end(str);
+    });
 });
 
 app.all('/*', (req, res)=>{
