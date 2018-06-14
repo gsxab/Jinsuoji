@@ -143,5 +143,11 @@
         <item>每周</item>
         <item>每月</item>
     </string-array>
+    <string name="title_activity_about">AboutActivity</string>
+
+    <!-- 关于 -->
+    <string name="about_content">
+        版本号：今琐记v1.0\n单位：南开大学软件学院\n电子邮箱：\n电话：\n
+    </string>
 
 </resources>

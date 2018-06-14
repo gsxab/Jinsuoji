@@ -194,10 +194,12 @@ public class MainActivity extends AppCompatActivity implements
                 switch (item.getItemId()) {
                 case R.id.personal_info:
                 case R.id.about:
+                    Intent intent_about = new Intent(MainActivity.this,AboutActivity.class);
+                    startActivity(intent_about);
+                    break;
                 case R.id.feedback:
-                    // TODO 这些个菜单项
-                    Toast.makeText(MainActivity.this, R.string.placeholder, Toast.LENGTH_SHORT)
-                            .show();
+                    Intent intent_feedback = new Intent(MainActivity.this,FeedbackActivity.class);
+                    startActivity(intent_feedback);
                     break;
                 case R.id.sync_settings:
                     Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
