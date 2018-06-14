@@ -167,7 +167,7 @@ public class TodoEditActivity extends AppCompatActivity {
     }
 
     /**
-     * 合成{@link Todo}并检查是否已经填写完毕.
+     * 合成Todo并检查是否已经填写完毕.
      * @return true=填写完毕;false=未完毕
      */
     private boolean composeTodo() {
