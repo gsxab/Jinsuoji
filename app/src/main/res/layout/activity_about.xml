@@ -22,16 +22,18 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         app:layout_constraintTop_toBottomOf="@id/image_view">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:singleLine="false"
-        android:lineSpacingMultiplier="1.5"
-        android:textSize="20sp"
-        android:paddingTop="15sp"
-        android:paddingLeft="50sp"
-        android:text="@string/about_content"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/about_content"
+            android:singleLine="false"
+            android:lineSpacingMultiplier="1.5"
+            android:textSize="20sp"
+            android:paddingTop="@dimen/activity_margin"
+            android:paddingStart="@dimen/activity_margin"
+            android:paddingEnd="@dimen/activity_margin"/>
+
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

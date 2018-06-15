@@ -161,8 +161,12 @@ public class ExpenseEditActivity extends AppCompatActivity {
     public void showCategoryDialog(View v){
         List<String> categories = new ArrayList<>();
         categories.add(0, getString(R.string.create_category));
-        categories.add(1, getString(R.string.uncategorized));
-        categories.addAll(new ExpenseDAO(this).getAllCategories());
+        List<String> allCategories = new ExpenseDAO(this).getAllCategories();
+        if (allCategories.isEmpty()) {
+            categories.add(getString(R.string.uncategorized));
+        } else {
+            categories.addAll(allCategories);
+        }
         final String[] items = categories.toArray(new String[0]);
         AlertDialog.Builder categoryDialog = new AlertDialog.Builder(ExpenseEditActivity.this);
         categoryDialog.setTitle(R.string.category);

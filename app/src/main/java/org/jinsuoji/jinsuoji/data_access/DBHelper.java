@@ -1,8 +1,11 @@
 package org.jinsuoji.jinsuoji.data_access;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import org.jinsuoji.jinsuoji.R;
 
 /**
  * 直接与数据库交互的类，上层(DAL)应当使用Wrapper.
@@ -19,6 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 3;
     private static final String DB_NAME = "jinsuoji.db";
     static final String EXPENSE_CATE = "expense_category", EXPENSE = "expense", TODO = "TODO";
+    private final Context context;
     private static final String[] TABLE_NAMES = new String[]{
             EXPENSE_CATE, EXPENSE, TODO,
     };
@@ -28,6 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+        this.context = context;
     }
 
     /**
@@ -75,5 +80,9 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL(sql);
         }
         onCreate(db);
+        ContentValues values = new ContentValues();
+        values.put("id", 0);
+        values.put("name", context.getString(R.string.uncategorized));
+        db.insert(EXPENSE_CATE, null, values);
     }
 }

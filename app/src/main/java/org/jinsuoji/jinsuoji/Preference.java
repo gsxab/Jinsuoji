@@ -166,4 +166,12 @@ public class Preference {
     public static void clear(Context context) {
         getPreferences(context).edit().clear().apply();
     }
+
+    public static String getVersionName(Context context) {
+        PackageInfo info = getPackageInfo(context);
+        if (info == null) {
+            throw new AssertionError();
+        }
+        return info.versionName;
+    }
 }
