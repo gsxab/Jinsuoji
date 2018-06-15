@@ -104,17 +104,6 @@
                 android:text="@string/category"
                 style="@style/editPageLabel"
                 android:labelFor="@id/category_editor"/>
-            <!--<org.jinsuoji.jinsuoji.MyAutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:completionThreshold="0"
-                android:dropDownAnchor="@id/category_editor"
-                android:dropDownWidth="wrap_content"
-                android:dropDownHeight="wrap_content"
-                android:singleLine="true"
-                android:id="@+id/category_editor"
-                style="@style/editPageTextBox"
-                android:inputType="text" />-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

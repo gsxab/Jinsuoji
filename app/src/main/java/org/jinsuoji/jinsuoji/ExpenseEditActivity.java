@@ -114,9 +114,6 @@ public class ExpenseEditActivity extends AppCompatActivity {
         money.setText(expense.getMoney() == 0 ? "" : String.format(Locale.getDefault(),
                 "%1$.2f", expense.getMoney() / 100f));
         category.setText(expense.getCategory() == null ? "" : expense.getCategory());
-        //category.setAdapter(new ArrayAdapter<>(this,
-        //        android.R.layout.simple_dropdown_item_1line/*layout_id*/,
-        //        new ExpenseDAO(this).getAllCategories()));
     }
 
     /**
