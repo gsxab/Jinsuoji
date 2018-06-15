@@ -72,7 +72,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                                 refreshLastSync();
                             }
                         },
-                        new ToastOnFailure(getActivity()),
+                        new ToastOnFailure(getActivity(), true),
                         new ProgressDialogOperation(getActivity(), 3));
                 return true;
             }
@@ -88,7 +88,7 @@ public class SettingsFragment extends PreferenceFragment implements OnSharedPref
                                 Toast.makeText(getActivity(), R.string.sync_success, Toast.LENGTH_SHORT).show();
                             }
                         },
-                        new ToastOnFailure(getActivity()),
+                        new ToastOnFailure(getActivity(), true),
                         new ProgressDialogOperation(getActivity(), 3));
                 return true;
             }

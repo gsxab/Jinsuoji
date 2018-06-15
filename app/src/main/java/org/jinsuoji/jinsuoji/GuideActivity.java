@@ -75,7 +75,7 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
                                         startMainActivity(true);
                                     }
                                 },
-                                new ToastOnFailure(GuideActivity.this),
+                                new ToastOnFailure(GuideActivity.this, false),
                                 RestfulAsyncTask.MessageOperation.ignore);
             }
         });
@@ -92,7 +92,7 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
                                 Toast.makeText(GuideActivity.this, R.string.login_success, Toast.LENGTH_SHORT).show();
                                 startMainActivity(true);
                             }
-                        }, new ToastOnFailure(GuideActivity.this),
+                        }, new ToastOnFailure(GuideActivity.this, false),
                                 RestfulAsyncTask.MessageOperation.ignore);
             }
         });

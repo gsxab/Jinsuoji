@@ -138,7 +138,7 @@ app.post("/login", (req,res)=>{
 		res.end();
 		return;
 	}
-	pool.query("SELECT salt, password FROM accounts", null, (error, results, fields)=>{
+	pool.query("SELECT salt, password FROM accounts WHERE username=?", [params.username], (error, results, fields)=>{
 		if (error) {
 			res.statusCode = 404;
 			res.json({error: "USER_NOT_FOUND", data: params.username});
@@ -149,10 +149,14 @@ app.post("/login", (req,res)=>{
 		if (userinfo.salt === "" || params.salt !== userinfo.salt) {
 			res.statusCode = 400;
 			res.json({error: "SALT_EXPIRED", data: params.salt});
+			console.log("salt expired:");
+			console.log("server userinfo:" + JSON.stringify(userinfo));
+			console.log("client body.salt:" + params.salt);
 			res.end();
 			return;
 		}
 		var encrypted = md5(userinfo.salt + userinfo.password);
+		pool.query("UPDATE accounts SET salt=null WHERE username=?", [params.username], (error, results, fields)=>{ if(error)console.log(error); });
 		if (params.encrypted !== encrypted) {
 			res.statusCode = 401;
 			res.json({error: "AUTHENTICATION_FAILED", data: ""});
@@ -163,7 +167,6 @@ app.post("/login", (req,res)=>{
 			res.end();
 			return;
 		}
-		pool.query("UPDATE accounts SET salt=null WHERE username=?", [params.username], (error, results, fields)=>{ if(error)console.log(error); });
 		res.statusCode = 200;
 		if(params.req) {
 			var token = randomWord(false, 32); 

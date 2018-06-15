@@ -2,21 +2,27 @@ package org.jinsuoji.jinsuoji.net;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.jinsuoji.jinsuoji.GuideActivity;
 import org.jinsuoji.jinsuoji.R;
 
 public class ToastOnFailure implements RestfulAsyncTask.FailureOperation {
-    private Context context;
+    private static final String TAG = "o.j.j.n.ToastOnFailure";
 
-    public ToastOnFailure(Context context) {
+    private Context context;
+    private boolean showLoginOnFailure;
+
+    public ToastOnFailure(Context context, boolean showLoginOnFailure) {
         this.context = context;
+        this.showLoginOnFailure = showLoginOnFailure;
     }
 
     @Override
     public void onFailure(ErrorBean errorBean) {
         String toast = null;
+        Log.d(TAG, "onFailure: " + "[error=" + errorBean.getError() + ",data=" + errorBean.getData() + "]");
         switch (errorBean.getError()) {
         case "NO_LOGIN_INFO":
             toast = context.getString(R.string.no_login_info);
@@ -43,7 +49,9 @@ public class ToastOnFailure implements RestfulAsyncTask.FailureOperation {
             break;
         case "AUTHENTICATION_FAILED":
             toast = context.getString(R.string.login_incorrect);
-            showLogin();
+            if (showLoginOnFailure) {
+                showLogin();
+            }
             break;
         case "NETWORK_ACCESS_FAILED":
             toast = context.getString(R.string.network_access_failed);

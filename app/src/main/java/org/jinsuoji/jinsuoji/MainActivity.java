@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements
                         Toast.makeText(MainActivity.this, R.string.sync_success, Toast.LENGTH_SHORT).show();
                         Preference.setLastSync(MainActivity.this);
                     }
-                }, new ToastOnFailure(this), new ProgressDialogOperation(this, 3));
+                }, new ToastOnFailure(this, true), new ProgressDialogOperation(this, 3));
             }
         }
     }
