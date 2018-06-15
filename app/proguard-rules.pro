@@ -24,6 +24,12 @@
 -keepattributes *Annotation*,EnclosingMethod
 
 -keepnames class org.codehaus.jackson.** { *; }
+-keep class com.haibin.calendarview.WeekBar {
+    public <init>(android.content.Context);
+}
+-keep class org.jinsuoji.jinsuoji.calendar.ColorfulMonthView {
+    public <init>(android.content.Context);
+}
 
 -dontwarn javax.xml.**
 -dontwarn javax.xml.stream.events.**
