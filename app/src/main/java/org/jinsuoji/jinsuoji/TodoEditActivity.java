@@ -84,12 +84,14 @@ public class TodoEditActivity extends AppCompatActivity {
                 intent.putExtra(LAST_TODO, todo);
                 intent.putExtra(INDEX, getIntent().getIntExtra(INDEX, -1));
                 setResult(RESULT_OK, intent);
-                long value1 = remindDate.getTime();
+                if (remindDate != null) {
+                    long value1 = remindDate.getTime();
 
-                long value2 = System.currentTimeMillis();
-                if(value1 <= value2){
-                    Toast.makeText(getApplicationContext(), "选择时间不能小于当前系统时间", Toast.LENGTH_LONG).show();
-                    return;
+                    long value2 = System.currentTimeMillis();
+                    if (value1 <= value2) {
+                        Toast.makeText(TodoEditActivity.this, R.string.reminder_too_early, Toast.LENGTH_LONG).show();
+                        return;
+                    }
                 }
 
                 finish();
