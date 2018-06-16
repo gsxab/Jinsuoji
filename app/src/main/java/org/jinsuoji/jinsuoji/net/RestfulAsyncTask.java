@@ -156,6 +156,7 @@ public abstract class RestfulAsyncTask<T> extends AsyncTask<Object, Integer, Obj
 
     @Override
     protected void onCancelled(Object value) {
+        if (value == null) return;
         onMessage.onProgressUpdate((Integer) value);
         super.onCancelled(value);
     }

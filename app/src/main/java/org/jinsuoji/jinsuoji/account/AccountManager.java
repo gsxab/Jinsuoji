@@ -66,7 +66,8 @@ public class AccountManager {
             return null;
         }
         byte[] raw = digest.digest(asciiString.getBytes(ASCII));
-        return new BigInteger(1, raw).toString(16);
+        BigInteger rawMd5 = new BigInteger(1, raw);
+        return String.format("%032x", rawMd5);
     }
 
     public String getUsername() {

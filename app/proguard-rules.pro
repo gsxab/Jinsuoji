@@ -24,12 +24,19 @@
 -keepattributes *Annotation*,EnclosingMethod
 
 -keepnames class org.codehaus.jackson.** { *; }
+-keepnames class com.fasterxml.jackson.annotation.** { *; }
 -keep class com.haibin.calendarview.WeekBar {
     public <init>(android.content.Context);
 }
 -keep class org.jinsuoji.jinsuoji.calendar.ColorfulMonthView {
     public <init>(android.content.Context);
 }
+-keepclassmembers class org.jinsuoji.jinsuoji.account.Account { *; }
+-keepclassmembers class org.jinsuoji.jinsuoji.net.AccountBean { *; }
+-keepclassmembers class org.jinsuoji.jinsuoji.net.SaltTask$SaltBean { *; }
+-keepclassmembers class org.jinsuoji.jinsuoji.net.TokenBean { *; }
+-keepclassmembers class org.jinsuoji.jinsuoji.data_access.Serializer$* { *; }
+-keepclassmembers class org.jinsuoji.jinsuoji.net.ErrorBean { *; }
 
 -dontwarn javax.xml.**
 -dontwarn javax.xml.stream.events.**
