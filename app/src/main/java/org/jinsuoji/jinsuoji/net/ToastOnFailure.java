@@ -56,6 +56,9 @@ public class ToastOnFailure implements RestfulAsyncTask.FailureOperation {
         case "NETWORK_ACCESS_FAILED":
             toast = context.getString(R.string.network_access_failed);
             break;
+        case "CONNECTION_FAILED":
+            toast = context.getString(R.string.connection_failed);
+            break;
         case "UNKNOWN":
             toast = context.getString(R.string.unknown_error);
             break;

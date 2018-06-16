@@ -149,5 +149,6 @@
         应用：%1$s\n版本号：%2$s\n单位：\n　南开大学软件学院-今琐记团队\n电子邮箱：jinsuoji@tom.com\n
     </string>
     <string name="reminder_too_early">提醒时间不能小于当前系统时间</string>
+    <string name="connection_failed">连接失败</string>
 
 </resources>
