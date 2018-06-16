@@ -2,6 +2,7 @@ package org.jinsuoji.jinsuoji.experimental;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,7 +26,6 @@ import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.model.SubcolumnValue;
-import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ColumnChartView;
 import lecho.lib.hellocharts.view.PieChartView;
 
@@ -89,18 +89,20 @@ public class ExpenditureChartsFragment extends Fragment {
         if (columnChart == null || expensePieChart == null) {
             return;
         }
+        float[] hsv = new float[3];
+        Color.colorToHSV(context.getResources().getColor(R.color.colorAccent), hsv);
         ExpenseDAO expenseDAO = new ExpenseDAO(context);
 
         {
             int[] dailyExpenses = expenseDAO.groupByDate(year, month);
             List<Column> columns = new ArrayList<>();
-            int color = ChartUtils.nextColor();
             for (int i = 0; i < dailyExpenses.length; i++) {
                 int dailyExpense = dailyExpenses[i];
+                hsv[1] = 0.5f + ((float) Math.random() / 4);
                 columns.add(new Column()
                         .setHasLabelsOnlyForSelected(true)
                         .setValues(Collections.singletonList(new SubcolumnValue()
-                            .setColor(color)
+                            .setColor(Color.HSVToColor(hsv))
                             .setLabel(context.getString(R.string.chart_expense_label, i + 1, dailyExpense / 100f))
                             .setValue(dailyExpense / 100f))));
             }
@@ -117,10 +119,11 @@ public class ExpenditureChartsFragment extends Fragment {
             List<SliceValue> expenseValues = new ArrayList<>();
             Map<String, Integer> groupByCategory = expenseDAO.groupByCategory(year, month);
             for (Map.Entry<String, Integer> entry : groupByCategory.entrySet()) {
+                hsv[1] = 0.5f + ((float) Math.random() / 4);
                 expenseValues.add(new SliceValue()
                         .setLabel(context.getString(R.string.pie_expense_label,
                         entry.getKey(), entry.getValue() / 100f))
-                        .setColor(ChartUtils.nextColor())
+                        .setColor(Color.HSVToColor(hsv))
                         .setValue(entry.getValue() / 100f));
             }
             expensePieChart.setPieChartData(new PieChartData()
