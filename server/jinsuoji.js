@@ -49,13 +49,13 @@ app.post("/register",  (req,res)=>{
 		res.end();
 		return;
 	}
-	if (/[A-Za-z0-9\u4e00-\u9fa5_-]+/.exec(params.username) === null) {
+	if (/^[A-Za-z0-9\u4e00-\u9fa5_-]+$/.exec(params.username) === null) {
 		res.statusCode = 400;
 		res.json({error:"USERNAME_INVALID", data: params.username});
 		res.end();
 		return;
 	}
-	if (/[0-9a-f]{16}/.exec(params.storedPassword) === null) {
+	if (/^[0-9a-f]{16}$/.exec(params.storedPassword) === null) {
 		res.statusCode = 400;
 		res.json({error:"USERNAME_INVALID", data: params.username});
 		res.end();
