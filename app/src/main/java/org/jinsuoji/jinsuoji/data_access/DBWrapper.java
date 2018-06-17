@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
  * 用作数据库层的接口.
  */
 public class DBWrapper {
-    static private DBHelper helper;
+    private DBHelper helper;
 
     public DBWrapper(Context context) {
         if (helper == null) {
