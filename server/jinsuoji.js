@@ -55,7 +55,7 @@ app.post("/register",  (req,res)=>{
 		res.end();
 		return;
 	}
-	if (/^[0-9a-f]{16}$/.exec(params.storedPassword) === null) {
+	if (/^[0-9a-f]{32}$/.exec(params.storedPassword) === null) {
 		res.statusCode = 400;
 		res.json({error:"USERNAME_INVALID", data: params.username});
 		res.end();
