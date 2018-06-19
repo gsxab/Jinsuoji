@@ -12,4 +12,3 @@ captures
 .externalNativeBuild
 gradle
 *.patch
-server/

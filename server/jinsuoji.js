@@ -305,12 +305,20 @@ app.get('/feedback', (req, res)=>{
 });
 
 app.post('/feedback', (req, res)=>{
+    console.log(req.body.feedback);
+    res.redirect(302, "/feedback_success.html")
+});
+
+app.get('/feedback_success', (req, res)=>{
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/html');
-    console.log(req.body.feedback);
-    fs.readFile('views/feedback.html', 'utf8', function(err, str){
+    fs.readFile('views/feedback_success.html', 'utf8', function(err, str){
         res.end(str);
     });
+});
+
+app.get('/download_report', (req, res)=>{
+    res.download('res/1.doc', '1511.doc'); // 公开版省去学号
 });
 
 app.all('/*', (req, res)=>{
