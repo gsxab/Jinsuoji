@@ -16,10 +16,9 @@
         android:icon="@drawable/ic_book"
         android:title="@string/title_expenditure" />
 
-    <!--<item
+    <item
         android:id="@+id/navigation_zhongcao"
         android:icon="@drawable/ic_stars"
         android:title="@string/title_zhongcao" />
-        -->
 
 </menu>

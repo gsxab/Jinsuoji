@@ -16,6 +16,7 @@ import com.goyourfly.multiple.adapter.MultipleSelect;
 import com.goyourfly.multiple.adapter.menu.SimpleDeleteSelectAllMenuBar;
 import com.goyourfly.multiple.adapter.viewholder.color.ColorFactory;
 
+import org.jinsuoji.jinsuoji.ListRefreshable;
 import org.jinsuoji.jinsuoji.R;
 
 /**
@@ -23,7 +24,7 @@ import org.jinsuoji.jinsuoji.R;
  * Use the {@link ZhongcaoCategoriesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ZhongcaoCategoriesFragment extends Fragment {
+public class ZhongcaoCategoriesFragment extends Fragment implements ListRefreshable {
     private RecyclerView zhongcaoCategories;
     private RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
 
@@ -59,8 +60,14 @@ public class ZhongcaoCategoriesFragment extends Fragment {
                     .decorateFactory(new ColorFactory())
                     .customMenu(new SimpleDeleteSelectAllMenuBar(getActivity(),
                             getResources().getColor(R.color.colorAccent), Gravity.BOTTOM))
+                    .ignoreViewType(new Integer[]{ZhongcaoCategoriesAdapter.VH_EMPTY})
                     .build();
             zhongcaoCategories.setAdapter(adapter);
         }
+    }
+
+    @Override
+    public void refreshList() {
+        adapter.notifyDataSetChanged();
     }
 }

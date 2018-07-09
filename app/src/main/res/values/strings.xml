@@ -129,6 +129,7 @@
     <string name="view_details">查看</string>
     <string name="close">关闭</string>
 
+    <string name="title_zhongcao_list">种草盒子</string>
     <string name="zhongcao_format">种草（文字说明：%1$s，分类：%2$s）</string>
     <string name="zhongcao_no_memo"><![CDATA[<无文字说明>]]></string>
     <string name="enter_category">进入分类</string>
@@ -155,5 +156,6 @@
     </string>
     <string name="reminder_too_early">提醒时间不能小于当前系统时间</string>
     <string name="connection_failed">连接失败</string>
+    <string name="empty_prompt">这里什么都没有哦~</string>
 
 </resources>

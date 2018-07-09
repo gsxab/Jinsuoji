@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -25,11 +26,13 @@ import org.jinsuoji.jinsuoji.data_access.DBWrapper;
 import org.jinsuoji.jinsuoji.data_access.ExpenseDAO;
 import org.jinsuoji.jinsuoji.data_access.Serializer;
 import org.jinsuoji.jinsuoji.data_access.TodoDAO;
+import org.jinsuoji.jinsuoji.data_access.ZhongcaoDAO;
 import org.jinsuoji.jinsuoji.model.Expense;
 import org.jinsuoji.jinsuoji.model.Todo;
 import org.jinsuoji.jinsuoji.net.ProgressDialogOperation;
 import org.jinsuoji.jinsuoji.net.RestfulAsyncTask;
 import org.jinsuoji.jinsuoji.net.ToastOnFailure;
+import org.jinsuoji.jinsuoji.zhongcao.ZhongcaoCategoriesFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -85,6 +88,10 @@ public class MainActivity extends AppCompatActivity implements
                 pager.setCurrentItem(2);
                 ((ExpenditureFragment) fragments.get(2)).refreshList();
                 return true;
+            case R.id.navigation_zhongcao:
+                pager.setCurrentItem(3);
+                ((ZhongcaoCategoriesFragment) fragments.get(3)).refreshList();
+                return true;
             }
             return false;
         }
@@ -111,14 +118,14 @@ public class MainActivity extends AppCompatActivity implements
         stringList.add(getString(R.string.title_home));
         stringList.add(getString(R.string.title_todo));
         stringList.add(getString(R.string.title_expenditure));
-        // stringList.add(getString(R.string.title_zhongcao));
+        stringList.add(getString(R.string.title_zhongcao));
         fragments = new ArrayList<>();
         fragments.add(CalendarFragment.newInstance());
         fragments.add(TodoListFragment.newInstance());
         fragments.add(ExpenditureFragment.newInstance());
-        // fragments.add(CalendarFragment.newInstance());
+        fragments.add(ZhongcaoCategoriesFragment.newInstance());
         pager.setAdapter(new PagerAdapter(getSupportFragmentManager(), stringList, fragments));
-        pager.setOffscreenPageLimit(2);
+        pager.setOffscreenPageLimit(3);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -157,35 +164,7 @@ public class MainActivity extends AppCompatActivity implements
         toolbarAdd.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                switch (navigation.getSelectedItemId()) {
-                case R.id.navigation_home:{
-                    new AlertDialog.Builder(MainActivity.this).setTitle(R.string.create)
-                            .setItems(new String[]{getString(R.string.create_todo),
-                                        getString(R.string.create_expenditure)},
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        if (which == 0) {
-                                            dialog.dismiss();
-                                            showCreateTodo(((CalendarFragment) fragments.get(0)).getCurrent());
-                                        } else if (which == 1) {
-                                            dialog.dismiss();
-                                            showCreateExpense(((CalendarFragment) fragments.get(0)).getCurrent());
-                                        } else {
-                                            dialog.cancel();
-                                        }
-                                    }
-                                })
-                            .setCancelable(true)
-                            .show();
-                }   break;
-                case R.id.navigation_todo:{
-                    showCreateTodo(Calendar.getInstance());
-                }   break;
-                case R.id.navigation_expenditure:{
-                    showCreateExpense(Calendar.getInstance());
-                }   break;
-                }
+                onToolbarAddClicked(v);
             }
         });
         leftDrawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -233,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 Calendar calendar = Preference.getLastSync(this);
                 if (calendar != null) {
-                    calendar.roll(freq, true);
+                    calendar.add(freq, 1);
                     if (Calendar.getInstance().before(calendar)) {
                         shouldSync = false;
                     }
@@ -248,6 +227,41 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }, new ToastOnFailure(this, true), new ProgressDialogOperation(this, 3));
             }
+        }
+    }
+
+    public void onToolbarAddClicked(View view) {
+        switch (navigation.getSelectedItemId()) {
+        case R.id.navigation_home:{
+            new AlertDialog.Builder(MainActivity.this).setTitle(R.string.create)
+                    .setItems(new String[]{getString(R.string.create_todo),
+                                getString(R.string.create_expenditure)},
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (which == 0) {
+                                    dialog.dismiss();
+                                    showCreateTodo(((CalendarFragment) fragments.get(0)).getCurrent());
+                                } else if (which == 1) {
+                                    dialog.dismiss();
+                                    showCreateExpense(((CalendarFragment) fragments.get(0)).getCurrent());
+                                } else {
+                                    dialog.cancel();
+                                }
+                            }
+                        })
+                    .setCancelable(true)
+                    .show();
+        }   break;
+        case R.id.navigation_todo:{
+            showCreateTodo(Calendar.getInstance());
+        }   break;
+        case R.id.navigation_expenditure:{
+            showCreateExpense(Calendar.getInstance());
+        }   break;
+        case R.id.navigation_zhongcao: {
+            showCreateZhongcaoCategory();
+        }   break;
         }
     }
 
@@ -271,6 +285,30 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(MainActivity.this, TodoEditActivity.class);
         intent.putExtra(TodoEditActivity.TIME, calendar.getTime());
         startActivityForResult(intent, CREATE_TODO);
+    }
+
+    private void showCreateZhongcaoCategory() {
+        final EditText text = new EditText(this);
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.create_category)
+                .setView(text)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String name = text.getText().toString();
+                        if (!name.isEmpty()) {
+                            new ZhongcaoDAO(MainActivity.this).getOrCreateCategory(name);
+                            ((ZhongcaoCategoriesFragment) fragments.get(3)).refreshList();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // empty
+                    }
+                })
+                .show();
     }
 
     @Override

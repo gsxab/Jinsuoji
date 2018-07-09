@@ -1,7 +1,8 @@
 package org.jinsuoji.jinsuoji.zhongcao;
 
 import android.content.Context;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +21,9 @@ import java.util.List;
 public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCategoriesAdapter.ViewHolder> {
     private List<ZhongcaoCategory> categoryList;
 
+    static final int VH_EMPTY = 0;
+    static final int VH_ITEM = 1;
+
     ZhongcaoCategoriesAdapter(Context context) {
         super();
         categoryList = new ZhongcaoDAO(context).getAllCategories();
@@ -28,47 +32,100 @@ public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCate
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.zhongcao_category_item, parent, false);
-        return new ViewHolder(view);
+        switch (viewType) {
+            case VH_ITEM: {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.zhongcao_category_item, parent, false);
+                return new ItemViewHolder(view);
+            }
+            case VH_EMPTY: {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.zhongcao_category_empty, parent, false);
+                return new EmptyViewHolder(view);
+            }
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return categoryList.isEmpty() ? VH_EMPTY : VH_ITEM;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ZhongcaoCategory category = categoryList.get(position);
-        holder.cover.setImageURI(Uri.parse(category.getCover()));
-        holder.name.setText(category.getName());
-        holder.entrance.setTag(category);
-        holder.entrance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO 加载此类图片列表
-            }
-        });
-        holder.mView.setTag(category);
+        holder.bind(this, position);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return categoryList.isEmpty() ? 1 : categoryList.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        private View mView;
-        private ImageView cover;
-        private TextView name;
-        private ImageButton entrance;
-
+    abstract static class ViewHolder extends RecyclerView.ViewHolder {
         ViewHolder(View view) {
             super(view);
-            this.mView = view;
+        }
+
+        abstract int getViewType();
+        abstract void bind(@NonNull ZhongcaoCategoriesAdapter adapter, int position);
+    }
+
+    static class ItemViewHolder extends ViewHolder {
+        private final ImageView cover;
+        private final TextView name;
+        private final ImageButton entrance;
+
+        ItemViewHolder(View view) {
+            super(view);
             this.cover = view.findViewById(R.id.cover);
             this.name = view.findViewById(R.id.name);
             this.entrance = view.findViewById(R.id.entrance);
         }
 
         @Override
-        public String toString() {
-            return super.toString();
+        int getViewType() {
+            return VH_ITEM;
+        }
+
+        @Override
+        void bind(@NonNull ZhongcaoCategoriesAdapter adapter, int position) {
+            ZhongcaoCategory category = adapter.categoryList.get(position);
+            new LoadPictureTask(category.getCover(), new LoadPictureTask.OnLoadSuccess() {
+                @Override
+                public void onSuccess(Bitmap bitmap) {
+                    cover.setImageBitmap(bitmap);
+                }
+            }, new LoadPictureTask.OnLoadFailure() {
+                @Override
+                public void onFailure() {
+                    cover.setImageBitmap(BitmapFactory.decodeResource(
+                            itemView.getResources(), R.drawable.welcome_page));
+                }
+            }).start();
+            name.setText(category.getName());
+            entrance.setTag(category);
+            entrance.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TODO 加载此类图片列表
+                }
+            });
+            itemView.setTag(category);
+        }
+    }
+
+    static class EmptyViewHolder extends ViewHolder {
+        EmptyViewHolder(View view) {
+            super(view);
+        }
+
+        @Override
+        int getViewType() {
+            return VH_EMPTY;
+        }
+
+        @Override
+        void bind(@NonNull ZhongcaoCategoriesAdapter adapter, int position) {
         }
     }
 }

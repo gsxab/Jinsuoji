@@ -1,5 +1,6 @@
 package org.jinsuoji.jinsuoji.data_access;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,7 +22,18 @@ public class ZhongcaoDAO {
         wrapper = new DBWrapper(context);
     }
 
-    private class ZhongcaoQueryOperation extends QueryAdapter<List<Zhongcao>> {
+    private static class RecordQueryOperation implements QueryOperation<Zhongcao> {
+        @Override
+        public Zhongcao operate(Cursor cursor) {
+            if (!cursor.moveToFirst()) return null;
+            return new Zhongcao(cursor.getInt(0),
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    cursor.getInt(3));
+        }
+    }
+
+    private static class ListQueryOperation extends QueryAdapter<List<Zhongcao>> {
         @Override
         public List<Zhongcao> beforeLoop(Cursor cursor) {
             if (!cursor.moveToLast()) {
@@ -43,7 +55,18 @@ public class ZhongcaoDAO {
         }
     }
 
-    private class ZhongcaoCategoryQueryOperation extends QueryAdapter<List<ZhongcaoCategory>> {
+    private static class CategoryQueryOperation implements QueryOperation<ZhongcaoCategory> {
+        @Override
+        public ZhongcaoCategory operate(Cursor cursor) {
+            if (!cursor.moveToFirst()) return null;
+            return new ZhongcaoCategory(
+                    cursor.getInt(0),
+                    cursor.getString(1),
+                    cursor.getString(2));
+        }
+    }
+
+    private static class CategoryListQueryOperation extends QueryAdapter<List<ZhongcaoCategory>> {
         @Override
         public List<ZhongcaoCategory> beforeLoop(Cursor cursor) {
             if (!cursor.moveToLast()) {
@@ -71,7 +94,7 @@ public class ZhongcaoDAO {
                 return query(db,
                         "SELECT id, picture, memo, category_id FROM " + DBHelper.ZHONGCAO,
                         null,
-                        new ZhongcaoQueryOperation());
+                        new ListQueryOperation());
             }
         });
     }
@@ -85,7 +108,7 @@ public class ZhongcaoDAO {
                                 "FROM " + DBHelper.ZHONGCAO + " " +
                                 "WHERE category_id = ?",
                         new String[]{String.valueOf(id)},
-                        new ZhongcaoQueryOperation());
+                        new ListQueryOperation());
             }
         });
     }
@@ -99,16 +122,7 @@ public class ZhongcaoDAO {
                                 "FROM " + DBHelper.ZHONGCAO + " " +
                                 "WHERE id = ?",
                         new String[]{String.valueOf(id)},
-                        new QueryOperation<Zhongcao>() {
-                            @Override
-                            public Zhongcao operate(Cursor cursor) {
-                                if (!cursor.moveToFirst()) return null;
-                                return new Zhongcao(cursor.getInt(0),
-                                        cursor.getString(1),
-                                        cursor.getString(2),
-                                        cursor.getInt(3));
-                            }
-                        });
+                        new RecordQueryOperation());
             }
         });
     }
@@ -125,9 +139,26 @@ public class ZhongcaoDAO {
         // TODO
     }
 
-    public ZhongcaoCategory getOrCreateCategory(String name) {
-        // TODO
-        return null;
+    private ZhongcaoCategory getOrCreateCategory(String name, SQLiteDatabase db) {
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        db.insertWithOnConflict(DBHelper.ZHONGCAO_CATE, null,
+                values, SQLiteDatabase.CONFLICT_IGNORE);
+        return query(db,
+                "SELECT id, cover, name " +
+                        "FROM " + DBHelper.ZHONGCAO_CATE + " " +
+                        "WHERE name = ?",
+                new String[]{name},
+                new CategoryQueryOperation());
+    }
+
+    public ZhongcaoCategory getOrCreateCategory(final String name) {
+        return wrapper.write(new Operation<ZhongcaoCategory>() {
+            @Override
+            public ZhongcaoCategory operate(SQLiteDatabase db) {
+                return getOrCreateCategory(name, db);
+            }
+        });
     }
 
     public List<ZhongcaoCategory> getAllCategories() {
@@ -135,10 +166,10 @@ public class ZhongcaoDAO {
             @Override
             public List<ZhongcaoCategory> operate(SQLiteDatabase db) {
                 return query(db,
-                        "SELECT id, picture, memo, category_id " +
+                        "SELECT id, cover, name " +
                                 "FROM " + DBHelper.ZHONGCAO_CATE,
                         null,
-                        new ZhongcaoCategoryQueryOperation());
+                        new CategoryListQueryOperation());
             }
         });
     }
