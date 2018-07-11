@@ -26,7 +26,7 @@ public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCate
 
     ZhongcaoCategoriesAdapter(Context context) {
         super();
-        categoryList = new ZhongcaoDAO(context).getAllCategories();
+        fetchData(context);
     }
 
     @NonNull
@@ -59,6 +59,14 @@ public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCate
     @Override
     public int getItemCount() {
         return categoryList.isEmpty() ? 1 : categoryList.size();
+    }
+
+    public void refresh(Context context) {
+        fetchData(context);
+    }
+
+    private void fetchData(Context context) {
+        categoryList = new ZhongcaoDAO(context).getAllCategories();
     }
 
     abstract static class ViewHolder extends RecyclerView.ViewHolder {
