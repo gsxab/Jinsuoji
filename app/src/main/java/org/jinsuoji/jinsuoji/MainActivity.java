@@ -299,6 +299,8 @@ public class MainActivity extends AppCompatActivity implements
                         if (!name.isEmpty()) {
                             new ZhongcaoDAO(MainActivity.this).getOrCreateCategory(name);
                             ((ZhongcaoCategoriesFragment) fragments.get(3)).refreshList();
+                        } else {
+                            Toast.makeText(MainActivity.this, R.string.err_empty_name, Toast.LENGTH_LONG).show();
                         }
                     }
                 })

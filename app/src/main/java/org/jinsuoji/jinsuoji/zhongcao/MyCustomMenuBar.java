@@ -4,24 +4,26 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
 
-import com.goyourfly.multiple.adapter.R.id;
-import com.goyourfly.multiple.adapter.R.menu;
 import com.goyourfly.multiple.adapter.menu.CustomMenuBar;
 import com.goyourfly.multiple.adapter.menu.MenuController;
 
-public final class MyCustomMenuBar extends CustomMenuBar {
+import org.jinsuoji.jinsuoji.R;
+
+import java.util.List;
+
+public class MyCustomMenuBar extends CustomMenuBar {
     private final int color;
+    private MenuBarCallback callback;
 
     public void onMenuItemClick(@NonNull MenuItem menuItem, @NonNull MenuController controller) {
-        int var3 = menuItem.getItemId();
-        if (var3 == id.action_done) {
-            this.dismiss();
-            controller.done(false);
-        } else if (var3 == id.action_delete) {
-            this.dismiss();
-            controller.delete(false);
-        } else if (var3 == id.action_all) {
+        int menuItemId = menuItem.getItemId();
+        if (menuItemId == R.id.action_all) {
             controller.selectAll();
+        } else {
+            List<Integer> selected = controller.getSelect();
+            if (callback.action(menuItemId, selected)) {
+                cancel();
+            }
         }
     }
 
@@ -35,8 +37,9 @@ public final class MyCustomMenuBar extends CustomMenuBar {
         return this.color;
     }
 
-    MyCustomMenuBar(Activity activity, int color, int gravity) {
-        super(activity, menu.menu_multiple_select_done_delete_all, color, gravity);
+    MyCustomMenuBar(Activity activity, int color, int gravity, MenuBarCallback callback) {
+        super(activity, R.menu.select_category, color, gravity);
         this.color = color;
+        this.callback = callback;
     }
 }

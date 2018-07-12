@@ -29,6 +29,10 @@ public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCate
         fetchData(context);
     }
 
+    public List<ZhongcaoCategory> getList() {
+        return categoryList;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -63,6 +67,7 @@ public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCate
 
     public void refresh(Context context) {
         fetchData(context);
+        notifyDataSetChanged();
     }
 
     private void fetchData(Context context) {

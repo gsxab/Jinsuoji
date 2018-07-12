@@ -134,6 +134,11 @@
     <string name="zhongcao_no_memo"><![CDATA[<无文字说明>]]></string>
     <string name="enter_category">进入分类</string>
     <string name="zhongcao_category_format">种草分类（名称：%1$s）</string>
+    <string name="delete">删除</string>
+    <string name="select_all">全选</string>
+    <string name="set_cover">设为封面</string>
+    <string name="rename">修改名称</string>
+    <string name="share">种给朋友</string>
 
     <!-- entries 是显示在界面上的-->
     <string-array name="pref_entries_sync_frequence">
@@ -157,5 +162,7 @@
     <string name="reminder_too_early">提醒时间不能小于当前系统时间</string>
     <string name="connection_failed">连接失败</string>
     <string name="empty_prompt">这里什么都没有哦~</string>
+    <string name="err_empty_name">失败：分类名称不能为空</string>
+    <string name="multi_delete_warning_message">确定要删除%1$d项吗？</string>
 
 </resources>
