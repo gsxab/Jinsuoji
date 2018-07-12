@@ -4,8 +4,10 @@ import android.content.Context;
 
 import org.jinsuoji.jinsuoji.R;
 
+import java.io.Serializable;
+
 @SuppressWarnings("unused")
-public class ZhongcaoCategory implements ContextualStringConvertible {
+public class ZhongcaoCategory implements ContextualStringConvertible, Serializable {
     public ZhongcaoCategory() {}
 
     private int id;

@@ -2,6 +2,7 @@ package org.jinsuoji.jinsuoji.zhongcao;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,13 +34,13 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class ZhongcaoCategoriesFragment extends Fragment
-        implements ListRefreshable, View.OnKeyListener {
+        implements ListRefreshable, View.OnKeyListener, MenuBarCallback, View.OnClickListener {
     private RecyclerView zhongcaoCategories;
     private RecyclerView.Adapter<RecyclerView.ViewHolder> adapter;
     private ZhongcaoCategoriesAdapter zhongcaoCategoriesAdapter;
     private MyCustomMenuBar menuBar;
 
-    public static final int ZHONGCAO_CATEGORY_ID = 12;
+    public static final String ZHONGCAO_CATEGORY_ID = "org.jinsuoji.jinsuoji.ZhongcaoCategoryId";
 
     public ZhongcaoCategoriesFragment() {
         // Required empty public constructor
@@ -61,7 +62,6 @@ public class ZhongcaoCategoriesFragment extends Fragment
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (adapter == null) {
@@ -71,71 +71,9 @@ public class ZhongcaoCategoriesFragment extends Fragment
             }
             if (menuBar == null) {
                 menuBar = new MyCustomMenuBar(getActivity(),
-                        getResources().getColor(R.color.colorAccent), Gravity.BOTTOM,
-                        new MenuBarCallback() {
-                            @Override
-                            public boolean action(int actionId, final List<Integer> indices) {
-                                switch (actionId) {
-                                case R.id.action_delete: {
-                                    final ZhongcaoDAO zhongcaoDAO = new ZhongcaoDAO(getContext());
-                                    final List<ZhongcaoCategory> list = zhongcaoCategoriesAdapter.getList();
-                                    new AlertDialog.Builder(getContext())
-                                            .setTitle(R.string.delete_warning)
-                                            .setMessage(getResources().getString(R.string.multi_delete_warning_message, indices.size()))
-                                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    for (int index : indices) {
-                                                        zhongcaoDAO.deleteCategory(list.get(index).getId());
-                                                    }
-                                                    zhongcaoCategoriesAdapter.refresh(getContext());
-                                                    adapter.notifyDataSetChanged();
-                                                }
-                                            })
-                                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    // 取消时无操作
-                                                }
-                                            })
-                                            .show();
-                                    return true;
-                                }
-                                case R.id.action_rename: {
-                                    if (indices.size() == 1) {
-                                        final ZhongcaoCategory category = zhongcaoCategoriesAdapter.getList().get(indices.get(0));
-                                        final EditText editText = new EditText(getContext());
-                                        editText.setText(category.getName());
-                                        new AlertDialog.Builder(getContext())
-                                                .setTitle(R.string.rename)
-                                                .setView(editText)
-                                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        if (editText.getText().length() == 0) {
-                                                            Toast.makeText(getContext(), R.string.err_empty_name, Toast.LENGTH_LONG).show();
-                                                        } else if (new ZhongcaoDAO(getContext()).renameCategory(category.getId(), editText.getText().toString())) {
-                                                            zhongcaoCategoriesAdapter.refresh(getContext());
-                                                            adapter.notifyDataSetChanged();
-                                                        }
-                                                    }
-                                                })
-                                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        // 取消时无操作
-                                                    }
-                                                })
-                                                .show();
-                                        return true;
-                                    }
-                                }
-                                }
-                                return false;
-                            }
-                        });
+                        getResources().getColor(R.color.colorAccent), Gravity.BOTTOM, this);
             }
-            zhongcaoCategoriesAdapter = new ZhongcaoCategoriesAdapter(view.getContext());
+            zhongcaoCategoriesAdapter = new ZhongcaoCategoriesAdapter(view.getContext(), this);
             adapter = MultipleSelect.with(getActivity())
                     .adapter(zhongcaoCategoriesAdapter)
                     .decorateFactory(new ColorFactory())
@@ -168,5 +106,74 @@ public class ZhongcaoCategoriesFragment extends Fragment
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         return event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK &&
                 menuBar.cancel();
+    }
+
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    public boolean action(int actionId, final List<Integer> indices) {
+        switch (actionId) {
+            case R.id.action_delete: {
+                final ZhongcaoDAO zhongcaoDAO = new ZhongcaoDAO(getContext());
+                final List<ZhongcaoCategory> list = zhongcaoCategoriesAdapter.getList();
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.delete_warning)
+                        .setMessage(getResources().getString(R.string.multi_delete_warning_message, indices.size()))
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                for (int index : indices) {
+                                    zhongcaoDAO.deleteCategory(list.get(index).getId());
+                                }
+                                zhongcaoCategoriesAdapter.refresh(getContext());
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 取消时无操作
+                            }
+                        })
+                        .show();
+                return true;
+            }
+            case R.id.action_rename: {
+                if (indices.size() == 1) {
+                    final ZhongcaoCategory category = zhongcaoCategoriesAdapter.getList().get(indices.get(0));
+                    final EditText editText = new EditText(getContext());
+                    editText.setText(category.getName());
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(R.string.rename)
+                            .setView(editText)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (editText.getText().length() == 0) {
+                                        Toast.makeText(getContext(), R.string.err_empty_name, Toast.LENGTH_LONG).show();
+                                    } else if (new ZhongcaoDAO(getContext()).renameCategory(category.getId(), editText.getText().toString())) {
+                                        zhongcaoCategoriesAdapter.refresh(getContext());
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // 取消时无操作
+                                }
+                            })
+                            .show();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(v.getContext(), ZhongcaoPicturesActivity.class);
+        intent.putExtra(ZHONGCAO_CATEGORY_ID, ((ZhongcaoCategory) v.getTag()).getId());
+        startActivity(intent);
     }
 }

@@ -180,7 +180,7 @@ public class ZhongcaoDAO {
             public ZhongcaoCategory operate(SQLiteDatabase db) {
                 return query(db,
                         "SELECT id, cover, name " +
-                                "FROM" + DBHelper.ZHONGCAO_CATE + " " +
+                                "FROM " + DBHelper.ZHONGCAO_CATE + " " +
                                 "WHERE id = ?",
                         new String[]{String.valueOf(id)},
                         new CategoryQueryOperation());

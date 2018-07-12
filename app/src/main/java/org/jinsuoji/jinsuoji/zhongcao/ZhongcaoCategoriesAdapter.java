@@ -20,13 +20,15 @@ import java.util.List;
 
 public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCategoriesAdapter.ViewHolder> {
     private List<ZhongcaoCategory> categoryList;
+    private View.OnClickListener onClickListener;
 
     static final int VH_EMPTY = 0;
     static final int VH_ITEM = 1;
 
-    ZhongcaoCategoriesAdapter(Context context) {
+    ZhongcaoCategoriesAdapter(Context context, View.OnClickListener onClickListener) {
         super();
         fetchData(context);
+        this.onClickListener = onClickListener;
     }
 
     public List<ZhongcaoCategory> getList() {
@@ -37,16 +39,14 @@ public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCate
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case VH_ITEM: {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.zhongcao_category_item, parent, false);
-                return new ItemViewHolder(view);
-            }
-            case VH_EMPTY: {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.zhongcao_category_empty, parent, false);
-                return new EmptyViewHolder(view);
-            }
-            default:
-                throw new AssertionError();
+        case VH_ITEM:
+            return new ItemViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.zhongcao_category_item, parent, false));
+        case VH_EMPTY:
+            return new EmptyViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.zhongcao_category_empty, parent, false));
+        default:
+            throw new AssertionError();
         }
     }
 
@@ -80,6 +80,7 @@ public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCate
         }
 
         abstract int getViewType();
+
         abstract void bind(@NonNull ZhongcaoCategoriesAdapter adapter, int position);
     }
 
@@ -117,12 +118,7 @@ public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCate
             }).start();
             name.setText(category.getName());
             entrance.setTag(category);
-            entrance.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO 加载此类图片列表
-                }
-            });
+            entrance.setOnClickListener(adapter.onClickListener);
             itemView.setTag(category);
         }
     }
