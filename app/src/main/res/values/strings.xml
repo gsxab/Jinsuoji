@@ -142,6 +142,7 @@
     <string name="rename">修改名称</string>
     <string name="share">种给朋友</string>
     <string name="change_category">移动分类</string>
+    <string name="label_edit">批量备注</string>
 
     <!-- entries 是显示在界面上的-->
     <string-array name="pref_entries_sync_frequence">
@@ -169,5 +170,9 @@
     <string name="multi_delete_warning_message">确定要删除%1$d项吗？</string>
     <string name="title_activity_zhongcao_picture">ZhongcaoPictureActivity</string>
     <string name="create_zhongcao">+ 添加图片</string>
+    <string name="select_picture">选择图片</string>
+    <string name="add_failed">添加失败</string>
+    <string name="permission_requesting">请求权限</string>
+    <string name="permission_request_message">为了正常加载被选择的图片文件，请赋予今琐记以读取存储内容的权限</string>
 
 </resources>

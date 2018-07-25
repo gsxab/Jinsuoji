@@ -127,8 +127,31 @@ public class ZhongcaoDAO {
         });
     }
 
-    public void createZhongcao(Zhongcao zhongcao) {
-        // TODO
+    public Zhongcao createZhongcao(final String picture, final int categoryId) {
+        final ContentValues values = new ContentValues();
+        values.put("picture", picture);
+        values.put("category_id", categoryId);
+        int id = wrapper.write(new Operation<Integer>() {
+            @Override
+            public Integer operate(SQLiteDatabase db) throws AbortException {
+                db.insertWithOnConflict(DBHelper.ZHONGCAO, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+                Integer id = query(db, "SELECT id FROM " + DBHelper.ZHONGCAO + " WHERE picture = ? AND category_id = ?",
+                        new String[]{picture, String.valueOf(categoryId)}, new QueryOperation<Integer>() {
+                            @Override
+                            public Integer operate(Cursor cursor) {
+                                if (cursor.moveToFirst()) {
+                                    return cursor.getInt(0);
+                                }
+                                return null;
+                            }
+                        });
+                if (id == null) {
+                    throw new AbortException();
+                }
+                return id;
+            }
+        });
+        return new Zhongcao(id, picture, "", categoryId);
     }
 
     public void editZhongcao(Zhongcao zhongcao) {

@@ -40,7 +40,7 @@ public class ZhongcaoCategoriesFragment extends Fragment
     private ZhongcaoCategoriesAdapter zhongcaoCategoriesAdapter;
     private MyCustomMenuBar menuBar;
 
-    public static final String ZHONGCAO_CATEGORY_ID = "org.jinsuoji.jinsuoji.ZhongcaoCategoryId";
+    public static final String ZHONGCAO_CATEGORY = "org.jinsuoji.jinsuoji.ZhongcaoCategory";
 
     public ZhongcaoCategoriesFragment() {
         // Required empty public constructor
@@ -173,7 +173,7 @@ public class ZhongcaoCategoriesFragment extends Fragment
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(v.getContext(), ZhongcaoPicturesActivity.class);
-        intent.putExtra(ZHONGCAO_CATEGORY_ID, ((ZhongcaoCategory) v.getTag()).getId());
+        intent.putExtra(ZHONGCAO_CATEGORY, ((ZhongcaoCategory) v.getTag()));
         startActivity(intent);
     }
 }

@@ -18,16 +18,18 @@ import java.util.List;
 
 public class ZhongcaoPicturesAdapter extends RecyclerView.Adapter<ZhongcaoPicturesAdapter.ViewHolder> {
     private List<Zhongcao> zhongcaoList;
-    private View.OnClickListener onClickListener;
+    private View.OnClickListener onClickListener, onCreateListener;
 
     static final int VH_EMPTY = 0;
     private static final int VH_ITEM = 1;
     private int categoryId;
 
-    ZhongcaoPicturesAdapter(Context context, View.OnClickListener onClickListener, int categoryId) {
+    ZhongcaoPicturesAdapter(Context context, View.OnClickListener onClickListener,
+                            View.OnClickListener onCreateListener, int categoryId) {
         super();
         this.categoryId = categoryId;
         this.onClickListener = onClickListener;
+        this.onCreateListener = onCreateListener;
         fetchData(context);
     }
 
@@ -101,11 +103,16 @@ public class ZhongcaoPicturesAdapter extends RecyclerView.Adapter<ZhongcaoPictur
     }
 
     static class EmptyViewHolder extends ViewHolder {
+        private final TextView create;
+
         EmptyViewHolder(View itemView) {
             super(itemView);
+            create = itemView.findViewById(R.id.create);
         }
 
         @Override
-        public void bind(ZhongcaoPicturesAdapter zhongcaoPicturesAdapter, int position) {}
+        public void bind(ZhongcaoPicturesAdapter adapter, int position) {
+            create.setOnClickListener(adapter.onCreateListener);
+        }
     }
 }

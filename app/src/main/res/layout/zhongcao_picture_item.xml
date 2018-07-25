@@ -8,12 +8,19 @@
     android:orientation="vertical"
     tools:ignore="UseCompoundDrawables">
 
-    <ImageView
+    <org.jinsuoji.jinsuoji.zhongcao.SquareLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/picture"
-        tools:src="@drawable/welcome_page"
-        tools:ignore="ContentDescription" />
+        android:layout_height="match_parent"
+        android:clipChildren="true">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:id="@+id/picture"
+            tools:src="@drawable/welcome_page"
+            tools:ignore="ContentDescription" />
+    </org.jinsuoji.jinsuoji.zhongcao.SquareLayout>
 
     <TextView
         android:layout_width="match_parent"
