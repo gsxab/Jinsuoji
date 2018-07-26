@@ -86,7 +86,9 @@ public class ZhongcaoCategoriesFragment extends Fragment
 
     @Override
     public void refreshList() {
-        menuBar.cancel();
+        if (menuBar != null) {
+            menuBar.cancel();
+        }
         zhongcaoCategoriesAdapter.refresh(getContext());
         adapter.notifyDataSetChanged();
     }
@@ -164,6 +166,8 @@ public class ZhongcaoCategoriesFragment extends Fragment
                             })
                             .show();
                     return true;
+                } else {
+                    break;
                 }
             }
         }

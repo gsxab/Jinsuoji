@@ -169,6 +169,26 @@ public class ZhongcaoDAO {
         });
     }
 
+    public boolean editMemo(List<Zhongcao> list, List<Integer> indices, final String memo) {
+        StringBuilder builder = new StringBuilder();
+        builder.append('(');
+        for (Integer index : indices) {
+            builder.append(list.get(index).getId());
+            builder.append(',');
+        }
+        builder.setCharAt(builder.length() - 1, ')');
+        final String ids = builder.toString();
+        return wrapper.write(new Operation<Boolean>() {
+            @Override
+            public Boolean operate(SQLiteDatabase db) {
+                db.execSQL("UPDATE " + DBHelper.ZHONGCAO + " " +
+                                "SET memo = ? WHERE id IN " + ids,
+                        new String[]{memo});
+                return true;
+            }
+        });
+    }
+
     public void deleteZhongcao(final int id) {
         wrapper.write(new Operation<Void>() {
             @Override

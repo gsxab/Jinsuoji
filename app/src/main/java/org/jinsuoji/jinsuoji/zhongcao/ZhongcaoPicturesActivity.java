@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
     private PicturesMenuBar menuBar;
     private ZhongcaoCategory category;
     private final int CHOOSE_PHOTOS = 14;
+    private final int ACTION_MOVE_CATEGORY = 18;
     private static final String TAG = "o.j.j.z.ZhongcaoPicAct";
 
     @Override
@@ -111,8 +113,79 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
-    public boolean action(int actionId, List<Integer> indices) {
+    public boolean action(int actionId, final List<Integer> indices) {
+        switch (actionId) {
+        case R.id.action_share: {
+            // TODO 分享
+            return true;
+        }
+        case R.id.action_delete: {
+            final List<Zhongcao> list = zhongcaoPicturesAdapter.getList();
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.delete_warning)
+                    .setMessage(getResources().getString(R.string.multi_delete_warning_message, indices.size()))
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            final ZhongcaoDAO zhongcaoDAO = new ZhongcaoDAO(ZhongcaoPicturesActivity.this);
+                            for (int index : indices) {
+                                zhongcaoDAO.deleteZhongcao(list.get(index).getId());
+                            }
+                            zhongcaoPicturesAdapter.refresh(ZhongcaoPicturesActivity.this);
+                            adapter.notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // 取消时无操作
+                        }
+                    })
+                    .show();
+            return true;
+        }
+        case R.id.action_move: {
+            //TODO 移动分类
+            return true;
+        }
+        case R.id.action_edit: {
+            final List<Zhongcao> list = zhongcaoPicturesAdapter.getList();
+            final EditText editText = new EditText(this);
+            if (indices.size() == 1) {
+                editText.setText(list.get(indices.get(0)).getMemo());
+            }
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.label_edit)
+                    .setView(editText)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (new ZhongcaoDAO(ZhongcaoPicturesActivity.this)
+                                    .editMemo(list, indices, editText.getText().toString())) {
+                                zhongcaoPicturesAdapter.refresh(ZhongcaoPicturesActivity.this);
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // 取消时无操作
+                        }
+                    })
+                    .show();
+            return true;
+        }
+        case R.id.action_set_cover: {
+            if (indices.size() == 1) {
+                new ZhongcaoDAO(this).setCategoryCover(category.getId(),
+                        zhongcaoPicturesAdapter.getList().get(indices.get(0)).getPicture());
+                return true;
+            } else {
+                break;
+            }
+        }
+        }
         return false;
     }
 
@@ -223,6 +296,7 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
             Toast.makeText(this, R.string.add_failed, Toast.LENGTH_SHORT).show();
             return;
         }
+        //noinspection unused
         Zhongcao zhongcao = new ZhongcaoDAO(this).createZhongcao(path, category.getId());
         refreshList();
     }

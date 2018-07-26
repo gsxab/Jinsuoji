@@ -38,7 +38,7 @@ public class PicturesMenuBar extends CustomMenuBar {
     }
 
     PicturesMenuBar(Activity activity, int color, int gravity, MenuBarCallback callback) {
-        super(activity, R.menu.select_category, color, gravity);
+        super(activity, R.menu.select_picture, color, gravity);
         this.color = color;
         this.callback = callback;
     }

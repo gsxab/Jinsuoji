@@ -24,4 +24,7 @@
         android:id="@+id/action_edit"
         android:icon="@drawable/ic_label"
         android:title="@string/label_edit" />
+    <item
+        android:id="@+id/action_set_cover"
+        android:title="@string/set_cover" />
 </menu>

@@ -74,6 +74,10 @@ public class ZhongcaoPicturesAdapter extends RecyclerView.Adapter<ZhongcaoPictur
         zhongcaoList = new ZhongcaoDAO(context).getRecordsByCategoryId(categoryId);
     }
 
+    public List<Zhongcao> getList() {
+        return zhongcaoList;
+    }
+
     abstract static class ViewHolder extends RecyclerView.ViewHolder {
         ViewHolder(View itemView) {
             super(itemView);
