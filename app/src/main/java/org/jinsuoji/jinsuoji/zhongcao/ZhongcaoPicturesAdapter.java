@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jinsuoji.jinsuoji.R;
 import org.jinsuoji.jinsuoji.data_access.ZhongcaoDAO;
@@ -94,7 +95,19 @@ public class ZhongcaoPicturesAdapter extends RecyclerView.Adapter<ZhongcaoPictur
         @Override
         public void bind(ZhongcaoPicturesAdapter adapter, int position) {
             Zhongcao zhongcao = adapter.zhongcaoList.get(position);
-            picture.setImageDrawable(Drawable.createFromPath(zhongcao.getPicture()));
+            new LoadPictureTask(zhongcao.getPicture(),
+                    new LoadPictureTask.OnLoadSuccess() {
+                @Override
+                public void onSuccess(Drawable drawable) {
+                    picture.setImageDrawable(drawable);
+                }
+            }, new LoadPictureTask.OnLoadFailure() {
+                @Override
+                public void onFailure() {
+                    picture.setImageDrawable(itemView.getResources().getDrawable(R.drawable.ic_delete));
+                    Toast.makeText(itemView.getContext(), R.string.load_failed, Toast.LENGTH_SHORT).show();
+                }
+            }).start();
             String memo = zhongcao.getMemo();
             caption.setText(memo == null ? "" : memo);
             itemView.setTag(zhongcao);

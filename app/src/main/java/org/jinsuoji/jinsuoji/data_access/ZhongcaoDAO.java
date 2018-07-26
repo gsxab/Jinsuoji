@@ -155,11 +155,28 @@ public class ZhongcaoDAO {
     }
 
     public void editZhongcao(Zhongcao zhongcao) {
-        // TODO
+        final ContentValues values = new ContentValues();
+        values.put("id", zhongcao.getId());
+        values.put("picture", zhongcao.getPicture());
+        values.put("memo", zhongcao.getMemo());
+        values.put("category_id", zhongcao.getCategoryId());
+        wrapper.write(new Operation<Void>() {
+            @Override
+            public Void operate(SQLiteDatabase db) {
+                db.replace(DBHelper.ZHONGCAO, null, values);
+                return null;
+            }
+        });
     }
 
     public void deleteZhongcao(final int id) {
-        // TODO
+        wrapper.write(new Operation<Void>() {
+            @Override
+            public Void operate(SQLiteDatabase db) {
+                db.delete(DBHelper.ZHONGCAO, "id = ?", new String[]{String.valueOf(id)});
+                return null;
+            }
+        });
     }
 
     private ZhongcaoCategory getOrCreateCategory(String name, SQLiteDatabase db) {

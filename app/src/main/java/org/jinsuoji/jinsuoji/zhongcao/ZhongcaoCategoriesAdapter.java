@@ -1,8 +1,7 @@
 package org.jinsuoji.jinsuoji.zhongcao;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -106,14 +105,13 @@ public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCate
             ZhongcaoCategory category = adapter.categoryList.get(position);
             new LoadPictureTask(category.getCover(), new LoadPictureTask.OnLoadSuccess() {
                 @Override
-                public void onSuccess(Bitmap bitmap) {
-                    cover.setImageBitmap(bitmap);
+                public void onSuccess(Drawable drawable) {
+                    cover.setImageDrawable(drawable);
                 }
             }, new LoadPictureTask.OnLoadFailure() {
                 @Override
                 public void onFailure() {
-                    cover.setImageBitmap(BitmapFactory.decodeResource(
-                            itemView.getResources(), R.drawable.welcome_page));
+                    cover.setImageDrawable(itemView.getResources().getDrawable(R.drawable.welcome_page));
                 }
             }).start();
             name.setText(category.getName());

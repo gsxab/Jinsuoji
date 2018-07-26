@@ -1,12 +1,11 @@
 package org.jinsuoji.jinsuoji.zhongcao;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 
-public class LoadPictureTask extends AsyncTask<String, Void, Bitmap> {
+public class LoadPictureTask extends AsyncTask<String, Void, Drawable> {
     interface OnLoadSuccess {
-        void onSuccess(Bitmap bitmap);
+        void onSuccess(Drawable drawable);
     }
 
     interface OnLoadFailure {
@@ -24,14 +23,18 @@ public class LoadPictureTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     @Override
-    protected Bitmap doInBackground(String... strings) {
-        return BitmapFactory.decodeFile(strings[0], null);
+    protected Drawable doInBackground(String... strings) {
+        try {
+            return Drawable.createFromPath(strings[0]);
+        } catch (SecurityException e) {
+            return null;
+        }
     }
 
     @Override
-    protected void onPostExecute(Bitmap bitmap) {
-        if (bitmap != null) {
-            onLoadSuccess.onSuccess(bitmap);
+    protected void onPostExecute(Drawable drawable) {
+        if (drawable != null) {
+            onLoadSuccess.onSuccess(drawable);
         } else {
             onLoadFailure.onFailure();
         }

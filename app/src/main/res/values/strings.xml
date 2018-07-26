@@ -172,6 +172,7 @@
     <string name="create_zhongcao">+ 添加图片</string>
     <string name="select_picture">选择图片</string>
     <string name="add_failed">添加失败</string>
+    <string name="load_failed">部分图片加载失败，可能已被移动或删除，可能无读取权限，将显示为删除图标</string>
     <string name="permission_requesting">请求权限</string>
     <string name="permission_request_message">为了正常加载被选择的图片文件，请赋予今琐记以读取存储内容的权限</string>
 
