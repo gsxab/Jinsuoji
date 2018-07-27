@@ -154,16 +154,21 @@ public class ZhongcaoDAO {
         return new Zhongcao(id, picture, "", categoryId);
     }
 
-    public void editZhongcao(Zhongcao zhongcao) {
-        final ContentValues values = new ContentValues();
-        values.put("id", zhongcao.getId());
-        values.put("picture", zhongcao.getPicture());
-        values.put("memo", zhongcao.getMemo());
-        values.put("category_id", zhongcao.getCategoryId());
+    public void editZhongcaoCategory(List<Integer> idList, final int categoryId) {
+        StringBuilder builder = new StringBuilder();
+        builder.append('(');
+        for (Integer id : idList) {
+            builder.append(id);
+            builder.append(',');
+        }
+        builder.setCharAt(builder.length() - 1, ')');
+        final String ids = builder.toString();
         wrapper.write(new Operation<Void>() {
             @Override
             public Void operate(SQLiteDatabase db) {
-                db.replace(DBHelper.ZHONGCAO, null, values);
+                db.execSQL("UPDATE " + DBHelper.ZHONGCAO + " " +
+                                "SET category_id = ? WHERE id IN " + ids,
+                            new String[]{String.valueOf(categoryId)});
                 return null;
             }
         });

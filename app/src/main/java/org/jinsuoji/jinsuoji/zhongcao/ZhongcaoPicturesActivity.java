@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -36,6 +35,7 @@ import org.jinsuoji.jinsuoji.data_access.ZhongcaoDAO;
 import org.jinsuoji.jinsuoji.model.Zhongcao;
 import org.jinsuoji.jinsuoji.model.ZhongcaoCategory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ZhongcaoPicturesActivity extends AppCompatActivity
@@ -46,7 +46,6 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
     private PicturesMenuBar menuBar;
     private ZhongcaoCategory category;
     private final int CHOOSE_PHOTOS = 14;
-    private final int ACTION_MOVE_CATEGORY = 18;
     private static final String TAG = "o.j.j.z.ZhongcaoPicAct";
 
     @Override
@@ -96,8 +95,8 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
         }
 
         int itemCount = zhongcaoPicturesAdapter.getItemCount();
-        pictureList.setLayoutManager(itemCount == 0 ? new LinearLayoutManager(this) :
-                new GridLayoutManager(this, 3));
+        pictureList.setLayoutManager(new GridLayoutManager(this,
+                itemCount == 0 ? 1 : itemCount < 3 ? itemCount : 3));
         pictureList.setAdapter(adapter);
     }
 
@@ -114,77 +113,144 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
 
     @Override
     public boolean action(int actionId, final List<Integer> indices) {
+        if (indices.size() == 0) throw new AssertionError();
         switch (actionId) {
-        case R.id.action_share: {
-            // TODO 分享
-            return true;
-        }
-        case R.id.action_delete: {
-            final List<Zhongcao> list = zhongcaoPicturesAdapter.getList();
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.delete_warning)
-                    .setMessage(getResources().getString(R.string.multi_delete_warning_message, indices.size()))
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            final ZhongcaoDAO zhongcaoDAO = new ZhongcaoDAO(ZhongcaoPicturesActivity.this);
-                            for (int index : indices) {
-                                zhongcaoDAO.deleteZhongcao(list.get(index).getId());
-                            }
-                            zhongcaoPicturesAdapter.refresh(ZhongcaoPicturesActivity.this);
-                            adapter.notifyDataSetChanged();
-                        }
-                    })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // 取消时无操作
-                        }
-                    })
-                    .show();
-            return true;
-        }
-        case R.id.action_move: {
-            //TODO 移动分类
-            return true;
-        }
-        case R.id.action_edit: {
-            final List<Zhongcao> list = zhongcaoPicturesAdapter.getList();
-            final EditText editText = new EditText(this);
-            if (indices.size() == 1) {
-                editText.setText(list.get(indices.get(0)).getMemo());
+            case R.id.action_share: {
+                // TODO 分享
+                Intent shareIntent = new Intent();
+                List<Zhongcao> list = zhongcaoPicturesAdapter.getList();
+                final ArrayList<String> shared = new ArrayList<>();
+                for (Integer index : indices) {
+                    shared.add("file://" + list.get(index).getPicture());
+                }
+                String subject = list.get(indices.get(0)).getMemo();
+                if (subject != null && subject.isEmpty()) {
+                    subject = category.getName();
+                }
+                shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                shareIntent.setType("*/*");
+                //shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                shareIntent.putStringArrayListExtra(Intent.EXTRA_TEXT, shared);
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share)));
+                return true;
             }
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.label_edit)
-                    .setView(editText)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (new ZhongcaoDAO(ZhongcaoPicturesActivity.this)
-                                    .editMemo(list, indices, editText.getText().toString())) {
+            case R.id.action_delete: {
+                final List<Zhongcao> list = zhongcaoPicturesAdapter.getList();
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.delete_warning)
+                        .setMessage(getResources().getString(R.string.multi_delete_warning_message, indices.size()))
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final ZhongcaoDAO zhongcaoDAO = new ZhongcaoDAO(ZhongcaoPicturesActivity.this);
+                                for (int index : indices) {
+                                    zhongcaoDAO.deleteZhongcao(list.get(index).getId());
+                                }
                                 zhongcaoPicturesAdapter.refresh(ZhongcaoPicturesActivity.this);
                                 adapter.notifyDataSetChanged();
                             }
-                        }
-                    })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // 取消时无操作
-                        }
-                    })
-                    .show();
-            return true;
-        }
-        case R.id.action_set_cover: {
-            if (indices.size() == 1) {
-                new ZhongcaoDAO(this).setCategoryCover(category.getId(),
-                        zhongcaoPicturesAdapter.getList().get(indices.get(0)).getPicture());
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 取消时无操作
+                            }
+                        })
+                        .show();
                 return true;
-            } else {
-                break;
             }
-        }
+            case R.id.action_move: {
+                List<Zhongcao> list = zhongcaoPicturesAdapter.getList();
+                final List<Integer> ids = new ArrayList<>();
+                for (Integer index : indices) {
+                    ids.add(list.get(index).getId());
+                }
+                final ZhongcaoDAO zhongcaoDAO = new ZhongcaoDAO(this);
+                final List<ZhongcaoCategory> categories = zhongcaoDAO.getAllCategories();
+                String[] categoryNames = new String[categories.size() + 1];
+                categoryNames[0] = getString(R.string.create_category);
+                for (int i = 0; i < categories.size(); i++) {
+                    categoryNames[i + 1] = categories.get(i).getName();
+                }
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.category)
+                        .setItems(categoryNames, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (which == 0) {
+                                    final EditText editText = new EditText(ZhongcaoPicturesActivity.this);
+                                    new AlertDialog.Builder(ZhongcaoPicturesActivity.this)
+                                            .setTitle(R.string.create_category)
+                                            .setView(editText)
+                                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    String categoryName = editText.getText().toString();
+                                                    if (categoryName.isEmpty()) return;
+                                                    ZhongcaoCategory category =
+                                                            zhongcaoDAO.getOrCreateCategory(categoryName);
+                                                    zhongcaoDAO.editZhongcaoCategory(ids, category.getId());
+                                                    zhongcaoPicturesAdapter.refresh(ZhongcaoPicturesActivity.this);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            })
+                                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                }
+                                            })
+                                            .show();
+                                } else {
+                                    zhongcaoDAO.editZhongcaoCategory(ids,
+                                            categories.get(which - 1).getId());
+                                    zhongcaoPicturesAdapter.refresh(ZhongcaoPicturesActivity.this);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        })
+                        .show();
+                return true;
+            }
+            case R.id.action_edit: {
+                final List<Zhongcao> list = zhongcaoPicturesAdapter.getList();
+                final EditText editText = new EditText(this);
+                if (indices.size() == 1) {
+                    editText.setText(list.get(indices.get(0)).getMemo());
+                }
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.label_edit)
+                        .setView(editText)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (new ZhongcaoDAO(ZhongcaoPicturesActivity.this)
+                                        .editMemo(list, indices, editText.getText().toString())) {
+                                    zhongcaoPicturesAdapter.refresh(ZhongcaoPicturesActivity.this);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 取消时无操作
+                            }
+                        })
+                        .show();
+                return true;
+            }
+            case R.id.action_set_cover: {
+                if (indices.size() == 1) {
+                    new ZhongcaoDAO(this).setCategoryCover(category.getId(),
+                            zhongcaoPicturesAdapter.getList().get(indices.get(0)).getPicture());
+                    return true;
+                } else {
+                    break;
+                }
+            }
         }
         return false;
     }
@@ -195,7 +261,7 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
         adapter.notifyDataSetChanged();
         int itemCount = zhongcaoPicturesAdapter.getItemCount();
         pictureList.setLayoutManager(new GridLayoutManager(this,
-                itemCount < 3 ? itemCount : 3));
+                itemCount == 0 ? 1 : itemCount < 3 ? itemCount : 3));
     }
 
     @Override
@@ -244,7 +310,7 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
         if (requestCode == CHOOSE_PHOTOS) {
             if (resultCode == RESULT_OK) {
                 if (data != null) {
-                    if(data.getClipData() != null) {
+                    if (data.getClipData() != null) {
                         int count = data.getClipData().getItemCount();
                         for (int i = 0; i < count; i++) {
                             Uri imageUri = data.getClipData().getItemAt(i).getUri();
@@ -267,10 +333,10 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
                 // 4.4及以上，返回content://com.android.providers.media.documents/document/image%3A12345
                 String wholeID = DocumentsContract.getDocumentId(imageUri);
                 String id = wholeID.split(":")[1];
-                String[] column = { MediaStore.Images.Media.DATA };
+                String[] column = {MediaStore.Images.Media.DATA};
                 String sel = MediaStore.Images.Media._ID + "=?";
                 Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        column, sel, new String[] { id }, null);
+                        column, sel, new String[]{id}, null);
                 if (cursor == null) throw new AssertionError();
                 int columnIndex = cursor.getColumnIndex(column[0]);
                 if (cursor.moveToFirst()) {
@@ -281,7 +347,7 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
                 cursor.close();
             } else {
                 // 4.4以下，返回content://media/external/images/media/188222
-                String[] projection = { MediaStore.Images.Media.DATA };
+                String[] projection = {MediaStore.Images.Media.DATA};
                 Cursor cursor = getContentResolver().query(imageUri, projection, null, null, null);
                 if (cursor == null) throw new AssertionError();
                 int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
