@@ -194,6 +194,18 @@ public class ZhongcaoDAO {
         });
     }
 
+    public void editMemo(final int id, final String newMemo) {
+        wrapper.write(new Operation<Void>() {
+            @Override
+            public Void operate(SQLiteDatabase db) {
+                db.execSQL("UPDATE " + DBHelper.ZHONGCAO + " " +
+                        "SET memo = ? WHERE id = ?",
+                        new String[]{newMemo, String.valueOf(id)});
+                return null;
+            }
+        });
+    }
+
     public void deleteZhongcao(final int id) {
         wrapper.write(new Operation<Void>() {
             @Override

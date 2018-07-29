@@ -5,8 +5,10 @@ import android.content.Context;
 import org.jinsuoji.jinsuoji.R;
 import org.jinsuoji.jinsuoji.data_access.ZhongcaoDAO;
 
+import java.io.Serializable;
+
 @SuppressWarnings("unused")
-public class Zhongcao implements ContextualStringConvertible {
+public class Zhongcao implements ContextualStringConvertible, Serializable {
     public Zhongcao() {}
 
     private int id;

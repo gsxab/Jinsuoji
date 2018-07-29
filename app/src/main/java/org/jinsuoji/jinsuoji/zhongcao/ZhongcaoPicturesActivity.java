@@ -116,12 +116,12 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
         if (indices.size() == 0) throw new AssertionError();
         switch (actionId) {
             case R.id.action_share: {
-                // TODO 分享
+                // FIXME 分享不能使用
                 Intent shareIntent = new Intent();
                 List<Zhongcao> list = zhongcaoPicturesAdapter.getList();
                 final ArrayList<String> shared = new ArrayList<>();
                 for (Integer index : indices) {
-                    shared.add("file://" + list.get(index).getPicture());
+                    shared.add(list.get(index).getPicture());
                 }
                 String subject = list.get(indices.get(0)).getMemo();
                 if (subject != null && subject.isEmpty()) {
@@ -266,8 +266,15 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(this, R.string.placeholder, Toast.LENGTH_SHORT).show();
-        //Intent intent = new Intent(this, ZhongcaoDetailActivity.class);
+        Intent intent = new Intent(this, ShowPictureActivity.class);
+        intent.putExtra(ShowPictureActivity.ZHONGCAO_RECORD, ((Zhongcao) v.getTag()));
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        refreshList();
     }
 
     @Override

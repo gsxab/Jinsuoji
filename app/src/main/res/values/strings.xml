@@ -143,6 +143,7 @@
     <string name="share">种给朋友</string>
     <string name="change_category">移动分类</string>
     <string name="label_edit">批量备注</string>
+    <string name="description_hint">点此添加备注……</string>
 
     <!-- entries 是显示在界面上的-->
     <string-array name="pref_entries_sync_frequence">

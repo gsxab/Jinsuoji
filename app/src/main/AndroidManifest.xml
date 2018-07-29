@@ -18,6 +18,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -28,12 +29,15 @@
         <activity android:name=".TodoEditActivity" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".RemindActivity" />
+
         <receiver
             android:name=".RemindReceiver"
             android:process=":remote" />
+
         <activity android:name=".AboutActivity" />
         <activity android:name=".FeedbackActivity" />
         <activity android:name=".zhongcao.ZhongcaoPicturesActivity" />
+        <activity android:name=".zhongcao.ShowPictureActivity" />
     </application>
 
 </manifest>
