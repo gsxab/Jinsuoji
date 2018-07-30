@@ -97,6 +97,8 @@
     <string name="login_success">登录成功</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
+    <string name="welcome">欢迎使用今琐记</string>
+    <string name="welcome_message">版本v1.1.0：\n添加了种草盒子功能，可以收录图库中的照片并分类及做备注，但是本功能暂未支持同步和分享。为节省您的存储空间，我们不会另外保存图片，所以删除或移动图片位置会引起无法正常加载。</string>
     <string name="no_login_info">尚未登录</string>
     <string name="username_too_long">用户名“%s”超过长度限制</string>
     <string name="missing_args2">数据不完整，缺少%s</string>

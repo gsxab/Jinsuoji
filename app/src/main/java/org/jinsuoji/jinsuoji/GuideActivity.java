@@ -1,7 +1,9 @@
 package org.jinsuoji.jinsuoji;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +23,7 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
     TextView skip;
     Button okLogin, okRegister;
     EditText username, password;
-    boolean status, isLogin;
+    boolean status, isLogin, mainStarted;
 
     @Override
     public void onBackPressed() {
@@ -38,6 +40,7 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         status = false;
+        mainStarted = false;
         setContentView(R.layout.activity_guide);
 
         Button login = findViewById(R.id.login);
@@ -101,17 +104,31 @@ public class GuideActivity extends AppCompatActivity implements View.OnClickList
         if (isLogin) {
             onClick(null);
             status = false;
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.welcome)
+                    .setMessage(R.string.welcome_message)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .show();
         }
     }
 
     private void startMainActivity(boolean withAccount) {
-        if (!isLogin) {
-            Preference.setGuided(GuideActivity.this);
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(HAS_USER_NAME, withAccount);
-            startActivity(intent);
+        if (!mainStarted) {
+            mainStarted = true;
+            if (!isLogin) {
+                Preference.setGuided(GuideActivity.this);
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra(HAS_USER_NAME, withAccount);
+                startActivity(intent);
+            }
+            finish();
         }
-        finish();
     }
 
     @Override
