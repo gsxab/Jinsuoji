@@ -48,17 +48,18 @@ public class ShowPictureActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void setData() {
-        new LoadPictureTask(zhongcao.getPicture(), new LoadPictureTask.OnLoadSuccess() {
-            @Override
-            public void onSuccess(Drawable drawable) {
-                picture.setImageDrawable(drawable);
-            }
-        }, new LoadPictureTask.OnLoadFailure() {
-            @Override
-            public void onFailure() {
-                picture.setImageDrawable(getResources().getDrawable(R.drawable.ic_delete));
-            }
-        }).start();
+        new LoadPictureTask(this, zhongcao.getPicture(),
+                new LoadPictureTask.OnLoadSuccess() {
+                    @Override
+                    public void onSuccess(Drawable drawable) {
+                        picture.setImageDrawable(drawable);
+                    }
+                }, new LoadPictureTask.OnLoadFailure() {
+                    @Override
+                    public void onFailure() {
+                        picture.setImageDrawable(getResources().getDrawable(R.drawable.ic_delete));
+                    }
+                }).start();
 
         caption.setText(zhongcao.getMemo());
     }

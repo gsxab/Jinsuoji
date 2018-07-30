@@ -4,12 +4,9 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -18,13 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.goyourfly.multiple.adapter.MultipleAdapter;
 import com.goyourfly.multiple.adapter.MultipleSelect;
@@ -119,9 +114,10 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
                 // FIXME 分享不能使用
                 Intent shareIntent = new Intent();
                 List<Zhongcao> list = zhongcaoPicturesAdapter.getList();
-                final ArrayList<String> shared = new ArrayList<>();
+                final ArrayList<Uri> shared = new ArrayList<>();
                 for (Integer index : indices) {
-                    shared.add(list.get(index).getPicture());
+                    Uri imageUri = Uri.parse(list.get(index).getPicture());
+                    shared.add(imageUri);
                 }
                 String subject = list.get(indices.get(0)).getMemo();
                 if (subject != null && subject.isEmpty()) {
@@ -130,10 +126,10 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
                 shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
                 shareIntent.setType("*/*");
-                //shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                shareIntent.putStringArrayListExtra(Intent.EXTRA_TEXT, shared);
+                shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share)));
+                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, shared);
+                startActivityForResult(Intent.createChooser(shareIntent, getString(R.string.share)), 17);
                 return true;
             }
             case R.id.action_delete: {
@@ -334,43 +330,8 @@ public class ZhongcaoPicturesActivity extends AppCompatActivity
 
     private void handleInsertImage(Uri imageUri) {
         Log.d(TAG, "onActivityResult: " + imageUri.toString());
-        String path;
-        if (!TextUtils.isEmpty(imageUri.getAuthority())) { //使用 getAuthority 做判断条件
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                // 4.4及以上，返回content://com.android.providers.media.documents/document/image%3A12345
-                String wholeID = DocumentsContract.getDocumentId(imageUri);
-                String id = wholeID.split(":")[1];
-                String[] column = {MediaStore.Images.Media.DATA};
-                String sel = MediaStore.Images.Media._ID + "=?";
-                Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        column, sel, new String[]{id}, null);
-                if (cursor == null) throw new AssertionError();
-                int columnIndex = cursor.getColumnIndex(column[0]);
-                if (cursor.moveToFirst()) {
-                    path = cursor.getString(columnIndex);
-                } else {
-                    path = null;
-                }
-                cursor.close();
-            } else {
-                // 4.4以下，返回content://media/external/images/media/188222
-                String[] projection = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getContentResolver().query(imageUri, projection, null, null, null);
-                if (cursor == null) throw new AssertionError();
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                cursor.moveToFirst();
-                path = cursor.getString(column_index);
-                cursor.close();
-            }
-        } else {
-            path = imageUri.getPath(); //小米选择照片返回 data="file:///..." uri.getAuthority()==""
-        }
-        if (path == null) {
-            Toast.makeText(this, R.string.add_failed, Toast.LENGTH_SHORT).show();
-            return;
-        }
         //noinspection unused
-        Zhongcao zhongcao = new ZhongcaoDAO(this).createZhongcao(path, category.getId());
+        Zhongcao zhongcao = new ZhongcaoDAO(this).createZhongcao(/*path*/imageUri.toString(), category.getId());
         refreshList();
     }
 }

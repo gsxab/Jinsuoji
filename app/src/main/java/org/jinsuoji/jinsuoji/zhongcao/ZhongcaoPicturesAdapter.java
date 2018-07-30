@@ -99,19 +99,19 @@ public class ZhongcaoPicturesAdapter extends RecyclerView.Adapter<ZhongcaoPictur
         @Override
         public void bind(ZhongcaoPicturesAdapter adapter, int position) {
             Zhongcao zhongcao = adapter.zhongcaoList.get(position);
-            new LoadPictureTask(zhongcao.getPicture(),
+            new LoadPictureTask(itemView.getContext(), zhongcao.getPicture(),
                     new LoadPictureTask.OnLoadSuccess() {
-                @Override
-                public void onSuccess(Drawable drawable) {
-                    picture.setImageDrawable(drawable);
-                }
-            }, new LoadPictureTask.OnLoadFailure() {
-                @Override
-                public void onFailure() {
-                    picture.setImageDrawable(itemView.getResources().getDrawable(R.drawable.ic_delete));
-                    Toast.makeText(itemView.getContext(), R.string.load_failed, Toast.LENGTH_SHORT).show();
-                }
-            }).start();
+                        @Override
+                        public void onSuccess(Drawable drawable) {
+                            picture.setImageDrawable(drawable);
+                        }
+                    }, new LoadPictureTask.OnLoadFailure() {
+                        @Override
+                        public void onFailure() {
+                            picture.setImageDrawable(itemView.getResources().getDrawable(R.drawable.ic_delete));
+                            Toast.makeText(itemView.getContext(), R.string.load_failed, Toast.LENGTH_SHORT).show();
+                        }
+                    }).start();
             String memo = zhongcao.getMemo();
             caption.setText(memo == null ? "" : memo);
             itemView.setTag(zhongcao);

@@ -11,6 +11,7 @@
         android:icon="@drawable/ic_share"
         android:title="@string/share"
         android:enabled="false"
+        android:visible="false"
         app:showAsAction="ifRoom"  />
     <item
         android:id="@+id/action_delete"

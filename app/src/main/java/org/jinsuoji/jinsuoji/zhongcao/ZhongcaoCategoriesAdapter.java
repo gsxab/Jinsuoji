@@ -103,17 +103,18 @@ public class ZhongcaoCategoriesAdapter extends RecyclerView.Adapter<ZhongcaoCate
         @Override
         void bind(@NonNull ZhongcaoCategoriesAdapter adapter, int position) {
             ZhongcaoCategory category = adapter.categoryList.get(position);
-            new LoadPictureTask(category.getCover(), new LoadPictureTask.OnLoadSuccess() {
-                @Override
-                public void onSuccess(Drawable drawable) {
-                    cover.setImageDrawable(drawable);
-                }
-            }, new LoadPictureTask.OnLoadFailure() {
-                @Override
-                public void onFailure() {
-                    cover.setImageDrawable(itemView.getResources().getDrawable(R.drawable.welcome_page));
-                }
-            }).start();
+            new LoadPictureTask(itemView.getContext(), category.getCover(),
+                    new LoadPictureTask.OnLoadSuccess() {
+                        @Override
+                        public void onSuccess(Drawable drawable) {
+                            cover.setImageDrawable(drawable);
+                        }
+                    }, new LoadPictureTask.OnLoadFailure() {
+                        @Override
+                        public void onFailure() {
+                            cover.setImageDrawable(itemView.getResources().getDrawable(R.drawable.welcome_page));
+                        }
+                    }).start();
             name.setText(category.getName());
             entrance.setTag(category);
             entrance.setOnClickListener(adapter.onClickListener);
